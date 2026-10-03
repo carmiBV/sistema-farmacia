@@ -1,0 +1,103 @@
+{
+  "workflow": "02_database_workflow",
+  "current_step": 19,
+  "status": "TESTS_PASSED_AWAITING_DEPLOY",
+  "engine": "mysql",
+  "dba_status": "APPROVED",
+  "completed": [
+    "01_requisitos_datos",
+    "02_modelo_conceptual",
+    "03_diagrama_er",
+    "04_modelo_logico",
+    "05_normalizacion",
+    "06_seleccion_dbms",
+    "07_modelo_fisico",
+    "08_integridad",
+    "09_seguridad",
+    "10_auditoria_versionamiento",
+    "11_indices_rendimiento",
+    "12_transacciones_concurrencia",
+    "13_migraciones",
+    "14_revision_dba",
+    "15_sql",
+    "15b_revision_dba_ronda_2",
+    "14_pruebas"
+  ],
+  "approval_gate": {
+    "revision_dba": "APPROVED",
+    "revision_dba_ronda_2": "APPROVED (2026-10-02, revision_dba.md §7)",
+    "revision_dba_f15": "CERRADO (2026-10-02, revision_dba.md §8, opcion 1)",
+    "adr_001": "Aceptado",
+    "final_recommendation": "Aprobado",
+    "registro_cambios": "CAM-006 (2026-10-02, aprobacion ADR-001/recomendacion)",
+    "fase_f1_cierre": "CAM-005 (2026-10-02, 10_cliente_quimico_validation.md)",
+    "deploy_authorization": "GRANTED (2026-10-02, autorizacion de fase de pruebas; ver 14_pruebas/resultados_pruebas.md)"
+  },
+  "sql_generated": {
+    "path": "proyecto/05_base_datos/13_sql/",
+    "scripts": [
+      "V1.0.0__esquema_base.sql",
+      "V1.1.0__indices.sql",
+      "V1.2.0__grants.sql",
+      "V1.3.0__datos_iniciales.sql",
+      "V1.4.0__triggers_auditoria.sql"
+    ],
+    "tables": 42,
+    "foreign_keys": 84,
+    "checks": 37,
+    "uniques": 27,
+    "executed": true,
+    "executed_scope": "instancia efimera de pruebas (BD farmacia_pru, puerto 33061, datadir temporal borrado); pendiente despliegue en base real (Pasos 16-18). Re-ejecutar la suite tras cualquier cambio en V1.x.",
+    "last_regen": "2026-10-02 (ronda 2: F12, F14; cierre F15: reception_item_id NOT NULL)"
+  },
+  "findings": {
+    "F10": "CORREGIDO — CHECK bicondicional de inventory_lots bloqueaba liberado->retirado (recall). Implicacion en 03_modelo_logico, 06_integridad, V1.0.0",
+    "F11": "RESUELTO — grants: DELETE prohibido (RNF-023); append-only real = audit_* + inventory_movements + ctrl_ledger_entries. V1.2.0",
+    "F12": "CERRADO 2026-10-02 (ronda 2) — columna generada store_id_key = IFNULL(store_id,0) en catalog_prices e inventory_alerts; UNIQUE sobre ella. Patron F3. Sin cambios RF/RNF/RN",
+    "F13": "RESUELTO — RESTRICT en purchase_order_items.order_id (prevalece 06_integridad §1 / RN-10 sobre la anotacion CASCADE del Paso 04)",
+    "F14": "CERRADO 2026-10-02 (ronda 2) — dos categorias RAIZ con el mismo nombre eludian UNIQUE(nombre,parent_id). parent_id_key = IFNULL(parent_id,0). Detectado por barrido automatico de los 27 UNIQUE",
+    "F15": "RESUELTO 2026-10-02 — opcion 1 de 06_integridad §7: reception_item_id NOT NULL en inventory_lots (03_modelo_logico, V1.0.0). Toda lote nace de recepcion (RN-07/CA-10); UNIQUE garantiza 1:1 sin excepciones. Ciclo con purchase_reception_items.lot_id sigue resoluble (se puebla al confirmar). Opciones (b)/(c) descartadas. registro: revision_dba.md §8"
+  },
+  "intentional_nullable_uniques": {
+    "_nota": "NULL significa 'sin valor' y NO debe deduplicarse. Documentado en 06_integridad §2; no corregir.",
+    "idempotency_key": ["purchase_receptions", "inventory_movements", "inventory_transfers", "sales_orders", "payments_transactions"],
+    "reference": ["payments_transactions"]
+  },
+  "open_preexisting": ["F6", "F7", "F8", "F9", "DB-P09"],
+  "open_blocking_findings": 0,
+  "step_14_revision_dba": {
+    "status": "COMPLETADO",
+    "dba_status": "APPROVED",
+    "hallazgos_bloqueantes_abiertos": 0,
+    "cierre": "revision_dba.md §8 (F15, 2026-10-02); §7 ronda 2 cerrada",
+    "nota": "F6-F9 y DB-P09/DB-P12 permanecen fuera de este workflow (no bloquean el paso 14; deben cerrarse antes de produccion, RNF-041)"
+  },
+  "step_19_pruebas": {
+    "status": "COMPLETADO",
+    "fecha": "2026-10-02",
+    "resultado": "PASS=54 FAIL=0",
+    "cobertura": "M1-M6 migraciones + idempotencia; E1-E8 estructura (42/84/37/27/2/F15/F14/F12/4 usuarios); FX cadena FK; I1-I16 integridad; T1-T5 triggers; X1 atomicidad; P1-P11 permisos RBAC",
+    "salida": "proyecto/05_base_datos/14_pruebas/resultados_pruebas.md",
+    "metodo": "instancia MySQL efimera local (Laragon 8.4.3, 127.0.0.1:33061, BD farmacia_pru); scripts V1.0.0-V1.4.0 via cliente mysql; sin Flyway ni Docker; datadir y procesos limpiados al cierre",
+    "nota": "Paso 19 ejecutado ANTES de los Pasos 16-18 (no existe base real desplegada). Re-ejecutar la suite tras el despliegue real (Paso 17) y contra la base verificada (Paso 18) antes del Paso 20.",
+    "credenciales": "solo contraseñas de prueba efimeras en instancia temporal; sin secretos reales ni impresos (RNF-034)"
+  },
+  "ronda_2": {
+    "fecha": "2026-10-02",
+    "trigger": "revision_dba §5 condicion 2 (cambio en parametros null) + hallazgo F12",
+    "skills": ["database-schema-designer", "databases"],
+    "cambio_sin_schema": "CAM-005 cerro RPO/RTO/retenciones/disponibilidad/volumen en perfil_carga.yaml. Ningun valor materializado en SQL (RC-03). Siembra de system_config pendiente de diseno (convencion de claves F4)."
+  },
+  "environment_probe": {
+    "fecha": "2026-10-02",
+    "nota": "No credenciales leidas ni impresas; solo claves de .env",
+    "db_engine_en_env": "mysql",
+    "puerto_3306_abierto": false,
+    "servicio_mysql_instalado": false,
+    "cliente_mysql": "NO INSTALADO",
+    "flyway": "NO INSTALADO",
+    "docker_daemon": "NO CORRIENDO",
+    "db_password": "VACIA en .env"
+  },
+  "next": "Pasos 16-18 PENDIENTES. deploy_authorization ya GRANTED (2026-10-02), pero Paso 16 Conexion sigue requiriendo decision del usuario: (1) como levantar el motor (Docker vs instalacion local; 3306 cerrado, sin servicio, sin cliente, Docker apagado), (2) credenciales en .env (DB_PASSWORD vacia; nunca en versionado). Luego Paso 17 Despliegue de V1.0.0-V1.4.0 (DROP/TRUNCATE prohibidos sin autorizacion explicita), Paso 18 verificacion de base real + documentacion_real.md, re-ejecucion de la suite 54 pruebas contra la base real, y Paso 20 informe final (15_reportes/validacion_final.md). F6-F9/DB-P09 abiertos fuera del workflow (RNF-041)."
+}

@@ -1,0 +1,14 @@
+# Reglas de negocio
+- RN-01. Toda dispensación o venta confirmada tiene un origen de inventario identificado por sucursal y lote.
+- RN-02. El stock no puede quedar negativo por una venta o dispensación normal.
+- RN-03. La salida de inventario sigue FEFO (primero en vencer, primero en salir); no se dispensan lotes vencidos, en cuarentena o retirados.
+- RN-04. Los medicamentos de venta bajo receta requieren registrar la receta (prescriptor, paciente, fecha, cantidad) y el dispensador responsable.
+- RN-05. Los medicamentos controlados requieren receta válida, verificación del químico farmacéutico y registro en libro de control con saldo permanente.
+- RN-06. Ajustes de inventario y bajas requieren usuario, motivo, fecha y auditoría; los ajustes de controlados requieren doble autorización.
+- RN-07. La recepción de compras actualiza inventario solo al confirmarse y exige lote, vencimiento y cantidad recibida.
+- RN-08. Las transferencias entre sucursales tienen estados controlados (solicitada, despachada, recibida, cerrada/rechazada) y conservan el lote.
+- RN-09. Operaciones críticas expuestas a reintentos (cobro, dispensación, recepción, transferencia) deben ser idempotentes.
+- RN-10. Información transaccional confirmada no se elimina físicamente; las correcciones se hacen por movimientos compensatorios. La anonimización de datos personales por vencimiento de plazo no elimina los movimientos ni los registros de lote, cantidad o libro de controlados.
+- RN-11. Las devoluciones de medicamentos dispensados se restringen por política (estado del producto, condición de venta) y los productos devueltos no vuelven al stock vendible sin evaluación.
+- RN-12. Ante un retiro de lote (recall), el sistema debe identificar sucursales, stock actual y dispensaciones asociadas al lote.
+- RN-13. Los datos de pacientes y recetas son datos sensibles: acceso por rol, con registro de cada consulta.

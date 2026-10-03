@@ -1,0 +1,4 @@
+# Alcance
+Incluye usuarios y roles (químico farmacéutico, auxiliar, cajero, administrador, auditor), pacientes/clientes, sucursales, cajas/POS, catálogo de medicamentos y productos (principio activo, presentación, concentración, condición de venta), lotes y fechas de vencimiento, precios, promociones, proveedores, compras, recepciones, inventario por lote y ubicación, transferencias entre sucursales, dispensación (con o sin receta), registro de recetas, control de medicamentos controlados, ventas presenciales, pagos, devoluciones y bajas (vencimiento, deterioro, retiro de lote), alertas (stock mínimo, próximos a vencer), reportes y auditoría.
+
+Fuera de alcance inicial: contabilidad completa, nómina, manufactura y preparados magistrales, marketplace, optimización de rutas, app móvil nativa, ventas web y entrega a domicilio (a validar con el cliente), historia clínica completa e integración con seguros de salud.

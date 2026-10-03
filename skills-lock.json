@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "skills": {
+    "database-documentation": {
+      "source": "a-tokyo/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/database-documentation/SKILL.md",
+      "computedHash": "5e2daee561851fc4a2bd5da6919ee1956c3fbb85afeec8ab0500ef8a08ab72f5"
+    },
+    "database-schema-designer": {
+      "source": "softaworks/agent-toolkit",
+      "sourceType": "github",
+      "skillPath": "skills/database-schema-designer/SKILL.md",
+      "computedHash": "f23c909d45c6207e974dbce0db4c648de13d586abb37057cfec34d62f25bb526"
+    },
+    "databases": {
+      "source": "iuliandita/skills",
+      "sourceType": "github",
+      "skillPath": "skills/databases/SKILL.md",
+      "computedHash": "b576e241e597f066f6d16d876668f770847985be09fde1d16bd911c5dec8eea7"
+    },
+    "mssql": {
+      "source": "sanjay3290/ai-skills",
+      "sourceType": "github",
+      "skillPath": "skills/mssql/SKILL.md",
+      "computedHash": "f50393d205a789ac1dbbf7a7ca0a4cb2f53b63fcb3108d8b86a89eee5e39bb1d"
+    },
+    "postgresql-table-design": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "skillPath": "plugins/database-design/skills/postgresql-table-design/SKILL.md",
+      "computedHash": "d9832627098bddf570aef2219092625faf6b2a14aeeb0f6fb96ed691a020100a"
+    },
+    "sql-server": {
+      "source": "chrishuffman5/sqlserver",
+      "sourceType": "github",
+      "skillPath": "skills/sql-server/SKILL.md",
+      "computedHash": "6eb90ef0fcdd8ea317d43f8f8e0f4b818e8cafc9ee93827a1faefe1708e12f00"
+    },
+    "sqlserver-engineering": {
+      "source": "chrishuffman5/sqlserver",
+      "sourceType": "github",
+      "skillPath": "skills/sqlserver-engineering/SKILL.md",
+      "computedHash": "cb98373909eddadccfc38f647a4f6778fe5c3a841d2cebdc86da3a9cac2aced3"
+    },
+    "sqlserver-security": {
+      "source": "chrishuffman5/sqlserver",
+      "sourceType": "github",
+      "skillPath": "skills/sqlserver-security/SKILL.md",
+      "computedHash": "2eb33c0add84823e5d017533b82875ebe8059d8d4a7c390d4944f0a789a28c7f"
+    }
+  }
+}
