@@ -1,0 +1,15 @@
+{
+  "workflow": "04_backend_workflow",
+  "phase": "backend",
+  "scope": [
+    "auth_usuario",
+    "cat_producto"
+  ],
+  "current_checkpoint": "CP-BACK-01",
+  "technical_status": "BLOCKED",
+  "human_status": "PENDING",
+  "blocked": true,
+  "can_continue": false,
+  "blocked_by": "03_api_pilot_workflow",
+  "next": "Esperar API categorías PASSED + APPROVED."
+}
