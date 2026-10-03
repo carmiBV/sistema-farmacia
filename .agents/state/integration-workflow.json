@@ -1,0 +1,18 @@
+{
+  "workflow": "06_integration_workflow",
+  "phase": "integration",
+  "scope": [
+    "login",
+    "categorias",
+    "productos"
+  ],
+  "current_checkpoint": "CP-INT-01",
+  "technical_status": "BLOCKED",
+  "human_status": "PENDING",
+  "blocked": true,
+  "can_continue": false,
+  "blocked_by": [
+    "04_backend_workflow",
+    "05_frontend_workflow"
+  ]
+}

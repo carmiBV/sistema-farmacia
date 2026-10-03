@@ -1,0 +1,16 @@
+{
+  "workflow": "05_frontend_workflow",
+  "phase": "frontend",
+  "scope": [
+    "/login",
+    "/dashboard",
+    "/categorias",
+    "/productos"
+  ],
+  "current_checkpoint": "CP-FRONT-01",
+  "technical_status": "BLOCKED",
+  "human_status": "PENDING",
+  "blocked": true,
+  "can_continue": false,
+  "blocked_by": "04_backend_workflow"
+}

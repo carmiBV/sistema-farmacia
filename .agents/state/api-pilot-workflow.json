@@ -1,0 +1,19 @@
+{
+  "workflow": "03_api_pilot_workflow",
+  "phase": "api_pilot",
+  "scope": [
+    "cat_categoria"
+  ],
+  "current_checkpoint": "CP-API-01",
+  "last_completed_checkpoint": null,
+  "technical_status": "PENDING",
+  "human_status": "PENDING",
+  "blocked": false,
+  "can_continue": true,
+  "next": "Diseñar contrato de categorías. No programar todavía.",
+  "skills_allowed": [
+    "php-development",
+    "api-design-principles",
+    "openapi-spec-generation"
+  ]
+}
