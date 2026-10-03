@@ -25,6 +25,12 @@
       "skillPath": "skills/mssql/SKILL.md",
       "computedHash": "f50393d205a789ac1dbbf7a7ca0a4cb2f53b63fcb3108d8b86a89eee5e39bb1d"
     },
+    "php-development": {
+      "source": "PracticalSwan/agent-skills",
+      "sourceType": "github",
+      "skillPath": "php-development/SKILL.md",
+      "computedHash": "34639e5b6ef6412437157500eab7338d8aca88955de9c6ea345353d39ca1f4b1"
+    },
     "postgresql-table-design": {
       "source": "wshobson/agents",
       "sourceType": "github",
