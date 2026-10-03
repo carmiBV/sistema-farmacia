@@ -1,0 +1,294 @@
+table_name	column_name	ordinal_position	column_type	is_nullable	column_default	extra	column_key	character_set_name	collation_name	column_comment	generation_expression
+audit_operations	id	1	bigint unsigned	NO	NULL	auto_increment	PRI	NULL	NULL		
+audit_operations	usuario_id	2	bigint unsigned	YES	NULL		MUL	NULL	NULL		
+audit_operations	accion	3	varchar(100)	NO	NULL			utf8mb4	utf8mb4_0900_ai_ci		
+audit_operations	entidad	4	varchar(100)	NO	NULL		MUL	utf8mb4	utf8mb4_0900_ai_ci		
+audit_operations	entidad_id	5	bigint unsigned	YES	NULL			NULL	NULL		
+audit_operations	valores_antes	6	json	YES	NULL			NULL	NULL		
+audit_operations	valores_despues	7	json	YES	NULL			NULL	NULL		
+audit_operations	motivo	8	varchar(500)	YES	NULL			utf8mb4	utf8mb4_0900_ai_ci		
+audit_operations	created_at	9	datetime(6)	NO	CURRENT_TIMESTAMP(6)	DEFAULT_GENERATED		NULL	NULL		
+audit_pii_access	id	1	bigint unsigned	NO	NULL	auto_increment	PRI	NULL	NULL		
+audit_pii_access	usuario_id	2	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+audit_pii_access	accion	3	enum('consulta','creacion','modificacion','exportacion')	NO	NULL			utf8mb4	utf8mb4_0900_ai_ci		
+audit_pii_access	paciente_id	4	bigint unsigned	YES	NULL		MUL	NULL	NULL		
+audit_pii_access	prescription_id	5	bigint unsigned	YES	NULL		MUL	NULL	NULL		
+audit_pii_access	motivo	6	varchar(500)	YES	NULL			utf8mb4	utf8mb4_0900_ai_ci		
+audit_pii_access	created_at	7	datetime(6)	NO	CURRENT_TIMESTAMP(6)	DEFAULT_GENERATED		NULL	NULL		
+auth_permissions	id	1	bigint unsigned	NO	NULL	auto_increment	PRI	NULL	NULL		
+auth_permissions	clave	2	varchar(100)	NO	NULL		UNI	utf8mb4	utf8mb4_0900_ai_ci		
+auth_permissions	descripcion	3	varchar(255)	YES	NULL			utf8mb4	utf8mb4_0900_ai_ci		
+auth_role_permissions	role_id	1	bigint unsigned	NO	NULL		PRI	NULL	NULL		
+auth_role_permissions	permission_id	2	bigint unsigned	NO	NULL		PRI	NULL	NULL		
+auth_roles	id	1	bigint unsigned	NO	NULL	auto_increment	PRI	NULL	NULL		
+auth_roles	nombre	2	varchar(100)	NO	NULL		UNI	utf8mb4	utf8mb4_0900_ai_ci		
+auth_roles	descripcion	3	varchar(255)	YES	NULL			utf8mb4	utf8mb4_0900_ai_ci		
+auth_user_roles	user_id	1	bigint unsigned	NO	NULL		PRI	NULL	NULL		
+auth_user_roles	role_id	2	bigint unsigned	NO	NULL		PRI	NULL	NULL		
+auth_users	id	1	bigint unsigned	NO	NULL	auto_increment	PRI	NULL	NULL		
+auth_users	usuario	2	varchar(100)	NO	NULL		UNI	utf8mb4	utf8mb4_0900_ai_ci		
+auth_users	password_hash	3	varchar(255)	NO	NULL			utf8mb4	utf8mb4_0900_ai_ci		
+auth_users	estado	4	enum('activo','bloqueado','inactivo')	NO	activo			utf8mb4	utf8mb4_0900_ai_ci		
+auth_users	mfa_habilitado	5	tinyint(1)	NO	0			NULL	NULL		
+auth_users	ultimo_acceso_at	6	datetime(6)	YES	NULL			NULL	NULL		
+auth_users	created_at	7	datetime(6)	NO	CURRENT_TIMESTAMP(6)	DEFAULT_GENERATED		NULL	NULL		
+catalog_categories	id	1	bigint unsigned	NO	NULL	auto_increment	PRI	NULL	NULL		
+catalog_categories	nombre	2	varchar(150)	NO	NULL		MUL	utf8mb4	utf8mb4_0900_ai_ci		
+catalog_categories	parent_id	3	bigint unsigned	YES	NULL		MUL	NULL	NULL		
+catalog_categories	parent_id_key	4	bigint unsigned	YES	NULL	STORED GENERATED		NULL	NULL		ifnull(`parent_id`,0)
+catalog_patients	id	1	bigint unsigned	NO	NULL	auto_increment	PRI	NULL	NULL		
+catalog_patients	identificacion	2	varchar(30)	NO	NULL		UNI	utf8mb4	utf8mb4_0900_ai_ci		
+catalog_patients	nombre	3	varchar(200)	NO	NULL			utf8mb4	utf8mb4_0900_ai_ci		
+catalog_patients	fecha_nacimiento	4	date	YES	NULL			NULL	NULL		
+catalog_patients	contacto	5	varchar(255)	YES	NULL			utf8mb4	utf8mb4_0900_ai_ci		
+catalog_patients	estado	6	enum('activo','anonimizado')	NO	activo			utf8mb4	utf8mb4_0900_ai_ci		
+catalog_patients	created_at	7	datetime(6)	NO	CURRENT_TIMESTAMP(6)	DEFAULT_GENERATED		NULL	NULL		
+catalog_patients	anonimizado_at	8	datetime(6)	YES	NULL			NULL	NULL		
+catalog_prescribers	id	1	bigint unsigned	NO	NULL	auto_increment	PRI	NULL	NULL		
+catalog_prescribers	identificacion	2	varchar(30)	NO	NULL		UNI	utf8mb4	utf8mb4_0900_ai_ci		
+catalog_prescribers	nombre	3	varchar(200)	NO	NULL			utf8mb4	utf8mb4_0900_ai_ci		
+catalog_prescribers	especialidad	4	varchar(150)	YES	NULL			utf8mb4	utf8mb4_0900_ai_ci		
+catalog_prescribers	estado	5	enum('activo','inactivo','anonimizado')	NO	activo			utf8mb4	utf8mb4_0900_ai_ci		
+catalog_prices	id	1	bigint unsigned	NO	NULL	auto_increment	PRI	NULL	NULL		
+catalog_prices	product_id	2	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+catalog_prices	store_id	3	bigint unsigned	YES	NULL		MUL	NULL	NULL		
+catalog_prices	store_id_key	4	bigint unsigned	YES	NULL	STORED GENERATED		NULL	NULL		ifnull(`store_id`,0)
+catalog_prices	precio	5	decimal(12,2)	NO	NULL			NULL	NULL		
+catalog_prices	vigente_desde	6	date	NO	NULL			NULL	NULL		
+catalog_prices	vigente_hasta	7	date	YES	NULL			NULL	NULL		
+catalog_product_categories	product_id	1	bigint unsigned	NO	NULL		PRI	NULL	NULL		
+catalog_product_categories	category_id	2	bigint unsigned	NO	NULL		PRI	NULL	NULL		
+catalog_products	id	1	bigint unsigned	NO	NULL	auto_increment	PRI	NULL	NULL		
+catalog_products	sku	2	varchar(50)	NO	NULL		UNI	utf8mb4	utf8mb4_0900_ai_ci		
+catalog_products	nombre	3	varchar(255)	NO	NULL			utf8mb4	utf8mb4_0900_ai_ci		
+catalog_products	principio_activo	4	varchar(255)	NO	NULL			utf8mb4	utf8mb4_0900_ai_ci		
+catalog_products	presentacion	5	varchar(100)	NO	NULL			utf8mb4	utf8mb4_0900_ai_ci		
+catalog_products	concentracion	6	varchar(100)	NO	NULL			utf8mb4	utf8mb4_0900_ai_ci		
+catalog_products	condicion_venta	7	enum('libre','receta','controlado')	NO	NULL			utf8mb4	utf8mb4_0900_ai_ci		
+catalog_products	estado	8	enum('activo','inactivo')	NO	activo			utf8mb4	utf8mb4_0900_ai_ci		
+catalog_products	created_at	9	datetime(6)	NO	CURRENT_TIMESTAMP(6)	DEFAULT_GENERATED		NULL	NULL		
+catalog_promotions	id	1	bigint unsigned	NO	NULL	auto_increment	PRI	NULL	NULL		
+catalog_promotions	product_id	2	bigint unsigned	YES	NULL		MUL	NULL	NULL		
+catalog_promotions	category_id	3	bigint unsigned	YES	NULL		MUL	NULL	NULL		
+catalog_promotions	descuento_pct	4	decimal(5,2)	NO	NULL			NULL	NULL		
+catalog_promotions	desde	5	date	NO	NULL			NULL	NULL		
+catalog_promotions	hasta	6	date	NO	NULL			NULL	NULL		
+catalog_suppliers	id	1	bigint unsigned	NO	NULL	auto_increment	PRI	NULL	NULL		
+catalog_suppliers	identificacion	2	varchar(30)	NO	NULL		UNI	utf8mb4	utf8mb4_0900_ai_ci		
+catalog_suppliers	nombre	3	varchar(200)	NO	NULL			utf8mb4	utf8mb4_0900_ai_ci		
+catalog_suppliers	contacto	4	varchar(255)	YES	NULL			utf8mb4	utf8mb4_0900_ai_ci		
+catalog_suppliers	estado	5	enum('activo','inactivo')	NO	activo			utf8mb4	utf8mb4_0900_ai_ci		
+ctrl_balances	store_id	1	bigint unsigned	NO	NULL		PRI	NULL	NULL		
+ctrl_balances	product_id	2	bigint unsigned	NO	NULL		PRI	NULL	NULL		
+ctrl_balances	saldo	3	int	NO	NULL			NULL	NULL		
+ctrl_balances	version	4	bigint	NO	0			NULL	NULL		
+ctrl_balances	updated_at	5	datetime(6)	NO	CURRENT_TIMESTAMP(6)	DEFAULT_GENERATED on update CURRENT_TIMESTAMP(6)		NULL	NULL		
+ctrl_ledger_entries	id	1	bigint unsigned	NO	NULL	auto_increment	PRI	NULL	NULL		
+ctrl_ledger_entries	store_id	2	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+ctrl_ledger_entries	product_id	3	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+ctrl_ledger_entries	tipo	4	enum('entrada','salida','ajuste','devolucion','transferencia_out','transferencia_in')	NO	NULL			utf8mb4	utf8mb4_0900_ai_ci		
+ctrl_ledger_entries	cantidad	5	int	NO	NULL			NULL	NULL		
+ctrl_ledger_entries	saldo_resultante	6	int	NO	NULL			NULL	NULL		
+ctrl_ledger_entries	usuario_id	7	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+ctrl_ledger_entries	autorizador_id	8	bigint unsigned	YES	NULL		MUL	NULL	NULL		
+ctrl_ledger_entries	motivo	9	varchar(500)	NO	NULL			utf8mb4	utf8mb4_0900_ai_ci		
+ctrl_ledger_entries	ref_tipo	10	enum('venta','recepcion','transferencia','devolucion','ajuste')	NO	NULL		MUL	utf8mb4	utf8mb4_0900_ai_ci		
+ctrl_ledger_entries	ref_id	11	bigint unsigned	NO	NULL			NULL	NULL		
+ctrl_ledger_entries	created_at	12	datetime(6)	NO	CURRENT_TIMESTAMP(6)	DEFAULT_GENERATED		NULL	NULL		
+idempotency_keys	id	1	bigint unsigned	NO	NULL	auto_increment	PRI	NULL	NULL		
+idempotency_keys	idempotency_key	2	varchar(255)	NO	NULL		UNI	utf8mb4	utf8mb4_0900_ai_ci		
+idempotency_keys	operacion	3	varchar(100)	NO	NULL			utf8mb4	utf8mb4_0900_ai_ci		
+idempotency_keys	request_hash	4	char(64)	NO	NULL			utf8mb4	utf8mb4_0900_ai_ci		
+idempotency_keys	respuesta_ref	5	varchar(255)	YES	NULL			utf8mb4	utf8mb4_0900_ai_ci		
+idempotency_keys	estado	6	enum('en_proceso','completado')	NO	NULL			utf8mb4	utf8mb4_0900_ai_ci		
+idempotency_keys	created_at	7	datetime(6)	NO	CURRENT_TIMESTAMP(6)	DEFAULT_GENERATED		NULL	NULL		
+idempotency_keys	expires_at	8	datetime(6)	NO	NULL		MUL	NULL	NULL		
+inventory_alerts	id	1	bigint unsigned	NO	NULL	auto_increment	PRI	NULL	NULL		
+inventory_alerts	tipo	2	enum('stock_minimo','vencimiento')	NO	NULL		MUL	utf8mb4	utf8mb4_0900_ai_ci		
+inventory_alerts	product_id	3	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+inventory_alerts	store_id	4	bigint unsigned	YES	NULL		MUL	NULL	NULL		
+inventory_alerts	store_id_key	5	bigint unsigned	YES	NULL	STORED GENERATED		NULL	NULL		ifnull(`store_id`,0)
+inventory_alerts	fecha_generada	6	datetime(6)	NO	NULL			NULL	NULL		
+inventory_alerts	estado	7	enum('abierta','resuelta')	NO	abierta			utf8mb4	utf8mb4_0900_ai_ci		
+inventory_alerts	resuelta_por	8	bigint unsigned	YES	NULL		MUL	NULL	NULL		
+inventory_alerts	resuelta_at	9	datetime(6)	YES	NULL			NULL	NULL		
+inventory_incidents	id	1	bigint unsigned	NO	NULL	auto_increment	PRI	NULL	NULL		
+inventory_incidents	store_id	2	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+inventory_incidents	lot_id	3	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+inventory_incidents	stock_registrado	4	int	NO	NULL			NULL	NULL		
+inventory_incidents	consumo_declarado	5	int	NO	NULL			NULL	NULL		
+inventory_incidents	estado	6	enum('abierto','ajustado','descartado')	NO	abierto			utf8mb4	utf8mb4_0900_ai_ci		
+inventory_incidents	abierto_por	7	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+inventory_incidents	created_at	8	datetime(6)	NO	CURRENT_TIMESTAMP(6)	DEFAULT_GENERATED		NULL	NULL		
+inventory_incidents	movimiento_ajuste_id	9	bigint unsigned	YES	NULL		MUL	NULL	NULL		
+inventory_lots	id	1	bigint unsigned	NO	NULL	auto_increment	PRI	NULL	NULL		
+inventory_lots	product_id	2	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+inventory_lots	numero_lote	3	varchar(50)	NO	NULL			utf8mb4	utf8mb4_0900_ai_ci		
+inventory_lots	fecha_vencimiento	4	date	NO	NULL			NULL	NULL		
+inventory_lots	estado	5	enum('cuarentena','liberado','retirado')	NO	cuarentena			utf8mb4	utf8mb4_0900_ai_ci		
+inventory_lots	reception_item_id	6	bigint unsigned	NO	NULL		UNI	NULL	NULL		
+inventory_lots	liberado_por	7	bigint unsigned	YES	NULL		MUL	NULL	NULL		
+inventory_lots	liberado_at	8	datetime(6)	YES	NULL			NULL	NULL		
+inventory_lots	motivo_liberacion	9	varchar(500)	YES	NULL			utf8mb4	utf8mb4_0900_ai_ci		
+inventory_lots	created_at	10	datetime(6)	NO	CURRENT_TIMESTAMP(6)	DEFAULT_GENERATED		NULL	NULL		
+inventory_lots	retirado_at	11	datetime(6)	YES	NULL			NULL	NULL		
+inventory_movements	id	1	bigint unsigned	NO	NULL	auto_increment	PRI	NULL	NULL		
+inventory_movements	store_id	2	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+inventory_movements	lot_id	3	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+inventory_movements	product_id	4	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+inventory_movements	tipo	5	enum('entrada','salida','ajuste_baja','ajuste_incremento','devolucion','transferencia_salida','transferencia_entrada','compensatorio')	NO	NULL			utf8mb4	utf8mb4_0900_ai_ci		
+inventory_movements	cantidad	6	int	NO	NULL			NULL	NULL		
+inventory_movements	signo	7	smallint	NO	NULL			NULL	NULL		
+inventory_movements	usuario_id	8	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+inventory_movements	motivo	9	varchar(500)	NO	NULL			utf8mb4	utf8mb4_0900_ai_ci		
+inventory_movements	proponente_id	10	bigint unsigned	YES	NULL		MUL	NULL	NULL		
+inventory_movements	autorizador_id	11	bigint unsigned	YES	NULL		MUL	NULL	NULL		
+inventory_movements	ref_tipo	12	enum('venta','recepcion','transferencia','devolucion','incidente','manual')	YES	NULL		MUL	utf8mb4	utf8mb4_0900_ai_ci		
+inventory_movements	ref_id	13	bigint unsigned	YES	NULL			NULL	NULL		
+inventory_movements	movimiento_ref_id	14	bigint unsigned	YES	NULL		MUL	NULL	NULL		
+inventory_movements	idempotency_key	15	varchar(255)	YES	NULL		UNI	utf8mb4	utf8mb4_0900_ai_ci		
+inventory_movements	created_at	16	datetime(6)	NO	CURRENT_TIMESTAMP(6)	DEFAULT_GENERATED		NULL	NULL		
+inventory_reservations	id	1	bigint unsigned	NO	NULL	auto_increment	PRI	NULL	NULL		
+inventory_reservations	order_id	2	bigint unsigned	YES	NULL		MUL	NULL	NULL		
+inventory_reservations	product_id	3	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+inventory_reservations	store_id	4	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+inventory_reservations	qty	5	int	NO	NULL			NULL	NULL		
+inventory_reservations	status	6	enum('pending','confirmed','expired','cancelled')	NO	pending			utf8mb4	utf8mb4_0900_ai_ci		
+inventory_reservations	expires_at	7	datetime(6)	NO	NULL			NULL	NULL		
+inventory_reservations	created_at	8	datetime(6)	NO	CURRENT_TIMESTAMP(6)	DEFAULT_GENERATED		NULL	NULL		
+inventory_stock	store_id	1	bigint unsigned	NO	NULL		PRI	NULL	NULL		
+inventory_stock	lot_id	2	bigint unsigned	NO	NULL		PRI	NULL	NULL		
+inventory_stock	stock_available	3	int	NO	0			NULL	NULL		
+inventory_stock	stock_reserved	4	int	NO	0			NULL	NULL		
+inventory_stock	stock_sold	5	int	NO	0			NULL	NULL		
+inventory_stock	version	6	bigint	NO	0			NULL	NULL		
+inventory_stock	updated_at	7	datetime(6)	NO	CURRENT_TIMESTAMP(6)	DEFAULT_GENERATED on update CURRENT_TIMESTAMP(6)		NULL	NULL		
+inventory_transfer_items	id	1	bigint unsigned	NO	NULL	auto_increment	PRI	NULL	NULL		
+inventory_transfer_items	transfer_id	2	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+inventory_transfer_items	lot_id	3	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+inventory_transfer_items	cantidad_despachada	4	int	YES	NULL			NULL	NULL		
+inventory_transfer_items	cantidad_recibida	5	int	YES	NULL			NULL	NULL		
+inventory_transfers	id	1	bigint unsigned	NO	NULL	auto_increment	PRI	NULL	NULL		
+inventory_transfers	store_origen_id	2	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+inventory_transfers	store_destino_id	3	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+inventory_transfers	estado	4	enum('solicitada','despachada','recibida','cerrada','rechazada')	NO	solicitada			utf8mb4	utf8mb4_0900_ai_ci		
+inventory_transfers	solicitado_por	5	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+inventory_transfers	despachado_por	6	bigint unsigned	YES	NULL		MUL	NULL	NULL		
+inventory_transfers	recibido_por	7	bigint unsigned	YES	NULL		MUL	NULL	NULL		
+inventory_transfers	created_at	8	datetime(6)	NO	CURRENT_TIMESTAMP(6)	DEFAULT_GENERATED		NULL	NULL		
+inventory_transfers	updated_at	9	datetime(6)	NO	CURRENT_TIMESTAMP(6)	DEFAULT_GENERATED on update CURRENT_TIMESTAMP(6)		NULL	NULL		
+inventory_transfers	idempotency_key	10	varchar(255)	YES	NULL		UNI	utf8mb4	utf8mb4_0900_ai_ci		
+ops_registers	id	1	bigint unsigned	NO	NULL	auto_increment	PRI	NULL	NULL		
+ops_registers	store_id	2	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+ops_registers	codigo	3	varchar(20)	NO	NULL			utf8mb4	utf8mb4_0900_ai_ci		
+ops_registers	estado	4	enum('activa','inactiva')	NO	activa			utf8mb4	utf8mb4_0900_ai_ci		
+ops_stores	id	1	bigint unsigned	NO	NULL	auto_increment	PRI	NULL	NULL		
+ops_stores	codigo	2	varchar(20)	NO	NULL		UNI	utf8mb4	utf8mb4_0900_ai_ci		
+ops_stores	nombre	3	varchar(150)	NO	NULL			utf8mb4	utf8mb4_0900_ai_ci		
+ops_stores	estado	4	enum('activa','inactiva')	NO	activa			utf8mb4	utf8mb4_0900_ai_ci		
+ops_stores	created_at	5	datetime(6)	NO	CURRENT_TIMESTAMP(6)	DEFAULT_GENERATED		NULL	NULL		
+outbox_events	id	1	bigint unsigned	NO	NULL	auto_increment	PRI	NULL	NULL		
+outbox_events	agregado_tipo	2	varchar(50)	NO	NULL			utf8mb4	utf8mb4_0900_ai_ci		
+outbox_events	agregado_id	3	bigint unsigned	NO	NULL			NULL	NULL		
+outbox_events	tipo_evento	4	varchar(100)	NO	NULL			utf8mb4	utf8mb4_0900_ai_ci		
+outbox_events	payload	5	json	NO	NULL			NULL	NULL		
+outbox_events	estado	6	enum('pendiente','procesado','fallido')	NO	pendiente		MUL	utf8mb4	utf8mb4_0900_ai_ci		
+outbox_events	created_at	7	datetime(6)	NO	CURRENT_TIMESTAMP(6)	DEFAULT_GENERATED		NULL	NULL		
+outbox_events	procesado_at	8	datetime(6)	YES	NULL			NULL	NULL		
+outbox_events	intentos	9	int	NO	0			NULL	NULL		
+payments_transactions	id	1	bigint unsigned	NO	NULL	auto_increment	PRI	NULL	NULL		
+payments_transactions	order_id	2	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+payments_transactions	medio	3	varchar(50)	NO	NULL			utf8mb4	utf8mb4_0900_ai_ci		
+payments_transactions	proveedor	4	varchar(100)	YES	NULL			utf8mb4	utf8mb4_0900_ai_ci		
+payments_transactions	reference	5	varchar(255)	YES	NULL		UNI	utf8mb4	utf8mb4_0900_ai_ci		
+payments_transactions	amount	6	decimal(12,2)	NO	NULL			NULL	NULL		
+payments_transactions	status	7	enum('pendiente','aprobado','rechazado','reembolsado')	NO	NULL			utf8mb4	utf8mb4_0900_ai_ci		
+payments_transactions	idempotency_key	8	varchar(255)	YES	NULL		UNI	utf8mb4	utf8mb4_0900_ai_ci		
+payments_transactions	created_at	9	datetime(6)	NO	CURRENT_TIMESTAMP(6)	DEFAULT_GENERATED		NULL	NULL		
+payments_transactions	actualizado_at	10	datetime(6)	NO	CURRENT_TIMESTAMP(6)	DEFAULT_GENERATED on update CURRENT_TIMESTAMP(6)		NULL	NULL		
+purchase_order_items	id	1	bigint unsigned	NO	NULL	auto_increment	PRI	NULL	NULL		
+purchase_order_items	order_id	2	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+purchase_order_items	product_id	3	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+purchase_order_items	cantidad_pedida	4	int	NO	NULL			NULL	NULL		
+purchase_order_items	cantidad_recibida	5	int	NO	0			NULL	NULL		
+purchase_orders	id	1	bigint unsigned	NO	NULL	auto_increment	PRI	NULL	NULL		
+purchase_orders	numero	2	varchar(50)	NO	NULL		UNI	utf8mb4	utf8mb4_0900_ai_ci		
+purchase_orders	supplier_id	3	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+purchase_orders	estado	4	enum('borrador','emitida','recibida','cancelada')	NO	borrador			utf8mb4	utf8mb4_0900_ai_ci		
+purchase_orders	creado_por	5	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+purchase_orders	created_at	6	datetime(6)	NO	CURRENT_TIMESTAMP(6)	DEFAULT_GENERATED		NULL	NULL		
+purchase_orders	updated_at	7	datetime(6)	NO	CURRENT_TIMESTAMP(6)	DEFAULT_GENERATED on update CURRENT_TIMESTAMP(6)		NULL	NULL		
+purchase_reception_items	id	1	bigint unsigned	NO	NULL	auto_increment	PRI	NULL	NULL		
+purchase_reception_items	reception_id	2	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+purchase_reception_items	product_id	3	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+purchase_reception_items	numero_lote	4	varchar(50)	NO	NULL			utf8mb4	utf8mb4_0900_ai_ci		
+purchase_reception_items	fecha_vencimiento	5	date	NO	NULL			NULL	NULL		
+purchase_reception_items	cantidad	6	int	NO	NULL			NULL	NULL		
+purchase_reception_items	lot_id	7	bigint unsigned	YES	NULL		MUL	NULL	NULL		
+purchase_receptions	id	1	bigint unsigned	NO	NULL	auto_increment	PRI	NULL	NULL		
+purchase_receptions	order_id	2	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+purchase_receptions	estado	3	enum('recibida','confirmada','rechazada')	NO	recibida			utf8mb4	utf8mb4_0900_ai_ci		
+purchase_receptions	recepcionado_por	4	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+purchase_receptions	confirmado_por	5	bigint unsigned	YES	NULL		MUL	NULL	NULL		
+purchase_receptions	created_at	6	datetime(6)	NO	CURRENT_TIMESTAMP(6)	DEFAULT_GENERATED		NULL	NULL		
+purchase_receptions	confirmado_at	7	datetime(6)	YES	NULL			NULL	NULL		
+purchase_receptions	idempotency_key	8	varchar(255)	YES	NULL		UNI	utf8mb4	utf8mb4_0900_ai_ci		
+rx_prescription_items	id	1	bigint unsigned	NO	NULL	auto_increment	PRI	NULL	NULL		
+rx_prescription_items	prescription_id	2	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+rx_prescription_items	product_id	3	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+rx_prescription_items	cantidad_prescrita	4	int	NO	NULL			NULL	NULL		
+rx_prescription_items	cantidad_dispensada	5	int	NO	0			NULL	NULL		
+rx_prescription_items	version	6	bigint	NO	0			NULL	NULL		
+rx_prescriptions	id	1	bigint unsigned	NO	NULL	auto_increment	PRI	NULL	NULL		
+rx_prescriptions	prescriber_id	2	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+rx_prescriptions	patient_id	3	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+rx_prescriptions	fecha	4	date	NO	NULL			NULL	NULL		
+rx_prescriptions	numero_referencia	5	varchar(100)	YES	NULL			utf8mb4	utf8mb4_0900_ai_ci		
+rx_prescriptions	created_at	6	datetime(6)	NO	CURRENT_TIMESTAMP(6)	DEFAULT_GENERATED		NULL	NULL		
+sales_order_items	id	1	bigint unsigned	NO	NULL	auto_increment	PRI	NULL	NULL		
+sales_order_items	order_id	2	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+sales_order_items	lot_id	3	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+sales_order_items	product_id	4	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+sales_order_items	cantidad	5	int	NO	NULL			NULL	NULL		
+sales_order_items	precio_unitario	6	decimal(12,2)	NO	NULL			NULL	NULL		
+sales_order_items	subtotal	7	decimal(12,2)	NO	NULL			NULL	NULL		
+sales_order_items	rx_item_id	8	bigint unsigned	YES	NULL		MUL	NULL	NULL		
+sales_order_items	rx_item_id_key	9	bigint unsigned	YES	NULL	STORED GENERATED		NULL	NULL		ifnull(`rx_item_id`,0)
+sales_orders	id	1	bigint unsigned	NO	NULL	auto_increment	PRI	NULL	NULL		
+sales_orders	numero	2	varchar(50)	NO	NULL		UNI	utf8mb4	utf8mb4_0900_ai_ci		
+sales_orders	channel	3	enum('pos')	NO	pos			utf8mb4	utf8mb4_0900_ai_ci		
+sales_orders	store_id	4	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+sales_orders	register_id	5	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+sales_orders	paciente_id	6	bigint unsigned	YES	NULL		MUL	NULL	NULL		
+sales_orders	usuario_id	7	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+sales_orders	quimico_verificador_id	8	bigint unsigned	YES	NULL		MUL	NULL	NULL		
+sales_orders	estado	9	enum('pendiente','pagada','anulada','devuelta')	NO	pendiente			utf8mb4	utf8mb4_0900_ai_ci		
+sales_orders	total	10	decimal(12,2)	NO	0.00			NULL	NULL		
+sales_orders	idempotency_key	11	varchar(255)	YES	NULL		UNI	utf8mb4	utf8mb4_0900_ai_ci		
+sales_orders	created_at	12	datetime(6)	NO	CURRENT_TIMESTAMP(6)	DEFAULT_GENERATED		NULL	NULL		
+sales_return_items	id	1	bigint unsigned	NO	NULL	auto_increment	PRI	NULL	NULL		
+sales_return_items	return_id	2	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+sales_return_items	order_item_id	3	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+sales_return_items	lot_id	4	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+sales_return_items	product_id	5	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+sales_return_items	cantidad	6	int	NO	NULL			NULL	NULL		
+sales_return_items	condicion	7	enum('vendible','no_vendible')	NO	no_vendible			utf8mb4	utf8mb4_0900_ai_ci		
+sales_returns	id	1	bigint unsigned	NO	NULL	auto_increment	PRI	NULL	NULL		
+sales_returns	order_id	2	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+sales_returns	store_id	3	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+sales_returns	usuario_id	4	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+sales_returns	motivo	5	varchar(500)	NO	NULL			utf8mb4	utf8mb4_0900_ai_ci		
+sales_returns	monto	6	decimal(12,2)	NO	NULL			NULL	NULL		
+sales_returns	estado_evaluacion	7	enum('pendiente','reingresado','descartado')	NO	pendiente			utf8mb4	utf8mb4_0900_ai_ci		
+sales_returns	reembolso_estado	8	enum('none','pendiente','confirmado','fallido')	NO	none			utf8mb4	utf8mb4_0900_ai_ci		
+sales_returns	created_at	9	datetime(6)	NO	CURRENT_TIMESTAMP(6)	DEFAULT_GENERATED		NULL	NULL		
+system_config	config_key	1	varchar(100)	NO	NULL		PRI	utf8mb4	utf8mb4_0900_ai_ci		
+system_config	config_value	2	varchar(4000)	NO	NULL			utf8mb4	utf8mb4_0900_ai_ci		
+system_config	value_type	3	enum('texto','numero','booleano','json')	NO	NULL			utf8mb4	utf8mb4_0900_ai_ci		
+system_config	store_id	4	bigint unsigned	YES	NULL		MUL	NULL	NULL		
+system_config	updated_at	5	datetime(6)	NO	CURRENT_TIMESTAMP(6)	DEFAULT_GENERATED on update CURRENT_TIMESTAMP(6)		NULL	NULL		
+system_config	updated_by	6	bigint unsigned	NO	NULL		MUL	NULL	NULL		
+token_blacklist	id	1	bigint unsigned	NO	NULL	auto_increment	PRI	NULL	NULL		
+token_blacklist	token_hash	2	char(64)	NO	NULL		UNI	utf8mb4	utf8mb4_0900_ai_ci		
+token_blacklist	expires_at	3	datetime(6)	NO	NULL		MUL	NULL	NULL		
+token_blacklist	created_at	4	datetime(6)	NO	CURRENT_TIMESTAMP(6)	DEFAULT_GENERATED		NULL	NULL		

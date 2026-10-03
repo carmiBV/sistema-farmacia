@@ -1,0 +1,294 @@
+table_name	column_name	ordinal_position	column_type	is_nullable	column_key	extra
+audit_operations	id	1	bigint unsigned	NO	PRI	auto_increment
+audit_operations	usuario_id	2	bigint unsigned	YES	MUL	
+audit_operations	accion	3	varchar(100)	NO		
+audit_operations	entidad	4	varchar(100)	NO	MUL	
+audit_operations	entidad_id	5	bigint unsigned	YES		
+audit_operations	valores_antes	6	json	YES		
+audit_operations	valores_despues	7	json	YES		
+audit_operations	motivo	8	varchar(500)	YES		
+audit_operations	created_at	9	datetime(6)	NO		DEFAULT_GENERATED
+audit_pii_access	id	1	bigint unsigned	NO	PRI	auto_increment
+audit_pii_access	usuario_id	2	bigint unsigned	NO	MUL	
+audit_pii_access	accion	3	enum('consulta','creacion','modificacion','exportacion')	NO		
+audit_pii_access	paciente_id	4	bigint unsigned	YES	MUL	
+audit_pii_access	prescription_id	5	bigint unsigned	YES	MUL	
+audit_pii_access	motivo	6	varchar(500)	YES		
+audit_pii_access	created_at	7	datetime(6)	NO		DEFAULT_GENERATED
+auth_permissions	id	1	bigint unsigned	NO	PRI	auto_increment
+auth_permissions	clave	2	varchar(100)	NO	UNI	
+auth_permissions	descripcion	3	varchar(255)	YES		
+auth_role_permissions	role_id	1	bigint unsigned	NO	PRI	
+auth_role_permissions	permission_id	2	bigint unsigned	NO	PRI	
+auth_roles	id	1	bigint unsigned	NO	PRI	auto_increment
+auth_roles	nombre	2	varchar(100)	NO	UNI	
+auth_roles	descripcion	3	varchar(255)	YES		
+auth_user_roles	user_id	1	bigint unsigned	NO	PRI	
+auth_user_roles	role_id	2	bigint unsigned	NO	PRI	
+auth_users	id	1	bigint unsigned	NO	PRI	auto_increment
+auth_users	usuario	2	varchar(100)	NO	UNI	
+auth_users	password_hash	3	varchar(255)	NO		
+auth_users	estado	4	enum('activo','bloqueado','inactivo')	NO		
+auth_users	mfa_habilitado	5	tinyint(1)	NO		
+auth_users	ultimo_acceso_at	6	datetime(6)	YES		
+auth_users	created_at	7	datetime(6)	NO		DEFAULT_GENERATED
+catalog_categories	id	1	bigint unsigned	NO	PRI	auto_increment
+catalog_categories	nombre	2	varchar(150)	NO	MUL	
+catalog_categories	parent_id	3	bigint unsigned	YES	MUL	
+catalog_categories	parent_id_key	4	bigint unsigned	YES		STORED GENERATED
+catalog_patients	id	1	bigint unsigned	NO	PRI	auto_increment
+catalog_patients	identificacion	2	varchar(30)	NO	UNI	
+catalog_patients	nombre	3	varchar(200)	NO		
+catalog_patients	fecha_nacimiento	4	date	YES		
+catalog_patients	contacto	5	varchar(255)	YES		
+catalog_patients	estado	6	enum('activo','anonimizado')	NO		
+catalog_patients	created_at	7	datetime(6)	NO		DEFAULT_GENERATED
+catalog_patients	anonimizado_at	8	datetime(6)	YES		
+catalog_prescribers	id	1	bigint unsigned	NO	PRI	auto_increment
+catalog_prescribers	identificacion	2	varchar(30)	NO	UNI	
+catalog_prescribers	nombre	3	varchar(200)	NO		
+catalog_prescribers	especialidad	4	varchar(150)	YES		
+catalog_prescribers	estado	5	enum('activo','inactivo','anonimizado')	NO		
+catalog_prices	id	1	bigint unsigned	NO	PRI	auto_increment
+catalog_prices	product_id	2	bigint unsigned	NO	MUL	
+catalog_prices	store_id	3	bigint unsigned	YES	MUL	
+catalog_prices	store_id_key	4	bigint unsigned	YES		STORED GENERATED
+catalog_prices	precio	5	decimal(12,2)	NO		
+catalog_prices	vigente_desde	6	date	NO		
+catalog_prices	vigente_hasta	7	date	YES		
+catalog_product_categories	product_id	1	bigint unsigned	NO	PRI	
+catalog_product_categories	category_id	2	bigint unsigned	NO	PRI	
+catalog_products	id	1	bigint unsigned	NO	PRI	auto_increment
+catalog_products	sku	2	varchar(50)	NO	UNI	
+catalog_products	nombre	3	varchar(255)	NO		
+catalog_products	principio_activo	4	varchar(255)	NO		
+catalog_products	presentacion	5	varchar(100)	NO		
+catalog_products	concentracion	6	varchar(100)	NO		
+catalog_products	condicion_venta	7	enum('libre','receta','controlado')	NO		
+catalog_products	estado	8	enum('activo','inactivo')	NO		
+catalog_products	created_at	9	datetime(6)	NO		DEFAULT_GENERATED
+catalog_promotions	id	1	bigint unsigned	NO	PRI	auto_increment
+catalog_promotions	product_id	2	bigint unsigned	YES	MUL	
+catalog_promotions	category_id	3	bigint unsigned	YES	MUL	
+catalog_promotions	descuento_pct	4	decimal(5,2)	NO		
+catalog_promotions	desde	5	date	NO		
+catalog_promotions	hasta	6	date	NO		
+catalog_suppliers	id	1	bigint unsigned	NO	PRI	auto_increment
+catalog_suppliers	identificacion	2	varchar(30)	NO	UNI	
+catalog_suppliers	nombre	3	varchar(200)	NO		
+catalog_suppliers	contacto	4	varchar(255)	YES		
+catalog_suppliers	estado	5	enum('activo','inactivo')	NO		
+ctrl_balances	store_id	1	bigint unsigned	NO	PRI	
+ctrl_balances	product_id	2	bigint unsigned	NO	PRI	
+ctrl_balances	saldo	3	int	NO		
+ctrl_balances	version	4	bigint	NO		
+ctrl_balances	updated_at	5	datetime(6)	NO		DEFAULT_GENERATED on update CURRENT_TIMESTAMP(6)
+ctrl_ledger_entries	id	1	bigint unsigned	NO	PRI	auto_increment
+ctrl_ledger_entries	store_id	2	bigint unsigned	NO	MUL	
+ctrl_ledger_entries	product_id	3	bigint unsigned	NO	MUL	
+ctrl_ledger_entries	tipo	4	enum('entrada','salida','ajuste','devolucion','transferencia_out','transferencia_in')	NO		
+ctrl_ledger_entries	cantidad	5	int	NO		
+ctrl_ledger_entries	saldo_resultante	6	int	NO		
+ctrl_ledger_entries	usuario_id	7	bigint unsigned	NO	MUL	
+ctrl_ledger_entries	autorizador_id	8	bigint unsigned	YES	MUL	
+ctrl_ledger_entries	motivo	9	varchar(500)	NO		
+ctrl_ledger_entries	ref_tipo	10	enum('venta','recepcion','transferencia','devolucion','ajuste')	NO	MUL	
+ctrl_ledger_entries	ref_id	11	bigint unsigned	NO		
+ctrl_ledger_entries	created_at	12	datetime(6)	NO		DEFAULT_GENERATED
+idempotency_keys	id	1	bigint unsigned	NO	PRI	auto_increment
+idempotency_keys	idempotency_key	2	varchar(255)	NO	UNI	
+idempotency_keys	operacion	3	varchar(100)	NO		
+idempotency_keys	request_hash	4	char(64)	NO		
+idempotency_keys	respuesta_ref	5	varchar(255)	YES		
+idempotency_keys	estado	6	enum('en_proceso','completado')	NO		
+idempotency_keys	created_at	7	datetime(6)	NO		DEFAULT_GENERATED
+idempotency_keys	expires_at	8	datetime(6)	NO	MUL	
+inventory_alerts	id	1	bigint unsigned	NO	PRI	auto_increment
+inventory_alerts	tipo	2	enum('stock_minimo','vencimiento')	NO	MUL	
+inventory_alerts	product_id	3	bigint unsigned	NO	MUL	
+inventory_alerts	store_id	4	bigint unsigned	YES	MUL	
+inventory_alerts	store_id_key	5	bigint unsigned	YES		STORED GENERATED
+inventory_alerts	fecha_generada	6	datetime(6)	NO		
+inventory_alerts	estado	7	enum('abierta','resuelta')	NO		
+inventory_alerts	resuelta_por	8	bigint unsigned	YES	MUL	
+inventory_alerts	resuelta_at	9	datetime(6)	YES		
+inventory_incidents	id	1	bigint unsigned	NO	PRI	auto_increment
+inventory_incidents	store_id	2	bigint unsigned	NO	MUL	
+inventory_incidents	lot_id	3	bigint unsigned	NO	MUL	
+inventory_incidents	stock_registrado	4	int	NO		
+inventory_incidents	consumo_declarado	5	int	NO		
+inventory_incidents	estado	6	enum('abierto','ajustado','descartado')	NO		
+inventory_incidents	abierto_por	7	bigint unsigned	NO	MUL	
+inventory_incidents	created_at	8	datetime(6)	NO		DEFAULT_GENERATED
+inventory_incidents	movimiento_ajuste_id	9	bigint unsigned	YES	MUL	
+inventory_lots	id	1	bigint unsigned	NO	PRI	auto_increment
+inventory_lots	product_id	2	bigint unsigned	NO	MUL	
+inventory_lots	numero_lote	3	varchar(50)	NO		
+inventory_lots	fecha_vencimiento	4	date	NO		
+inventory_lots	estado	5	enum('cuarentena','liberado','retirado')	NO		
+inventory_lots	reception_item_id	6	bigint unsigned	NO	UNI	
+inventory_lots	liberado_por	7	bigint unsigned	YES	MUL	
+inventory_lots	liberado_at	8	datetime(6)	YES		
+inventory_lots	motivo_liberacion	9	varchar(500)	YES		
+inventory_lots	created_at	10	datetime(6)	NO		DEFAULT_GENERATED
+inventory_lots	retirado_at	11	datetime(6)	YES		
+inventory_movements	id	1	bigint unsigned	NO	PRI	auto_increment
+inventory_movements	store_id	2	bigint unsigned	NO	MUL	
+inventory_movements	lot_id	3	bigint unsigned	NO	MUL	
+inventory_movements	product_id	4	bigint unsigned	NO	MUL	
+inventory_movements	tipo	5	enum('entrada','salida','ajuste_baja','ajuste_incremento','devolucion','transferencia_salida','transferencia_entrada','compensatorio')	NO		
+inventory_movements	cantidad	6	int	NO		
+inventory_movements	signo	7	smallint	NO		
+inventory_movements	usuario_id	8	bigint unsigned	NO	MUL	
+inventory_movements	motivo	9	varchar(500)	NO		
+inventory_movements	proponente_id	10	bigint unsigned	YES	MUL	
+inventory_movements	autorizador_id	11	bigint unsigned	YES	MUL	
+inventory_movements	ref_tipo	12	enum('venta','recepcion','transferencia','devolucion','incidente','manual')	YES	MUL	
+inventory_movements	ref_id	13	bigint unsigned	YES		
+inventory_movements	movimiento_ref_id	14	bigint unsigned	YES	MUL	
+inventory_movements	idempotency_key	15	varchar(255)	YES	UNI	
+inventory_movements	created_at	16	datetime(6)	NO		DEFAULT_GENERATED
+inventory_reservations	id	1	bigint unsigned	NO	PRI	auto_increment
+inventory_reservations	order_id	2	bigint unsigned	YES	MUL	
+inventory_reservations	product_id	3	bigint unsigned	NO	MUL	
+inventory_reservations	store_id	4	bigint unsigned	NO	MUL	
+inventory_reservations	qty	5	int	NO		
+inventory_reservations	status	6	enum('pending','confirmed','expired','cancelled')	NO		
+inventory_reservations	expires_at	7	datetime(6)	NO		
+inventory_reservations	created_at	8	datetime(6)	NO		DEFAULT_GENERATED
+inventory_stock	store_id	1	bigint unsigned	NO	PRI	
+inventory_stock	lot_id	2	bigint unsigned	NO	PRI	
+inventory_stock	stock_available	3	int	NO		
+inventory_stock	stock_reserved	4	int	NO		
+inventory_stock	stock_sold	5	int	NO		
+inventory_stock	version	6	bigint	NO		
+inventory_stock	updated_at	7	datetime(6)	NO		DEFAULT_GENERATED on update CURRENT_TIMESTAMP(6)
+inventory_transfer_items	id	1	bigint unsigned	NO	PRI	auto_increment
+inventory_transfer_items	transfer_id	2	bigint unsigned	NO	MUL	
+inventory_transfer_items	lot_id	3	bigint unsigned	NO	MUL	
+inventory_transfer_items	cantidad_despachada	4	int	YES		
+inventory_transfer_items	cantidad_recibida	5	int	YES		
+inventory_transfers	id	1	bigint unsigned	NO	PRI	auto_increment
+inventory_transfers	store_origen_id	2	bigint unsigned	NO	MUL	
+inventory_transfers	store_destino_id	3	bigint unsigned	NO	MUL	
+inventory_transfers	estado	4	enum('solicitada','despachada','recibida','cerrada','rechazada')	NO		
+inventory_transfers	solicitado_por	5	bigint unsigned	NO	MUL	
+inventory_transfers	despachado_por	6	bigint unsigned	YES	MUL	
+inventory_transfers	recibido_por	7	bigint unsigned	YES	MUL	
+inventory_transfers	created_at	8	datetime(6)	NO		DEFAULT_GENERATED
+inventory_transfers	updated_at	9	datetime(6)	NO		DEFAULT_GENERATED on update CURRENT_TIMESTAMP(6)
+inventory_transfers	idempotency_key	10	varchar(255)	YES	UNI	
+ops_registers	id	1	bigint unsigned	NO	PRI	auto_increment
+ops_registers	store_id	2	bigint unsigned	NO	MUL	
+ops_registers	codigo	3	varchar(20)	NO		
+ops_registers	estado	4	enum('activa','inactiva')	NO		
+ops_stores	id	1	bigint unsigned	NO	PRI	auto_increment
+ops_stores	codigo	2	varchar(20)	NO	UNI	
+ops_stores	nombre	3	varchar(150)	NO		
+ops_stores	estado	4	enum('activa','inactiva')	NO		
+ops_stores	created_at	5	datetime(6)	NO		DEFAULT_GENERATED
+outbox_events	id	1	bigint unsigned	NO	PRI	auto_increment
+outbox_events	agregado_tipo	2	varchar(50)	NO		
+outbox_events	agregado_id	3	bigint unsigned	NO		
+outbox_events	tipo_evento	4	varchar(100)	NO		
+outbox_events	payload	5	json	NO		
+outbox_events	estado	6	enum('pendiente','procesado','fallido')	NO	MUL	
+outbox_events	created_at	7	datetime(6)	NO		DEFAULT_GENERATED
+outbox_events	procesado_at	8	datetime(6)	YES		
+outbox_events	intentos	9	int	NO		
+payments_transactions	id	1	bigint unsigned	NO	PRI	auto_increment
+payments_transactions	order_id	2	bigint unsigned	NO	MUL	
+payments_transactions	medio	3	varchar(50)	NO		
+payments_transactions	proveedor	4	varchar(100)	YES		
+payments_transactions	reference	5	varchar(255)	YES	UNI	
+payments_transactions	amount	6	decimal(12,2)	NO		
+payments_transactions	status	7	enum('pendiente','aprobado','rechazado','reembolsado')	NO		
+payments_transactions	idempotency_key	8	varchar(255)	YES	UNI	
+payments_transactions	created_at	9	datetime(6)	NO		DEFAULT_GENERATED
+payments_transactions	actualizado_at	10	datetime(6)	NO		DEFAULT_GENERATED on update CURRENT_TIMESTAMP(6)
+purchase_order_items	id	1	bigint unsigned	NO	PRI	auto_increment
+purchase_order_items	order_id	2	bigint unsigned	NO	MUL	
+purchase_order_items	product_id	3	bigint unsigned	NO	MUL	
+purchase_order_items	cantidad_pedida	4	int	NO		
+purchase_order_items	cantidad_recibida	5	int	NO		
+purchase_orders	id	1	bigint unsigned	NO	PRI	auto_increment
+purchase_orders	numero	2	varchar(50)	NO	UNI	
+purchase_orders	supplier_id	3	bigint unsigned	NO	MUL	
+purchase_orders	estado	4	enum('borrador','emitida','recibida','cancelada')	NO		
+purchase_orders	creado_por	5	bigint unsigned	NO	MUL	
+purchase_orders	created_at	6	datetime(6)	NO		DEFAULT_GENERATED
+purchase_orders	updated_at	7	datetime(6)	NO		DEFAULT_GENERATED on update CURRENT_TIMESTAMP(6)
+purchase_reception_items	id	1	bigint unsigned	NO	PRI	auto_increment
+purchase_reception_items	reception_id	2	bigint unsigned	NO	MUL	
+purchase_reception_items	product_id	3	bigint unsigned	NO	MUL	
+purchase_reception_items	numero_lote	4	varchar(50)	NO		
+purchase_reception_items	fecha_vencimiento	5	date	NO		
+purchase_reception_items	cantidad	6	int	NO		
+purchase_reception_items	lot_id	7	bigint unsigned	YES	MUL	
+purchase_receptions	id	1	bigint unsigned	NO	PRI	auto_increment
+purchase_receptions	order_id	2	bigint unsigned	NO	MUL	
+purchase_receptions	estado	3	enum('recibida','confirmada','rechazada')	NO		
+purchase_receptions	recepcionado_por	4	bigint unsigned	NO	MUL	
+purchase_receptions	confirmado_por	5	bigint unsigned	YES	MUL	
+purchase_receptions	created_at	6	datetime(6)	NO		DEFAULT_GENERATED
+purchase_receptions	confirmado_at	7	datetime(6)	YES		
+purchase_receptions	idempotency_key	8	varchar(255)	YES	UNI	
+rx_prescription_items	id	1	bigint unsigned	NO	PRI	auto_increment
+rx_prescription_items	prescription_id	2	bigint unsigned	NO	MUL	
+rx_prescription_items	product_id	3	bigint unsigned	NO	MUL	
+rx_prescription_items	cantidad_prescrita	4	int	NO		
+rx_prescription_items	cantidad_dispensada	5	int	NO		
+rx_prescription_items	version	6	bigint	NO		
+rx_prescriptions	id	1	bigint unsigned	NO	PRI	auto_increment
+rx_prescriptions	prescriber_id	2	bigint unsigned	NO	MUL	
+rx_prescriptions	patient_id	3	bigint unsigned	NO	MUL	
+rx_prescriptions	fecha	4	date	NO		
+rx_prescriptions	numero_referencia	5	varchar(100)	YES		
+rx_prescriptions	created_at	6	datetime(6)	NO		DEFAULT_GENERATED
+sales_order_items	id	1	bigint unsigned	NO	PRI	auto_increment
+sales_order_items	order_id	2	bigint unsigned	NO	MUL	
+sales_order_items	lot_id	3	bigint unsigned	NO	MUL	
+sales_order_items	product_id	4	bigint unsigned	NO	MUL	
+sales_order_items	cantidad	5	int	NO		
+sales_order_items	precio_unitario	6	decimal(12,2)	NO		
+sales_order_items	subtotal	7	decimal(12,2)	NO		
+sales_order_items	rx_item_id	8	bigint unsigned	YES	MUL	
+sales_order_items	rx_item_id_key	9	bigint unsigned	YES		STORED GENERATED
+sales_orders	id	1	bigint unsigned	NO	PRI	auto_increment
+sales_orders	numero	2	varchar(50)	NO	UNI	
+sales_orders	channel	3	enum('pos')	NO		
+sales_orders	store_id	4	bigint unsigned	NO	MUL	
+sales_orders	register_id	5	bigint unsigned	NO	MUL	
+sales_orders	paciente_id	6	bigint unsigned	YES	MUL	
+sales_orders	usuario_id	7	bigint unsigned	NO	MUL	
+sales_orders	quimico_verificador_id	8	bigint unsigned	YES	MUL	
+sales_orders	estado	9	enum('pendiente','pagada','anulada','devuelta')	NO		
+sales_orders	total	10	decimal(12,2)	NO		
+sales_orders	idempotency_key	11	varchar(255)	YES	UNI	
+sales_orders	created_at	12	datetime(6)	NO		DEFAULT_GENERATED
+sales_return_items	id	1	bigint unsigned	NO	PRI	auto_increment
+sales_return_items	return_id	2	bigint unsigned	NO	MUL	
+sales_return_items	order_item_id	3	bigint unsigned	NO	MUL	
+sales_return_items	lot_id	4	bigint unsigned	NO	MUL	
+sales_return_items	product_id	5	bigint unsigned	NO	MUL	
+sales_return_items	cantidad	6	int	NO		
+sales_return_items	condicion	7	enum('vendible','no_vendible')	NO		
+sales_returns	id	1	bigint unsigned	NO	PRI	auto_increment
+sales_returns	order_id	2	bigint unsigned	NO	MUL	
+sales_returns	store_id	3	bigint unsigned	NO	MUL	
+sales_returns	usuario_id	4	bigint unsigned	NO	MUL	
+sales_returns	motivo	5	varchar(500)	NO		
+sales_returns	monto	6	decimal(12,2)	NO		
+sales_returns	estado_evaluacion	7	enum('pendiente','reingresado','descartado')	NO		
+sales_returns	reembolso_estado	8	enum('none','pendiente','confirmado','fallido')	NO		
+sales_returns	created_at	9	datetime(6)	NO		DEFAULT_GENERATED
+system_config	config_key	1	varchar(100)	NO	PRI	
+system_config	config_value	2	varchar(4000)	NO		
+system_config	value_type	3	enum('texto','numero','booleano','json')	NO		
+system_config	store_id	4	bigint unsigned	YES	MUL	
+system_config	updated_at	5	datetime(6)	NO		DEFAULT_GENERATED on update CURRENT_TIMESTAMP(6)
+system_config	updated_by	6	bigint unsigned	NO	MUL	
+token_blacklist	id	1	bigint unsigned	NO	PRI	auto_increment
+token_blacklist	token_hash	2	char(64)	NO	UNI	
+token_blacklist	expires_at	3	datetime(6)	NO	MUL	
+token_blacklist	created_at	4	datetime(6)	NO		DEFAULT_GENERATED

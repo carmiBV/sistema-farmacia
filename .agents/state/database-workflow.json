@@ -1,7 +1,7 @@
 {
   "workflow": "02_database_workflow",
-  "current_step": 19,
-  "status": "TESTS_PASSED_AWAITING_DEPLOY",
+  "current_step": 20,
+  "status": "APPROVED",
   "engine": "mysql",
   "dba_status": "APPROVED",
   "completed": [
@@ -21,7 +21,8 @@
     "14_revision_dba",
     "15_sql",
     "15b_revision_dba_ronda_2",
-    "14_pruebas"
+    "14_pruebas",
+    "15_reportes/documentacion_real"
   ],
   "approval_gate": {
     "revision_dba": "APPROVED",
@@ -31,7 +32,8 @@
     "final_recommendation": "Aprobado",
     "registro_cambios": "CAM-006 (2026-10-02, aprobacion ADR-001/recomendacion)",
     "fase_f1_cierre": "CAM-005 (2026-10-02, 10_cliente_quimico_validation.md)",
-    "deploy_authorization": "GRANTED (2026-10-02, autorizacion de fase de pruebas; ver 14_pruebas/resultados_pruebas.md)"
+    "deploy_authorization": "GRANTED (2026-10-02, autorizacion de fase de pruebas; ver 14_pruebas/resultados_pruebas.md)",
+    "documentacion_real": "VERIFIED (2026-10-03, drift=0; ver 15_reportes/documentacion_real.md)"
   },
   "sql_generated": {
     "path": "proyecto/05_base_datos/13_sql/",
@@ -47,7 +49,7 @@
     "checks": 37,
     "uniques": 27,
     "executed": true,
-    "executed_scope": "instancia efimera de pruebas (BD farmacia_pru, puerto 33061, datadir temporal borrado); pendiente despliegue en base real (Pasos 16-18). Re-ejecutar la suite tras cualquier cambio en V1.x.",
+    "executed_scope": "instancia efimera de pruebas (BD farmacia_pru en Paso 19; BD farmacia_doc en Paso 18, puerto 33061, datadir temporal borrado); pendiente despliegue en base real (Pasos 16-17). Re-ejecutar la suite tras cualquier cambio en V1.x.",
     "last_regen": "2026-10-02 (ronda 2: F12, F14; cierre F15: reception_item_id NOT NULL)"
   },
   "findings": {
@@ -82,6 +84,18 @@
     "nota": "Paso 19 ejecutado ANTES de los Pasos 16-18 (no existe base real desplegada). Re-ejecutar la suite tras el despliegue real (Paso 17) y contra la base verificada (Paso 18) antes del Paso 20.",
     "credenciales": "solo contraseñas de prueba efimeras en instancia temporal; sin secretos reales ni impresos (RNF-034)"
   },
+  "step_18_documentacion": {
+    "status": "COMPLETADO",
+    "fecha": "2026-10-03",
+    "skill": "database-documentation",
+    "salida": "proyecto/05_base_datos/15_reportes/documentacion_real.md",
+    "artefactos": "proyecto/05_base_datos/.database-documentation/ (21 artefactos + README.md + gen_doc.ps1 generador)",
+    "gate": "tablas=42/42 fk=84/84 chk=37/37 uq=27/27 pk=42/42 idx=149 triggers=2/2",
+    "diffs_identidad": "tablas=0 fknames=0 edges=0 chk=0 uq=0",
+    "drift": "0 (fk_pri_lot via ALTER y parent_id_key F14 documentados; 149 idx = 42 PRIMARY + 19 V1.1.0 + auto de InnoDB)",
+    "metodo": "instancia MySQL 8.4.3 efimera (127.0.0.1:33061, BD farmacia_doc, V1.0.0->V1.4.0); information_schema + SHOW CREATE TABLE (T2) vs parseo de 13_sql (T3); datadir y proceso limpiados al cierre",
+    "nota": "NO es despliegue de produccion: los Pasos 16 (conexion) y 17 (despliegue) siguen pendientes de decision del usuario."
+  },
   "ronda_2": {
     "fecha": "2026-10-02",
     "trigger": "revision_dba §5 condicion 2 (cambio en parametros null) + hallazgo F12",
@@ -99,5 +113,5 @@
     "docker_daemon": "NO CORRIENDO",
     "db_password": "VACIA en .env"
   },
-  "next": "Pasos 16-18 PENDIENTES. deploy_authorization ya GRANTED (2026-10-02), pero Paso 16 Conexion sigue requiriendo decision del usuario: (1) como levantar el motor (Docker vs instalacion local; 3306 cerrado, sin servicio, sin cliente, Docker apagado), (2) credenciales en .env (DB_PASSWORD vacia; nunca en versionado). Luego Paso 17 Despliegue de V1.0.0-V1.4.0 (DROP/TRUNCATE prohibidos sin autorizacion explicita), Paso 18 verificacion de base real + documentacion_real.md, re-ejecucion de la suite 54 pruebas contra la base real, y Paso 20 informe final (15_reportes/validacion_final.md). F6-F9/DB-P09 abiertos fuera del workflow (RNF-041)."
+  "next": "Pasos 16-18 ejecutados sobre instancia efimera (Paso 18 documentado con drift=0, STATUS: APPROVED). Pendientes: (1) Paso 16 Conexion con decision del usuario (Docker vs instalacion local; credenciales en .env, DB_PASSWORD vacia, nunca en versionado), (2) Paso 17 Despliegue de V1.0.0-V1.4.0 en la base real (DROP/TRUNCATE prohibidos sin autorizacion explicita), (3) re-ejecucion de la suite 54 pruebas contra la base real, (4) Paso 20 informe final (15_reportes/validacion_final.md). F6-F9/DB-P09/DB-P12 abiertos fuera del workflow (RNF-041)."
 }

@@ -1,0 +1,737 @@
+Introspeccion live de la BD farmacia_doc (127.0.0.1:33061) - MySQL Community Server - GPL 8.4.3
+Generado: 2026-10-03 03:15:00 | Origen: information_schema (Tier T2, leido de servidor vivo)
+Tablas=42 PK=42 FK=84 UNIQUE=27 CHECK=37 indices_grupos=149 triggers=2
+
+== TABLAS (table | engine | filas_est | data_length | index_length | collation | comment) ==
+audit_operations | InnoDB | 0 | 16384 | 16384 | utf8mb4_0900_ai_ci | 
+audit_pii_access | InnoDB | 0 | 16384 | 49152 | utf8mb4_0900_ai_ci | 
+auth_permissions | InnoDB | 0 | 16384 | 16384 | utf8mb4_0900_ai_ci | 
+auth_role_permissions | InnoDB | 0 | 16384 | 16384 | utf8mb4_0900_ai_ci | 
+auth_roles | InnoDB | 5 | 16384 | 16384 | utf8mb4_0900_ai_ci | 
+auth_user_roles | InnoDB | 0 | 16384 | 16384 | utf8mb4_0900_ai_ci | 
+auth_users | InnoDB | 0 | 16384 | 16384 | utf8mb4_0900_ai_ci | 
+catalog_categories | InnoDB | 0 | 16384 | 32768 | utf8mb4_0900_ai_ci | 
+catalog_patients | InnoDB | 0 | 16384 | 16384 | utf8mb4_0900_ai_ci | 
+catalog_prescribers | InnoDB | 0 | 16384 | 16384 | utf8mb4_0900_ai_ci | 
+catalog_prices | InnoDB | 0 | 16384 | 32768 | utf8mb4_0900_ai_ci | 
+catalog_product_categories | InnoDB | 0 | 16384 | 16384 | utf8mb4_0900_ai_ci | 
+catalog_products | InnoDB | 0 | 16384 | 16384 | utf8mb4_0900_ai_ci | 
+catalog_promotions | InnoDB | 0 | 16384 | 32768 | utf8mb4_0900_ai_ci | 
+catalog_suppliers | InnoDB | 0 | 16384 | 16384 | utf8mb4_0900_ai_ci | 
+ctrl_balances | InnoDB | 0 | 16384 | 16384 | utf8mb4_0900_ai_ci | 
+ctrl_ledger_entries | InnoDB | 0 | 16384 | 65536 | utf8mb4_0900_ai_ci | 
+idempotency_keys | InnoDB | 0 | 16384 | 16384 | utf8mb4_0900_ai_ci | 
+inventory_alerts | InnoDB | 0 | 16384 | 65536 | utf8mb4_0900_ai_ci | 
+inventory_incidents | InnoDB | 0 | 16384 | 65536 | utf8mb4_0900_ai_ci | 
+inventory_lots | InnoDB | 0 | 16384 | 49152 | utf8mb4_0900_ai_ci | 
+inventory_movements | InnoDB | 0 | 16384 | 131072 | utf8mb4_0900_ai_ci | 
+inventory_reservations | InnoDB | 0 | 16384 | 49152 | utf8mb4_0900_ai_ci | 
+inventory_stock | InnoDB | 0 | 16384 | 16384 | utf8mb4_0900_ai_ci | 
+inventory_transfer_items | InnoDB | 0 | 16384 | 32768 | utf8mb4_0900_ai_ci | 
+inventory_transfers | InnoDB | 0 | 16384 | 98304 | utf8mb4_0900_ai_ci | 
+ops_registers | InnoDB | 0 | 16384 | 16384 | utf8mb4_0900_ai_ci | 
+ops_stores | InnoDB | 0 | 16384 | 16384 | utf8mb4_0900_ai_ci | 
+outbox_events | InnoDB | 0 | 16384 | 0 | utf8mb4_0900_ai_ci | 
+payments_transactions | InnoDB | 0 | 16384 | 49152 | utf8mb4_0900_ai_ci | 
+purchase_order_items | InnoDB | 0 | 16384 | 32768 | utf8mb4_0900_ai_ci | 
+purchase_orders | InnoDB | 0 | 16384 | 49152 | utf8mb4_0900_ai_ci | 
+purchase_reception_items | InnoDB | 0 | 16384 | 32768 | utf8mb4_0900_ai_ci | 
+purchase_receptions | InnoDB | 0 | 16384 | 65536 | utf8mb4_0900_ai_ci | 
+rx_prescription_items | InnoDB | 0 | 16384 | 32768 | utf8mb4_0900_ai_ci | 
+rx_prescriptions | InnoDB | 0 | 16384 | 32768 | utf8mb4_0900_ai_ci | 
+sales_order_items | InnoDB | 0 | 16384 | 65536 | utf8mb4_0900_ai_ci | 
+sales_orders | InnoDB | 0 | 16384 | 114688 | utf8mb4_0900_ai_ci | 
+sales_return_items | InnoDB | 0 | 16384 | 65536 | utf8mb4_0900_ai_ci | 
+sales_returns | InnoDB | 0 | 16384 | 49152 | utf8mb4_0900_ai_ci | 
+system_config | InnoDB | 0 | 16384 | 32768 | utf8mb4_0900_ai_ci | 
+token_blacklist | InnoDB | 0 | 16384 | 32768 | utf8mb4_0900_ai_ci | 
+
+== COLUMNAS (table.column | tipo | nulo | defecto | extra | key | comment) ==
+audit_operations.id | bigint unsigned | NO | NULL | auto_increment | PRI | 
+audit_operations.usuario_id | bigint unsigned | YES | NULL |  | MUL | 
+audit_operations.accion | varchar(100) | NO | NULL |  |  | 
+audit_operations.entidad | varchar(100) | NO | NULL |  | MUL | 
+audit_operations.entidad_id | bigint unsigned | YES | NULL |  |  | 
+audit_operations.valores_antes | json | YES | NULL |  |  | 
+audit_operations.valores_despues | json | YES | NULL |  |  | 
+audit_operations.motivo | varchar(500) | YES | NULL |  |  | 
+audit_operations.created_at | datetime(6) | NO | CURRENT_TIMESTAMP(6) | DEFAULT_GENERATED |  | 
+audit_pii_access.id | bigint unsigned | NO | NULL | auto_increment | PRI | 
+audit_pii_access.usuario_id | bigint unsigned | NO | NULL |  | MUL | 
+audit_pii_access.accion | enum('consulta','creacion','modificacion','exportacion') | NO | NULL |  |  | 
+audit_pii_access.paciente_id | bigint unsigned | YES | NULL |  | MUL | 
+audit_pii_access.prescription_id | bigint unsigned | YES | NULL |  | MUL | 
+audit_pii_access.motivo | varchar(500) | YES | NULL |  |  | 
+audit_pii_access.created_at | datetime(6) | NO | CURRENT_TIMESTAMP(6) | DEFAULT_GENERATED |  | 
+auth_permissions.id | bigint unsigned | NO | NULL | auto_increment | PRI | 
+auth_permissions.clave | varchar(100) | NO | NULL |  | UNI | 
+auth_permissions.descripcion | varchar(255) | YES | NULL |  |  | 
+auth_role_permissions.role_id | bigint unsigned | NO | NULL |  | PRI | 
+auth_role_permissions.permission_id | bigint unsigned | NO | NULL |  | PRI | 
+auth_roles.id | bigint unsigned | NO | NULL | auto_increment | PRI | 
+auth_roles.nombre | varchar(100) | NO | NULL |  | UNI | 
+auth_roles.descripcion | varchar(255) | YES | NULL |  |  | 
+auth_user_roles.user_id | bigint unsigned | NO | NULL |  | PRI | 
+auth_user_roles.role_id | bigint unsigned | NO | NULL |  | PRI | 
+auth_users.id | bigint unsigned | NO | NULL | auto_increment | PRI | 
+auth_users.usuario | varchar(100) | NO | NULL |  | UNI | 
+auth_users.password_hash | varchar(255) | NO | NULL |  |  | 
+auth_users.estado | enum('activo','bloqueado','inactivo') | NO | activo |  |  | 
+auth_users.mfa_habilitado | tinyint(1) | NO | 0 |  |  | 
+auth_users.ultimo_acceso_at | datetime(6) | YES | NULL |  |  | 
+auth_users.created_at | datetime(6) | NO | CURRENT_TIMESTAMP(6) | DEFAULT_GENERATED |  | 
+catalog_categories.id | bigint unsigned | NO | NULL | auto_increment | PRI | 
+catalog_categories.nombre | varchar(150) | NO | NULL |  | MUL | 
+catalog_categories.parent_id | bigint unsigned | YES | NULL |  | MUL | 
+catalog_categories.parent_id_key | bigint unsigned | YES | NULL | STORED GENERATED |  | 
+catalog_patients.id | bigint unsigned | NO | NULL | auto_increment | PRI | 
+catalog_patients.identificacion | varchar(30) | NO | NULL |  | UNI | 
+catalog_patients.nombre | varchar(200) | NO | NULL |  |  | 
+catalog_patients.fecha_nacimiento | date | YES | NULL |  |  | 
+catalog_patients.contacto | varchar(255) | YES | NULL |  |  | 
+catalog_patients.estado | enum('activo','anonimizado') | NO | activo |  |  | 
+catalog_patients.created_at | datetime(6) | NO | CURRENT_TIMESTAMP(6) | DEFAULT_GENERATED |  | 
+catalog_patients.anonimizado_at | datetime(6) | YES | NULL |  |  | 
+catalog_prescribers.id | bigint unsigned | NO | NULL | auto_increment | PRI | 
+catalog_prescribers.identificacion | varchar(30) | NO | NULL |  | UNI | 
+catalog_prescribers.nombre | varchar(200) | NO | NULL |  |  | 
+catalog_prescribers.especialidad | varchar(150) | YES | NULL |  |  | 
+catalog_prescribers.estado | enum('activo','inactivo','anonimizado') | NO | activo |  |  | 
+catalog_prices.id | bigint unsigned | NO | NULL | auto_increment | PRI | 
+catalog_prices.product_id | bigint unsigned | NO | NULL |  | MUL | 
+catalog_prices.store_id | bigint unsigned | YES | NULL |  | MUL | 
+catalog_prices.store_id_key | bigint unsigned | YES | NULL | STORED GENERATED |  | 
+catalog_prices.precio | decimal(12,2) | NO | NULL |  |  | 
+catalog_prices.vigente_desde | date | NO | NULL |  |  | 
+catalog_prices.vigente_hasta | date | YES | NULL |  |  | 
+catalog_product_categories.product_id | bigint unsigned | NO | NULL |  | PRI | 
+catalog_product_categories.category_id | bigint unsigned | NO | NULL |  | PRI | 
+catalog_products.id | bigint unsigned | NO | NULL | auto_increment | PRI | 
+catalog_products.sku | varchar(50) | NO | NULL |  | UNI | 
+catalog_products.nombre | varchar(255) | NO | NULL |  |  | 
+catalog_products.principio_activo | varchar(255) | NO | NULL |  |  | 
+catalog_products.presentacion | varchar(100) | NO | NULL |  |  | 
+catalog_products.concentracion | varchar(100) | NO | NULL |  |  | 
+catalog_products.condicion_venta | enum('libre','receta','controlado') | NO | NULL |  |  | 
+catalog_products.estado | enum('activo','inactivo') | NO | activo |  |  | 
+catalog_products.created_at | datetime(6) | NO | CURRENT_TIMESTAMP(6) | DEFAULT_GENERATED |  | 
+catalog_promotions.id | bigint unsigned | NO | NULL | auto_increment | PRI | 
+catalog_promotions.product_id | bigint unsigned | YES | NULL |  | MUL | 
+catalog_promotions.category_id | bigint unsigned | YES | NULL |  | MUL | 
+catalog_promotions.descuento_pct | decimal(5,2) | NO | NULL |  |  | 
+catalog_promotions.desde | date | NO | NULL |  |  | 
+catalog_promotions.hasta | date | NO | NULL |  |  | 
+catalog_suppliers.id | bigint unsigned | NO | NULL | auto_increment | PRI | 
+catalog_suppliers.identificacion | varchar(30) | NO | NULL |  | UNI | 
+catalog_suppliers.nombre | varchar(200) | NO | NULL |  |  | 
+catalog_suppliers.contacto | varchar(255) | YES | NULL |  |  | 
+catalog_suppliers.estado | enum('activo','inactivo') | NO | activo |  |  | 
+ctrl_balances.store_id | bigint unsigned | NO | NULL |  | PRI | 
+ctrl_balances.product_id | bigint unsigned | NO | NULL |  | PRI | 
+ctrl_balances.saldo | int | NO | NULL |  |  | 
+ctrl_balances.version | bigint | NO | 0 |  |  | 
+ctrl_balances.updated_at | datetime(6) | NO | CURRENT_TIMESTAMP(6) | DEFAULT_GENERATED on update CURRENT_TIMESTAMP(6) |  | 
+ctrl_ledger_entries.id | bigint unsigned | NO | NULL | auto_increment | PRI | 
+ctrl_ledger_entries.store_id | bigint unsigned | NO | NULL |  | MUL | 
+ctrl_ledger_entries.product_id | bigint unsigned | NO | NULL |  | MUL | 
+ctrl_ledger_entries.tipo | enum('entrada','salida','ajuste','devolucion','transferencia_out','transferencia_in') | NO | NULL |  |  | 
+ctrl_ledger_entries.cantidad | int | NO | NULL |  |  | 
+ctrl_ledger_entries.saldo_resultante | int | NO | NULL |  |  | 
+ctrl_ledger_entries.usuario_id | bigint unsigned | NO | NULL |  | MUL | 
+ctrl_ledger_entries.autorizador_id | bigint unsigned | YES | NULL |  | MUL | 
+ctrl_ledger_entries.motivo | varchar(500) | NO | NULL |  |  | 
+ctrl_ledger_entries.ref_tipo | enum('venta','recepcion','transferencia','devolucion','ajuste') | NO | NULL |  | MUL | 
+ctrl_ledger_entries.ref_id | bigint unsigned | NO | NULL |  |  | 
+ctrl_ledger_entries.created_at | datetime(6) | NO | CURRENT_TIMESTAMP(6) | DEFAULT_GENERATED |  | 
+idempotency_keys.id | bigint unsigned | NO | NULL | auto_increment | PRI | 
+idempotency_keys.idempotency_key | varchar(255) | NO | NULL |  | UNI | 
+idempotency_keys.operacion | varchar(100) | NO | NULL |  |  | 
+idempotency_keys.request_hash | char(64) | NO | NULL |  |  | 
+idempotency_keys.respuesta_ref | varchar(255) | YES | NULL |  |  | 
+idempotency_keys.estado | enum('en_proceso','completado') | NO | NULL |  |  | 
+idempotency_keys.created_at | datetime(6) | NO | CURRENT_TIMESTAMP(6) | DEFAULT_GENERATED |  | 
+idempotency_keys.expires_at | datetime(6) | NO | NULL |  | MUL | 
+inventory_alerts.id | bigint unsigned | NO | NULL | auto_increment | PRI | 
+inventory_alerts.tipo | enum('stock_minimo','vencimiento') | NO | NULL |  | MUL | 
+inventory_alerts.product_id | bigint unsigned | NO | NULL |  | MUL | 
+inventory_alerts.store_id | bigint unsigned | YES | NULL |  | MUL | 
+inventory_alerts.store_id_key | bigint unsigned | YES | NULL | STORED GENERATED |  | 
+inventory_alerts.fecha_generada | datetime(6) | NO | NULL |  |  | 
+inventory_alerts.estado | enum('abierta','resuelta') | NO | abierta |  |  | 
+inventory_alerts.resuelta_por | bigint unsigned | YES | NULL |  | MUL | 
+inventory_alerts.resuelta_at | datetime(6) | YES | NULL |  |  | 
+inventory_incidents.id | bigint unsigned | NO | NULL | auto_increment | PRI | 
+inventory_incidents.store_id | bigint unsigned | NO | NULL |  | MUL | 
+inventory_incidents.lot_id | bigint unsigned | NO | NULL |  | MUL | 
+inventory_incidents.stock_registrado | int | NO | NULL |  |  | 
+inventory_incidents.consumo_declarado | int | NO | NULL |  |  | 
+inventory_incidents.estado | enum('abierto','ajustado','descartado') | NO | abierto |  |  | 
+inventory_incidents.abierto_por | bigint unsigned | NO | NULL |  | MUL | 
+inventory_incidents.created_at | datetime(6) | NO | CURRENT_TIMESTAMP(6) | DEFAULT_GENERATED |  | 
+inventory_incidents.movimiento_ajuste_id | bigint unsigned | YES | NULL |  | MUL | 
+inventory_lots.id | bigint unsigned | NO | NULL | auto_increment | PRI | 
+inventory_lots.product_id | bigint unsigned | NO | NULL |  | MUL | 
+inventory_lots.numero_lote | varchar(50) | NO | NULL |  |  | 
+inventory_lots.fecha_vencimiento | date | NO | NULL |  |  | 
+inventory_lots.estado | enum('cuarentena','liberado','retirado') | NO | cuarentena |  |  | 
+inventory_lots.reception_item_id | bigint unsigned | NO | NULL |  | UNI | 
+inventory_lots.liberado_por | bigint unsigned | YES | NULL |  | MUL | 
+inventory_lots.liberado_at | datetime(6) | YES | NULL |  |  | 
+inventory_lots.motivo_liberacion | varchar(500) | YES | NULL |  |  | 
+inventory_lots.created_at | datetime(6) | NO | CURRENT_TIMESTAMP(6) | DEFAULT_GENERATED |  | 
+inventory_lots.retirado_at | datetime(6) | YES | NULL |  |  | 
+inventory_movements.id | bigint unsigned | NO | NULL | auto_increment | PRI | 
+inventory_movements.store_id | bigint unsigned | NO | NULL |  | MUL | 
+inventory_movements.lot_id | bigint unsigned | NO | NULL |  | MUL | 
+inventory_movements.product_id | bigint unsigned | NO | NULL |  | MUL | 
+inventory_movements.tipo | enum('entrada','salida','ajuste_baja','ajuste_incremento','devolucion','transferencia_salida','transferencia_entrada','compensatorio') | NO | NULL |  |  | 
+inventory_movements.cantidad | int | NO | NULL |  |  | 
+inventory_movements.signo | smallint | NO | NULL |  |  | 
+inventory_movements.usuario_id | bigint unsigned | NO | NULL |  | MUL | 
+inventory_movements.motivo | varchar(500) | NO | NULL |  |  | 
+inventory_movements.proponente_id | bigint unsigned | YES | NULL |  | MUL | 
+inventory_movements.autorizador_id | bigint unsigned | YES | NULL |  | MUL | 
+inventory_movements.ref_tipo | enum('venta','recepcion','transferencia','devolucion','incidente','manual') | YES | NULL |  | MUL | 
+inventory_movements.ref_id | bigint unsigned | YES | NULL |  |  | 
+inventory_movements.movimiento_ref_id | bigint unsigned | YES | NULL |  | MUL | 
+inventory_movements.idempotency_key | varchar(255) | YES | NULL |  | UNI | 
+inventory_movements.created_at | datetime(6) | NO | CURRENT_TIMESTAMP(6) | DEFAULT_GENERATED |  | 
+inventory_reservations.id | bigint unsigned | NO | NULL | auto_increment | PRI | 
+inventory_reservations.order_id | bigint unsigned | YES | NULL |  | MUL | 
+inventory_reservations.product_id | bigint unsigned | NO | NULL |  | MUL | 
+inventory_reservations.store_id | bigint unsigned | NO | NULL |  | MUL | 
+inventory_reservations.qty | int | NO | NULL |  |  | 
+inventory_reservations.status | enum('pending','confirmed','expired','cancelled') | NO | pending |  |  | 
+inventory_reservations.expires_at | datetime(6) | NO | NULL |  |  | 
+inventory_reservations.created_at | datetime(6) | NO | CURRENT_TIMESTAMP(6) | DEFAULT_GENERATED |  | 
+inventory_stock.store_id | bigint unsigned | NO | NULL |  | PRI | 
+inventory_stock.lot_id | bigint unsigned | NO | NULL |  | PRI | 
+inventory_stock.stock_available | int | NO | 0 |  |  | 
+inventory_stock.stock_reserved | int | NO | 0 |  |  | 
+inventory_stock.stock_sold | int | NO | 0 |  |  | 
+inventory_stock.version | bigint | NO | 0 |  |  | 
+inventory_stock.updated_at | datetime(6) | NO | CURRENT_TIMESTAMP(6) | DEFAULT_GENERATED on update CURRENT_TIMESTAMP(6) |  | 
+inventory_transfer_items.id | bigint unsigned | NO | NULL | auto_increment | PRI | 
+inventory_transfer_items.transfer_id | bigint unsigned | NO | NULL |  | MUL | 
+inventory_transfer_items.lot_id | bigint unsigned | NO | NULL |  | MUL | 
+inventory_transfer_items.cantidad_despachada | int | YES | NULL |  |  | 
+inventory_transfer_items.cantidad_recibida | int | YES | NULL |  |  | 
+inventory_transfers.id | bigint unsigned | NO | NULL | auto_increment | PRI | 
+inventory_transfers.store_origen_id | bigint unsigned | NO | NULL |  | MUL | 
+inventory_transfers.store_destino_id | bigint unsigned | NO | NULL |  | MUL | 
+inventory_transfers.estado | enum('solicitada','despachada','recibida','cerrada','rechazada') | NO | solicitada |  |  | 
+inventory_transfers.solicitado_por | bigint unsigned | NO | NULL |  | MUL | 
+inventory_transfers.despachado_por | bigint unsigned | YES | NULL |  | MUL | 
+inventory_transfers.recibido_por | bigint unsigned | YES | NULL |  | MUL | 
+inventory_transfers.created_at | datetime(6) | NO | CURRENT_TIMESTAMP(6) | DEFAULT_GENERATED |  | 
+inventory_transfers.updated_at | datetime(6) | NO | CURRENT_TIMESTAMP(6) | DEFAULT_GENERATED on update CURRENT_TIMESTAMP(6) |  | 
+inventory_transfers.idempotency_key | varchar(255) | YES | NULL |  | UNI | 
+ops_registers.id | bigint unsigned | NO | NULL | auto_increment | PRI | 
+ops_registers.store_id | bigint unsigned | NO | NULL |  | MUL | 
+ops_registers.codigo | varchar(20) | NO | NULL |  |  | 
+ops_registers.estado | enum('activa','inactiva') | NO | activa |  |  | 
+ops_stores.id | bigint unsigned | NO | NULL | auto_increment | PRI | 
+ops_stores.codigo | varchar(20) | NO | NULL |  | UNI | 
+ops_stores.nombre | varchar(150) | NO | NULL |  |  | 
+ops_stores.estado | enum('activa','inactiva') | NO | activa |  |  | 
+ops_stores.created_at | datetime(6) | NO | CURRENT_TIMESTAMP(6) | DEFAULT_GENERATED |  | 
+outbox_events.id | bigint unsigned | NO | NULL | auto_increment | PRI | 
+outbox_events.agregado_tipo | varchar(50) | NO | NULL |  |  | 
+outbox_events.agregado_id | bigint unsigned | NO | NULL |  |  | 
+outbox_events.tipo_evento | varchar(100) | NO | NULL |  |  | 
+outbox_events.payload | json | NO | NULL |  |  | 
+outbox_events.estado | enum('pendiente','procesado','fallido') | NO | pendiente |  | MUL | 
+outbox_events.created_at | datetime(6) | NO | CURRENT_TIMESTAMP(6) | DEFAULT_GENERATED |  | 
+outbox_events.procesado_at | datetime(6) | YES | NULL |  |  | 
+outbox_events.intentos | int | NO | 0 |  |  | 
+payments_transactions.id | bigint unsigned | NO | NULL | auto_increment | PRI | 
+payments_transactions.order_id | bigint unsigned | NO | NULL |  | MUL | 
+payments_transactions.medio | varchar(50) | NO | NULL |  |  | 
+payments_transactions.proveedor | varchar(100) | YES | NULL |  |  | 
+payments_transactions.reference | varchar(255) | YES | NULL |  | UNI | 
+payments_transactions.amount | decimal(12,2) | NO | NULL |  |  | 
+payments_transactions.status | enum('pendiente','aprobado','rechazado','reembolsado') | NO | NULL |  |  | 
+payments_transactions.idempotency_key | varchar(255) | YES | NULL |  | UNI | 
+payments_transactions.created_at | datetime(6) | NO | CURRENT_TIMESTAMP(6) | DEFAULT_GENERATED |  | 
+payments_transactions.actualizado_at | datetime(6) | NO | CURRENT_TIMESTAMP(6) | DEFAULT_GENERATED on update CURRENT_TIMESTAMP(6) |  | 
+purchase_order_items.id | bigint unsigned | NO | NULL | auto_increment | PRI | 
+purchase_order_items.order_id | bigint unsigned | NO | NULL |  | MUL | 
+purchase_order_items.product_id | bigint unsigned | NO | NULL |  | MUL | 
+purchase_order_items.cantidad_pedida | int | NO | NULL |  |  | 
+purchase_order_items.cantidad_recibida | int | NO | 0 |  |  | 
+purchase_orders.id | bigint unsigned | NO | NULL | auto_increment | PRI | 
+purchase_orders.numero | varchar(50) | NO | NULL |  | UNI | 
+purchase_orders.supplier_id | bigint unsigned | NO | NULL |  | MUL | 
+purchase_orders.estado | enum('borrador','emitida','recibida','cancelada') | NO | borrador |  |  | 
+purchase_orders.creado_por | bigint unsigned | NO | NULL |  | MUL | 
+purchase_orders.created_at | datetime(6) | NO | CURRENT_TIMESTAMP(6) | DEFAULT_GENERATED |  | 
+purchase_orders.updated_at | datetime(6) | NO | CURRENT_TIMESTAMP(6) | DEFAULT_GENERATED on update CURRENT_TIMESTAMP(6) |  | 
+purchase_reception_items.id | bigint unsigned | NO | NULL | auto_increment | PRI | 
+purchase_reception_items.reception_id | bigint unsigned | NO | NULL |  | MUL | 
+purchase_reception_items.product_id | bigint unsigned | NO | NULL |  | MUL | 
+purchase_reception_items.numero_lote | varchar(50) | NO | NULL |  |  | 
+purchase_reception_items.fecha_vencimiento | date | NO | NULL |  |  | 
+purchase_reception_items.cantidad | int | NO | NULL |  |  | 
+purchase_reception_items.lot_id | bigint unsigned | YES | NULL |  | MUL | 
+purchase_receptions.id | bigint unsigned | NO | NULL | auto_increment | PRI | 
+purchase_receptions.order_id | bigint unsigned | NO | NULL |  | MUL | 
+purchase_receptions.estado | enum('recibida','confirmada','rechazada') | NO | recibida |  |  | 
+purchase_receptions.recepcionado_por | bigint unsigned | NO | NULL |  | MUL | 
+purchase_receptions.confirmado_por | bigint unsigned | YES | NULL |  | MUL | 
+purchase_receptions.created_at | datetime(6) | NO | CURRENT_TIMESTAMP(6) | DEFAULT_GENERATED |  | 
+purchase_receptions.confirmado_at | datetime(6) | YES | NULL |  |  | 
+purchase_receptions.idempotency_key | varchar(255) | YES | NULL |  | UNI | 
+rx_prescription_items.id | bigint unsigned | NO | NULL | auto_increment | PRI | 
+rx_prescription_items.prescription_id | bigint unsigned | NO | NULL |  | MUL | 
+rx_prescription_items.product_id | bigint unsigned | NO | NULL |  | MUL | 
+rx_prescription_items.cantidad_prescrita | int | NO | NULL |  |  | 
+rx_prescription_items.cantidad_dispensada | int | NO | 0 |  |  | 
+rx_prescription_items.version | bigint | NO | 0 |  |  | 
+rx_prescriptions.id | bigint unsigned | NO | NULL | auto_increment | PRI | 
+rx_prescriptions.prescriber_id | bigint unsigned | NO | NULL |  | MUL | 
+rx_prescriptions.patient_id | bigint unsigned | NO | NULL |  | MUL | 
+rx_prescriptions.fecha | date | NO | NULL |  |  | 
+rx_prescriptions.numero_referencia | varchar(100) | YES | NULL |  |  | 
+rx_prescriptions.created_at | datetime(6) | NO | CURRENT_TIMESTAMP(6) | DEFAULT_GENERATED |  | 
+sales_order_items.id | bigint unsigned | NO | NULL | auto_increment | PRI | 
+sales_order_items.order_id | bigint unsigned | NO | NULL |  | MUL | 
+sales_order_items.lot_id | bigint unsigned | NO | NULL |  | MUL | 
+sales_order_items.product_id | bigint unsigned | NO | NULL |  | MUL | 
+sales_order_items.cantidad | int | NO | NULL |  |  | 
+sales_order_items.precio_unitario | decimal(12,2) | NO | NULL |  |  | 
+sales_order_items.subtotal | decimal(12,2) | NO | NULL |  |  | 
+sales_order_items.rx_item_id | bigint unsigned | YES | NULL |  | MUL | 
+sales_order_items.rx_item_id_key | bigint unsigned | YES | NULL | STORED GENERATED |  | 
+sales_orders.id | bigint unsigned | NO | NULL | auto_increment | PRI | 
+sales_orders.numero | varchar(50) | NO | NULL |  | UNI | 
+sales_orders.channel | enum('pos') | NO | pos |  |  | 
+sales_orders.store_id | bigint unsigned | NO | NULL |  | MUL | 
+sales_orders.register_id | bigint unsigned | NO | NULL |  | MUL | 
+sales_orders.paciente_id | bigint unsigned | YES | NULL |  | MUL | 
+sales_orders.usuario_id | bigint unsigned | NO | NULL |  | MUL | 
+sales_orders.quimico_verificador_id | bigint unsigned | YES | NULL |  | MUL | 
+sales_orders.estado | enum('pendiente','pagada','anulada','devuelta') | NO | pendiente |  |  | 
+sales_orders.total | decimal(12,2) | NO | 0.00 |  |  | 
+sales_orders.idempotency_key | varchar(255) | YES | NULL |  | UNI | 
+sales_orders.created_at | datetime(6) | NO | CURRENT_TIMESTAMP(6) | DEFAULT_GENERATED |  | 
+sales_return_items.id | bigint unsigned | NO | NULL | auto_increment | PRI | 
+sales_return_items.return_id | bigint unsigned | NO | NULL |  | MUL | 
+sales_return_items.order_item_id | bigint unsigned | NO | NULL |  | MUL | 
+sales_return_items.lot_id | bigint unsigned | NO | NULL |  | MUL | 
+sales_return_items.product_id | bigint unsigned | NO | NULL |  | MUL | 
+sales_return_items.cantidad | int | NO | NULL |  |  | 
+sales_return_items.condicion | enum('vendible','no_vendible') | NO | no_vendible |  |  | 
+sales_returns.id | bigint unsigned | NO | NULL | auto_increment | PRI | 
+sales_returns.order_id | bigint unsigned | NO | NULL |  | MUL | 
+sales_returns.store_id | bigint unsigned | NO | NULL |  | MUL | 
+sales_returns.usuario_id | bigint unsigned | NO | NULL |  | MUL | 
+sales_returns.motivo | varchar(500) | NO | NULL |  |  | 
+sales_returns.monto | decimal(12,2) | NO | NULL |  |  | 
+sales_returns.estado_evaluacion | enum('pendiente','reingresado','descartado') | NO | pendiente |  |  | 
+sales_returns.reembolso_estado | enum('none','pendiente','confirmado','fallido') | NO | none |  |  | 
+sales_returns.created_at | datetime(6) | NO | CURRENT_TIMESTAMP(6) | DEFAULT_GENERATED |  | 
+system_config.config_key | varchar(100) | NO | NULL |  | PRI | 
+system_config.config_value | varchar(4000) | NO | NULL |  |  | 
+system_config.value_type | enum('texto','numero','booleano','json') | NO | NULL |  |  | 
+system_config.store_id | bigint unsigned | YES | NULL |  | MUL | 
+system_config.updated_at | datetime(6) | NO | CURRENT_TIMESTAMP(6) | DEFAULT_GENERATED on update CURRENT_TIMESTAMP(6) |  | 
+system_config.updated_by | bigint unsigned | NO | NULL |  | MUL | 
+token_blacklist.id | bigint unsigned | NO | NULL | auto_increment | PRI | 
+token_blacklist.token_hash | char(64) | NO | NULL |  | UNI | 
+token_blacklist.expires_at | datetime(6) | NO | NULL |  | MUL | 
+token_blacklist.created_at | datetime(6) | NO | CURRENT_TIMESTAMP(6) | DEFAULT_GENERATED |  | 
+
+== PRIMARY KEY ==
+audit_operations | PRIMARY
+audit_pii_access | PRIMARY
+auth_permissions | PRIMARY
+auth_role_permissions | PRIMARY
+auth_roles | PRIMARY
+auth_user_roles | PRIMARY
+auth_users | PRIMARY
+catalog_categories | PRIMARY
+catalog_patients | PRIMARY
+catalog_prescribers | PRIMARY
+catalog_prices | PRIMARY
+catalog_product_categories | PRIMARY
+catalog_products | PRIMARY
+catalog_promotions | PRIMARY
+catalog_suppliers | PRIMARY
+ctrl_balances | PRIMARY
+ctrl_ledger_entries | PRIMARY
+idempotency_keys | PRIMARY
+inventory_alerts | PRIMARY
+inventory_incidents | PRIMARY
+inventory_lots | PRIMARY
+inventory_movements | PRIMARY
+inventory_reservations | PRIMARY
+inventory_stock | PRIMARY
+inventory_transfer_items | PRIMARY
+inventory_transfers | PRIMARY
+ops_registers | PRIMARY
+ops_stores | PRIMARY
+outbox_events | PRIMARY
+payments_transactions | PRIMARY
+purchase_order_items | PRIMARY
+purchase_orders | PRIMARY
+purchase_reception_items | PRIMARY
+purchase_receptions | PRIMARY
+rx_prescription_items | PRIMARY
+rx_prescriptions | PRIMARY
+sales_order_items | PRIMARY
+sales_orders | PRIMARY
+sales_return_items | PRIMARY
+sales_returns | PRIMARY
+system_config | PRIMARY
+token_blacklist | PRIMARY
+
+== FOREIGN KEY (constraint | tabla_hija | columnas | tabla_padre | columnas | ON DELETE | ON UPDATE) ==
+fk_audit_operations_user | audit_operations | usuario_id | auth_users | id | RESTRICT | NO ACTION
+fk_audit_pii_paciente | audit_pii_access | paciente_id | catalog_patients | id | RESTRICT | NO ACTION
+fk_audit_pii_prescription | audit_pii_access | prescription_id | rx_prescriptions | id | RESTRICT | NO ACTION
+fk_audit_pii_user | audit_pii_access | usuario_id | auth_users | id | RESTRICT | NO ACTION
+fk_arp_permission | auth_role_permissions | permission_id | auth_permissions | id | CASCADE | NO ACTION
+fk_arp_role | auth_role_permissions | role_id | auth_roles | id | CASCADE | NO ACTION
+fk_aur_role | auth_user_roles | role_id | auth_roles | id | CASCADE | NO ACTION
+fk_aur_user | auth_user_roles | user_id | auth_users | id | CASCADE | NO ACTION
+fk_catalog_categories_parent | catalog_categories | parent_id | catalog_categories | id | RESTRICT | NO ACTION
+fk_catalog_prices_product | catalog_prices | product_id | catalog_products | id | RESTRICT | NO ACTION
+fk_catalog_prices_store | catalog_prices | store_id | ops_stores | id | RESTRICT | NO ACTION
+fk_cpc_category | catalog_product_categories | category_id | catalog_categories | id | CASCADE | NO ACTION
+fk_cpc_product | catalog_product_categories | product_id | catalog_products | id | CASCADE | NO ACTION
+fk_catalog_promotions_category | catalog_promotions | category_id | catalog_categories | id | RESTRICT | NO ACTION
+fk_catalog_promotions_product | catalog_promotions | product_id | catalog_products | id | RESTRICT | NO ACTION
+fk_ctrl_balances_product | ctrl_balances | product_id | catalog_products | id | RESTRICT | NO ACTION
+fk_ctrl_balances_store | ctrl_balances | store_id | ops_stores | id | RESTRICT | NO ACTION
+fk_cle_autorizador | ctrl_ledger_entries | autorizador_id | auth_users | id | RESTRICT | NO ACTION
+fk_cle_product | ctrl_ledger_entries | product_id | catalog_products | id | RESTRICT | NO ACTION
+fk_cle_store | ctrl_ledger_entries | store_id | ops_stores | id | RESTRICT | NO ACTION
+fk_cle_usuario | ctrl_ledger_entries | usuario_id | auth_users | id | RESTRICT | NO ACTION
+fk_inventory_alerts_product | inventory_alerts | product_id | catalog_products | id | RESTRICT | NO ACTION
+fk_inventory_alerts_resuelta | inventory_alerts | resuelta_por | auth_users | id | RESTRICT | NO ACTION
+fk_inventory_alerts_store | inventory_alerts | store_id | ops_stores | id | RESTRICT | NO ACTION
+fk_inventory_incidents_lot | inventory_incidents | lot_id | inventory_lots | id | RESTRICT | NO ACTION
+fk_inventory_incidents_mov | inventory_incidents | movimiento_ajuste_id | inventory_movements | id | RESTRICT | NO ACTION
+fk_inventory_incidents_store | inventory_incidents | store_id | ops_stores | id | RESTRICT | NO ACTION
+fk_inventory_incidents_user | inventory_incidents | abierto_por | auth_users | id | RESTRICT | NO ACTION
+fk_inventory_lots_liberado_por | inventory_lots | liberado_por | auth_users | id | RESTRICT | NO ACTION
+fk_inventory_lots_product | inventory_lots | product_id | catalog_products | id | RESTRICT | NO ACTION
+fk_inventory_lots_reception | inventory_lots | reception_item_id | purchase_reception_items | id | RESTRICT | NO ACTION
+fk_im_autorizador | inventory_movements | autorizador_id | auth_users | id | RESTRICT | NO ACTION
+fk_im_lot | inventory_movements | lot_id | inventory_lots | id | RESTRICT | NO ACTION
+fk_im_product | inventory_movements | product_id | catalog_products | id | RESTRICT | NO ACTION
+fk_im_proponente | inventory_movements | proponente_id | auth_users | id | RESTRICT | NO ACTION
+fk_im_ref | inventory_movements | movimiento_ref_id | inventory_movements | id | RESTRICT | NO ACTION
+fk_im_store | inventory_movements | store_id | ops_stores | id | RESTRICT | NO ACTION
+fk_im_usuario | inventory_movements | usuario_id | auth_users | id | RESTRICT | NO ACTION
+fk_ir_order | inventory_reservations | order_id | sales_orders | id | RESTRICT | NO ACTION
+fk_ir_product | inventory_reservations | product_id | catalog_products | id | RESTRICT | NO ACTION
+fk_ir_store | inventory_reservations | store_id | ops_stores | id | RESTRICT | NO ACTION
+fk_inventory_stock_lot | inventory_stock | lot_id | inventory_lots | id | RESTRICT | NO ACTION
+fk_inventory_stock_store | inventory_stock | store_id | ops_stores | id | RESTRICT | NO ACTION
+fk_iti_lot | inventory_transfer_items | lot_id | inventory_lots | id | RESTRICT | NO ACTION
+fk_iti_transfer | inventory_transfer_items | transfer_id | inventory_transfers | id | RESTRICT | NO ACTION
+fk_it_despachado | inventory_transfers | despachado_por | auth_users | id | RESTRICT | NO ACTION
+fk_it_destino | inventory_transfers | store_destino_id | ops_stores | id | RESTRICT | NO ACTION
+fk_it_origen | inventory_transfers | store_origen_id | ops_stores | id | RESTRICT | NO ACTION
+fk_it_recibido | inventory_transfers | recibido_por | auth_users | id | RESTRICT | NO ACTION
+fk_it_solicitado | inventory_transfers | solicitado_por | auth_users | id | RESTRICT | NO ACTION
+fk_ops_registers_store | ops_registers | store_id | ops_stores | id | RESTRICT | NO ACTION
+fk_pt_order | payments_transactions | order_id | sales_orders | id | RESTRICT | NO ACTION
+fk_poi_order | purchase_order_items | order_id | purchase_orders | id | RESTRICT | NO ACTION
+fk_poi_product | purchase_order_items | product_id | catalog_products | id | RESTRICT | NO ACTION
+fk_purchase_orders_supplier | purchase_orders | supplier_id | catalog_suppliers | id | RESTRICT | NO ACTION
+fk_purchase_orders_user | purchase_orders | creado_por | auth_users | id | RESTRICT | NO ACTION
+fk_pri_lot | purchase_reception_items | lot_id | inventory_lots | id | RESTRICT | NO ACTION
+fk_pri_product | purchase_reception_items | product_id | catalog_products | id | RESTRICT | NO ACTION
+fk_pri_reception | purchase_reception_items | reception_id | purchase_receptions | id | RESTRICT | NO ACTION
+fk_purchase_receptions_confirmacion | purchase_receptions | confirmado_por | auth_users | id | RESTRICT | NO ACTION
+fk_purchase_receptions_order | purchase_receptions | order_id | purchase_orders | id | RESTRICT | NO ACTION
+fk_purchase_receptions_recepcion | purchase_receptions | recepcionado_por | auth_users | id | RESTRICT | NO ACTION
+fk_rxpi_prescription | rx_prescription_items | prescription_id | rx_prescriptions | id | RESTRICT | NO ACTION
+fk_rxpi_product | rx_prescription_items | product_id | catalog_products | id | RESTRICT | NO ACTION
+fk_rx_prescriptions_patient | rx_prescriptions | patient_id | catalog_patients | id | RESTRICT | NO ACTION
+fk_rx_prescriptions_prescriber | rx_prescriptions | prescriber_id | catalog_prescribers | id | RESTRICT | NO ACTION
+fk_soi_lot | sales_order_items | lot_id | inventory_lots | id | RESTRICT | NO ACTION
+fk_soi_order | sales_order_items | order_id | sales_orders | id | RESTRICT | NO ACTION
+fk_soi_product | sales_order_items | product_id | catalog_products | id | RESTRICT | NO ACTION
+fk_soi_rx_item | sales_order_items | rx_item_id | rx_prescription_items | id | RESTRICT | NO ACTION
+fk_so_paciente | sales_orders | paciente_id | catalog_patients | id | RESTRICT | NO ACTION
+fk_so_quimico | sales_orders | quimico_verificador_id | auth_users | id | RESTRICT | NO ACTION
+fk_so_register | sales_orders | register_id | ops_registers | id | RESTRICT | NO ACTION
+fk_so_store | sales_orders | store_id | ops_stores | id | RESTRICT | NO ACTION
+fk_so_usuario | sales_orders | usuario_id | auth_users | id | RESTRICT | NO ACTION
+fk_sri_lot | sales_return_items | lot_id | inventory_lots | id | RESTRICT | NO ACTION
+fk_sri_order_item | sales_return_items | order_item_id | sales_order_items | id | RESTRICT | NO ACTION
+fk_sri_product | sales_return_items | product_id | catalog_products | id | RESTRICT | NO ACTION
+fk_sri_return | sales_return_items | return_id | sales_returns | id | RESTRICT | NO ACTION
+fk_sr_order | sales_returns | order_id | sales_orders | id | RESTRICT | NO ACTION
+fk_sr_store | sales_returns | store_id | ops_stores | id | RESTRICT | NO ACTION
+fk_sr_usuario | sales_returns | usuario_id | auth_users | id | RESTRICT | NO ACTION
+fk_system_config_store | system_config | store_id | ops_stores | id | RESTRICT | NO ACTION
+fk_system_config_user | system_config | updated_by | auth_users | id | RESTRICT | NO ACTION
+
+== UNIQUE ==
+uq_auth_permissions_clave | auth_permissions | clave
+uq_auth_roles_nombre | auth_roles | nombre
+uq_auth_users_usuario | auth_users | usuario
+uq_catalog_categories_nombre_parent | catalog_categories | nombre, parent_id_key
+uq_catalog_patients_identificacion | catalog_patients | identificacion
+uq_catalog_prescribers_identificacion | catalog_prescribers | identificacion
+uq_catalog_prices | catalog_prices | product_id, store_id_key, vigente_desde
+uq_catalog_products_sku | catalog_products | sku
+uq_catalog_suppliers_identificacion | catalog_suppliers | identificacion
+uq_idempotency_keys_key | idempotency_keys | idempotency_key
+uq_inventory_alerts | inventory_alerts | tipo, product_id, store_id_key, fecha_generada
+uq_inventory_lots_producto_lote | inventory_lots | product_id, numero_lote
+uq_inventory_lots_reception | inventory_lots | reception_item_id
+uq_im_idem | inventory_movements | idempotency_key
+uq_iti_transfer_lote | inventory_transfer_items | transfer_id, lot_id
+uq_it_idem | inventory_transfers | idempotency_key
+uq_ops_registers_store_codigo | ops_registers | store_id, codigo
+uq_ops_stores_codigo | ops_stores | codigo
+uq_pt_idem | payments_transactions | idempotency_key
+uq_pt_reference | payments_transactions | reference
+uq_purchase_orders_numero | purchase_orders | numero
+uq_purchase_receptions_idem | purchase_receptions | idempotency_key
+uq_soi_orden_lote_rx | sales_order_items | order_id, lot_id, rx_item_id_key
+uq_sales_orders_idem | sales_orders | idempotency_key
+uq_sales_orders_numero | sales_orders | numero
+uq_sri_return_item | sales_return_items | return_id, order_item_id
+uq_token_blacklist_hash | token_blacklist | token_hash
+
+== CHECK ==
+chk_apii_objetivo | audit_pii_access | ((`paciente_id` is not null) or (`prescription_id` is not null))
+chk_catalog_prices_precio | catalog_prices | (`precio` >= 0)
+chk_catalog_promotions_alcance | catalog_promotions | ((`product_id` is not null) or (`category_id` is not null))
+chk_catalog_promotions_pct | catalog_promotions | ((`descuento_pct` > 0) and (`descuento_pct` <= 100))
+chk_catalog_promotions_rango | catalog_promotions | (`hasta` >= `desde`)
+chk_ctrl_balances_saldo | ctrl_balances | (`saldo` >= 0)
+chk_cle_ajuste_autorizado | ctrl_ledger_entries | ((`tipo` <> _utf8mb4\\'ajuste\\') or (`autorizador_id` is not null))
+chk_cle_cantidad | ctrl_ledger_entries | (`cantidad` > 0)
+chk_cle_doble_autorizacion | ctrl_ledger_entries | ((`autorizador_id` is null) or (`autorizador_id` <> `usuario_id`))
+chk_cle_saldo | ctrl_ledger_entries | (`saldo_resultante` >= 0)
+chk_inventory_lots_liberacion | inventory_lots | ((`estado` <> _utf8mb4\\'liberado\\') or ((`liberado_por` is not null) and (`liberado_at` is not null) and (`motivo_liberacion` is not null)))
+chk_im_cantidad | inventory_movements | (`cantidad` > 0)
+chk_im_doble_autorizacion | inventory_movements | ((`autorizador_id` is null) or (`proponente_id` is null) or (`autorizador_id` <> `proponente_id`))
+chk_im_ref | inventory_movements | ((`ref_tipo` is not null) or (`tipo` in (_utf8mb4\\'ajuste_incremento\\',_utf8mb4\\'ajuste_baja\\')))
+chk_im_signo | inventory_movements | (`signo` in (-(1),1))
+chk_ir_qty | inventory_reservations | (`qty` > 0)
+chk_inventory_stock_available | inventory_stock | (`stock_available` >= 0)
+chk_inventory_stock_reserved | inventory_stock | (`stock_reserved` >= 0)
+chk_inventory_stock_sold | inventory_stock | (`stock_sold` >= 0)
+chk_iti_despachada | inventory_transfer_items | ((`cantidad_despachada` is null) or (`cantidad_despachada` > 0))
+chk_iti_recibida | inventory_transfer_items | ((`cantidad_recibida` is null) or (`cantidad_recibida` >= 0))
+chk_it_distintas | inventory_transfers | (`store_origen_id` <> `store_destino_id`)
+chk_pt_amount | payments_transactions | (`amount` > 0)
+chk_poi_pedida | purchase_order_items | (`cantidad_pedida` > 0)
+chk_poi_recibida | purchase_order_items | (`cantidad_recibida` >= 0)
+chk_poi_recibida_le_pedida | purchase_order_items | (`cantidad_recibida` <= `cantidad_pedida`)
+chk_pri_cantidad | purchase_reception_items | (`cantidad` > 0)
+chk_rxpi_prescrita | rx_prescription_items | (`cantidad_prescrita` > 0)
+chk_rxpi_saldo | rx_prescription_items | ((`cantidad_dispensada` >= 0) and (`cantidad_dispensada` <= `cantidad_prescrita`))
+chk_soi_cantidad | sales_order_items | (`cantidad` > 0)
+chk_soi_precio | sales_order_items | (`precio_unitario` >= 0)
+chk_soi_subtotal | sales_order_items | (`subtotal` >= 0)
+chk_so_devuelta_con_paciente | sales_orders | ((`paciente_id` is not null) or (`estado` <> _utf8mb4\\'devuelta\\'))
+chk_so_total | sales_orders | (`total` >= 0)
+chk_sri_cantidad | sales_return_items | (`cantidad` > 0)
+chk_sr_monto | sales_returns | (`monto` >= 0)
+chk_system_config_alcance | system_config | ((`store_id` is not null) or (not((`config_key` like _utf8mb4\\'store.%\\'))))
+
+== INDICES (tabla | indice | seq | columna | unico | tipo | comentario) ==
+audit_operations | fk_audit_operations_user | 1 | usuario_id | 1 | BTREE | 
+audit_operations | ix_ao_entidad_created | 1 | entidad | 1 | BTREE | 
+audit_operations | ix_ao_entidad_created | 2 | entidad_id | 1 | BTREE | 
+audit_operations | ix_ao_entidad_created | 3 | created_at | 1 | BTREE | 
+audit_operations | PRIMARY | 1 | id | 0 | BTREE | 
+audit_pii_access | fk_audit_pii_user | 1 | usuario_id | 1 | BTREE | 
+audit_pii_access | ix_apii_paciente_created | 1 | paciente_id | 1 | BTREE | 
+audit_pii_access | ix_apii_paciente_created | 2 | created_at | 1 | BTREE | 
+audit_pii_access | ix_apii_prescription_created | 1 | prescription_id | 1 | BTREE | 
+audit_pii_access | ix_apii_prescription_created | 2 | created_at | 1 | BTREE | 
+audit_pii_access | PRIMARY | 1 | id | 0 | BTREE | 
+auth_permissions | PRIMARY | 1 | id | 0 | BTREE | 
+auth_permissions | uq_auth_permissions_clave | 1 | clave | 0 | BTREE | 
+auth_role_permissions | fk_arp_permission | 1 | permission_id | 1 | BTREE | 
+auth_role_permissions | PRIMARY | 1 | role_id | 0 | BTREE | 
+auth_role_permissions | PRIMARY | 2 | permission_id | 0 | BTREE | 
+auth_roles | PRIMARY | 1 | id | 0 | BTREE | 
+auth_roles | uq_auth_roles_nombre | 1 | nombre | 0 | BTREE | 
+auth_user_roles | fk_aur_role | 1 | role_id | 1 | BTREE | 
+auth_user_roles | PRIMARY | 1 | user_id | 0 | BTREE | 
+auth_user_roles | PRIMARY | 2 | role_id | 0 | BTREE | 
+auth_users | PRIMARY | 1 | id | 0 | BTREE | 
+auth_users | uq_auth_users_usuario | 1 | usuario | 0 | BTREE | 
+catalog_categories | fk_catalog_categories_parent | 1 | parent_id | 1 | BTREE | 
+catalog_categories | PRIMARY | 1 | id | 0 | BTREE | 
+catalog_categories | uq_catalog_categories_nombre_parent | 1 | nombre | 0 | BTREE | 
+catalog_categories | uq_catalog_categories_nombre_parent | 2 | parent_id_key | 0 | BTREE | 
+catalog_patients | PRIMARY | 1 | id | 0 | BTREE | 
+catalog_patients | uq_catalog_patients_identificacion | 1 | identificacion | 0 | BTREE | 
+catalog_prescribers | PRIMARY | 1 | id | 0 | BTREE | 
+catalog_prescribers | uq_catalog_prescribers_identificacion | 1 | identificacion | 0 | BTREE | 
+catalog_prices | fk_catalog_prices_store | 1 | store_id | 1 | BTREE | 
+catalog_prices | PRIMARY | 1 | id | 0 | BTREE | 
+catalog_prices | uq_catalog_prices | 1 | product_id | 0 | BTREE | 
+catalog_prices | uq_catalog_prices | 2 | store_id_key | 0 | BTREE | 
+catalog_prices | uq_catalog_prices | 3 | vigente_desde | 0 | BTREE | 
+catalog_product_categories | fk_cpc_category | 1 | category_id | 1 | BTREE | 
+catalog_product_categories | PRIMARY | 1 | product_id | 0 | BTREE | 
+catalog_product_categories | PRIMARY | 2 | category_id | 0 | BTREE | 
+catalog_products | PRIMARY | 1 | id | 0 | BTREE | 
+catalog_products | uq_catalog_products_sku | 1 | sku | 0 | BTREE | 
+catalog_promotions | fk_catalog_promotions_category | 1 | category_id | 1 | BTREE | 
+catalog_promotions | fk_catalog_promotions_product | 1 | product_id | 1 | BTREE | 
+catalog_promotions | PRIMARY | 1 | id | 0 | BTREE | 
+catalog_suppliers | PRIMARY | 1 | id | 0 | BTREE | 
+catalog_suppliers | uq_catalog_suppliers_identificacion | 1 | identificacion | 0 | BTREE | 
+ctrl_balances | fk_ctrl_balances_product | 1 | product_id | 1 | BTREE | 
+ctrl_balances | PRIMARY | 1 | store_id | 0 | BTREE | 
+ctrl_balances | PRIMARY | 2 | product_id | 0 | BTREE | 
+ctrl_ledger_entries | fk_cle_autorizador | 1 | autorizador_id | 1 | BTREE | 
+ctrl_ledger_entries | fk_cle_product | 1 | product_id | 1 | BTREE | 
+ctrl_ledger_entries | fk_cle_usuario | 1 | usuario_id | 1 | BTREE | 
+ctrl_ledger_entries | ix_cle_ref | 1 | ref_tipo | 1 | BTREE | 
+ctrl_ledger_entries | ix_cle_ref | 2 | ref_id | 1 | BTREE | 
+ctrl_ledger_entries | ix_cle_store_product_created | 1 | store_id | 1 | BTREE | 
+ctrl_ledger_entries | ix_cle_store_product_created | 2 | product_id | 1 | BTREE | 
+ctrl_ledger_entries | ix_cle_store_product_created | 3 | created_at | 1 | BTREE | 
+ctrl_ledger_entries | PRIMARY | 1 | id | 0 | BTREE | 
+idempotency_keys | ix_ik_expires | 1 | expires_at | 1 | BTREE | 
+idempotency_keys | PRIMARY | 1 | id | 0 | BTREE | 
+idempotency_keys | uq_idempotency_keys_key | 1 | idempotency_key | 0 | BTREE | 
+inventory_alerts | fk_inventory_alerts_product | 1 | product_id | 1 | BTREE | 
+inventory_alerts | fk_inventory_alerts_resuelta | 1 | resuelta_por | 1 | BTREE | 
+inventory_alerts | fk_inventory_alerts_store | 1 | store_id | 1 | BTREE | 
+inventory_alerts | ix_ia_tipo_estado_fecha | 1 | tipo | 1 | BTREE | 
+inventory_alerts | ix_ia_tipo_estado_fecha | 2 | estado | 1 | BTREE | 
+inventory_alerts | ix_ia_tipo_estado_fecha | 3 | fecha_generada | 1 | BTREE | 
+inventory_alerts | PRIMARY | 1 | id | 0 | BTREE | 
+inventory_alerts | uq_inventory_alerts | 1 | tipo | 0 | BTREE | 
+inventory_alerts | uq_inventory_alerts | 2 | product_id | 0 | BTREE | 
+inventory_alerts | uq_inventory_alerts | 3 | store_id_key | 0 | BTREE | 
+inventory_alerts | uq_inventory_alerts | 4 | fecha_generada | 0 | BTREE | 
+inventory_incidents | fk_inventory_incidents_lot | 1 | lot_id | 1 | BTREE | 
+inventory_incidents | fk_inventory_incidents_mov | 1 | movimiento_ajuste_id | 1 | BTREE | 
+inventory_incidents | fk_inventory_incidents_user | 1 | abierto_por | 1 | BTREE | 
+inventory_incidents | ix_ii_store_estado | 1 | store_id | 1 | BTREE | 
+inventory_incidents | ix_ii_store_estado | 2 | estado | 1 | BTREE | 
+inventory_incidents | PRIMARY | 1 | id | 0 | BTREE | 
+inventory_lots | fk_inventory_lots_liberado_por | 1 | liberado_por | 1 | BTREE | 
+inventory_lots | ix_inventory_lots_fefo | 1 | product_id | 1 | BTREE | 
+inventory_lots | ix_inventory_lots_fefo | 2 | estado | 1 | BTREE | 
+inventory_lots | ix_inventory_lots_fefo | 3 | fecha_vencimiento | 1 | BTREE | 
+inventory_lots | PRIMARY | 1 | id | 0 | BTREE | 
+inventory_lots | uq_inventory_lots_producto_lote | 1 | product_id | 0 | BTREE | 
+inventory_lots | uq_inventory_lots_producto_lote | 2 | numero_lote | 0 | BTREE | 
+inventory_lots | uq_inventory_lots_reception | 1 | reception_item_id | 0 | BTREE | 
+inventory_movements | fk_im_autorizador | 1 | autorizador_id | 1 | BTREE | 
+inventory_movements | fk_im_product | 1 | product_id | 1 | BTREE | 
+inventory_movements | fk_im_proponente | 1 | proponente_id | 1 | BTREE | 
+inventory_movements | fk_im_ref | 1 | movimiento_ref_id | 1 | BTREE | 
+inventory_movements | fk_im_usuario | 1 | usuario_id | 1 | BTREE | 
+inventory_movements | ix_im_lot_created | 1 | lot_id | 1 | BTREE | 
+inventory_movements | ix_im_lot_created | 2 | created_at | 1 | BTREE | 
+inventory_movements | ix_im_ref | 1 | ref_tipo | 1 | BTREE | 
+inventory_movements | ix_im_ref | 2 | ref_id | 1 | BTREE | 
+inventory_movements | ix_im_store_created | 1 | store_id | 1 | BTREE | 
+inventory_movements | ix_im_store_created | 2 | created_at | 1 | BTREE | 
+inventory_movements | PRIMARY | 1 | id | 0 | BTREE | 
+inventory_movements | uq_im_idem | 1 | idempotency_key | 0 | BTREE | 
+inventory_reservations | fk_ir_order | 1 | order_id | 1 | BTREE | 
+inventory_reservations | fk_ir_product | 1 | product_id | 1 | BTREE | 
+inventory_reservations | ix_ir_store_product_status_expires | 1 | store_id | 1 | BTREE | 
+inventory_reservations | ix_ir_store_product_status_expires | 2 | product_id | 1 | BTREE | 
+inventory_reservations | ix_ir_store_product_status_expires | 3 | status | 1 | BTREE | 
+inventory_reservations | ix_ir_store_product_status_expires | 4 | expires_at | 1 | BTREE | 
+inventory_reservations | PRIMARY | 1 | id | 0 | BTREE | 
+inventory_stock | ix_inventory_stock_lot_store | 1 | lot_id | 1 | BTREE | 
+inventory_stock | ix_inventory_stock_lot_store | 2 | store_id | 1 | BTREE | 
+inventory_stock | PRIMARY | 1 | store_id | 0 | BTREE | 
+inventory_stock | PRIMARY | 2 | lot_id | 0 | BTREE | 
+inventory_transfer_items | fk_iti_lot | 1 | lot_id | 1 | BTREE | 
+inventory_transfer_items | PRIMARY | 1 | id | 0 | BTREE | 
+inventory_transfer_items | uq_iti_transfer_lote | 1 | transfer_id | 0 | BTREE | 
+inventory_transfer_items | uq_iti_transfer_lote | 2 | lot_id | 0 | BTREE | 
+inventory_transfers | fk_it_despachado | 1 | despachado_por | 1 | BTREE | 
+inventory_transfers | fk_it_recibido | 1 | recibido_por | 1 | BTREE | 
+inventory_transfers | fk_it_solicitado | 1 | solicitado_por | 1 | BTREE | 
+inventory_transfers | ix_it_destino_estado | 1 | store_destino_id | 1 | BTREE | 
+inventory_transfers | ix_it_destino_estado | 2 | estado | 1 | BTREE | 
+inventory_transfers | ix_it_origen_estado | 1 | store_origen_id | 1 | BTREE | 
+inventory_transfers | ix_it_origen_estado | 2 | estado | 1 | BTREE | 
+inventory_transfers | PRIMARY | 1 | id | 0 | BTREE | 
+inventory_transfers | uq_it_idem | 1 | idempotency_key | 0 | BTREE | 
+ops_registers | PRIMARY | 1 | id | 0 | BTREE | 
+ops_registers | uq_ops_registers_store_codigo | 1 | store_id | 0 | BTREE | 
+ops_registers | uq_ops_registers_store_codigo | 2 | codigo | 0 | BTREE | 
+ops_stores | PRIMARY | 1 | id | 0 | BTREE | 
+ops_stores | uq_ops_stores_codigo | 1 | codigo | 0 | BTREE | 
+outbox_events | ix_oe_estado_created | 1 | estado | 1 | BTREE | 
+outbox_events | ix_oe_estado_created | 2 | created_at | 1 | BTREE | 
+outbox_events | PRIMARY | 1 | id | 0 | BTREE | 
+payments_transactions | fk_pt_order | 1 | order_id | 1 | BTREE | 
+payments_transactions | PRIMARY | 1 | id | 0 | BTREE | 
+payments_transactions | uq_pt_idem | 1 | idempotency_key | 0 | BTREE | 
+payments_transactions | uq_pt_reference | 1 | reference | 0 | BTREE | 
+purchase_order_items | fk_poi_order | 1 | order_id | 1 | BTREE | 
+purchase_order_items | fk_poi_product | 1 | product_id | 1 | BTREE | 
+purchase_order_items | PRIMARY | 1 | id | 0 | BTREE | 
+purchase_orders | fk_purchase_orders_supplier | 1 | supplier_id | 1 | BTREE | 
+purchase_orders | fk_purchase_orders_user | 1 | creado_por | 1 | BTREE | 
+purchase_orders | PRIMARY | 1 | id | 0 | BTREE | 
+purchase_orders | uq_purchase_orders_numero | 1 | numero | 0 | BTREE | 
+purchase_reception_items | fk_pri_lot | 1 | lot_id | 1 | BTREE | 
+purchase_reception_items | fk_pri_product | 1 | product_id | 1 | BTREE | 
+purchase_reception_items | fk_pri_reception | 1 | reception_id | 1 | BTREE | 
+purchase_reception_items | PRIMARY | 1 | id | 0 | BTREE | 
+purchase_receptions | fk_purchase_receptions_confirmacion | 1 | confirmado_por | 1 | BTREE | 
+purchase_receptions | fk_purchase_receptions_order | 1 | order_id | 1 | BTREE | 
+purchase_receptions | fk_purchase_receptions_recepcion | 1 | recepcionado_por | 1 | BTREE | 
+purchase_receptions | PRIMARY | 1 | id | 0 | BTREE | 
+purchase_receptions | uq_purchase_receptions_idem | 1 | idempotency_key | 0 | BTREE | 
+rx_prescription_items | fk_rxpi_prescription | 1 | prescription_id | 1 | BTREE | 
+rx_prescription_items | fk_rxpi_product | 1 | product_id | 1 | BTREE | 
+rx_prescription_items | PRIMARY | 1 | id | 0 | BTREE | 
+rx_prescriptions | fk_rx_prescriptions_prescriber | 1 | prescriber_id | 1 | BTREE | 
+rx_prescriptions | ix_rxp_patient_fecha | 1 | patient_id | 1 | BTREE | 
+rx_prescriptions | ix_rxp_patient_fecha | 2 | fecha | 1 | BTREE | 
+rx_prescriptions | PRIMARY | 1 | id | 0 | BTREE | 
+sales_order_items | fk_soi_lot | 1 | lot_id | 1 | BTREE | 
+sales_order_items | fk_soi_product | 1 | product_id | 1 | BTREE | 
+sales_order_items | fk_soi_rx_item | 1 | rx_item_id | 1 | BTREE | 
+sales_order_items | PRIMARY | 1 | id | 0 | BTREE | 
+sales_order_items | uq_soi_orden_lote_rx | 1 | order_id | 0 | BTREE | 
+sales_order_items | uq_soi_orden_lote_rx | 2 | lot_id | 0 | BTREE | 
+sales_order_items | uq_soi_orden_lote_rx | 3 | rx_item_id_key | 0 | BTREE | 
+sales_orders | fk_so_quimico | 1 | quimico_verificador_id | 1 | BTREE | 
+sales_orders | fk_so_register | 1 | register_id | 1 | BTREE | 
+sales_orders | fk_so_usuario | 1 | usuario_id | 1 | BTREE | 
+sales_orders | ix_so_paciente_created | 1 | paciente_id | 1 | BTREE | 
+sales_orders | ix_so_paciente_created | 2 | created_at | 1 | BTREE | 
+sales_orders | ix_so_store_created | 1 | store_id | 1 | BTREE | 
+sales_orders | ix_so_store_created | 2 | created_at | 1 | BTREE | 
+sales_orders | PRIMARY | 1 | id | 0 | BTREE | 
+sales_orders | uq_sales_orders_idem | 1 | idempotency_key | 0 | BTREE | 
+sales_orders | uq_sales_orders_numero | 1 | numero | 0 | BTREE | 
+sales_return_items | fk_sri_lot | 1 | lot_id | 1 | BTREE | 
+sales_return_items | fk_sri_order_item | 1 | order_item_id | 1 | BTREE | 
+sales_return_items | fk_sri_product | 1 | product_id | 1 | BTREE | 
+sales_return_items | PRIMARY | 1 | id | 0 | BTREE | 
+sales_return_items | uq_sri_return_item | 1 | return_id | 0 | BTREE | 
+sales_return_items | uq_sri_return_item | 2 | order_item_id | 0 | BTREE | 
+sales_returns | fk_sr_order | 1 | order_id | 1 | BTREE | 
+sales_returns | fk_sr_store | 1 | store_id | 1 | BTREE | 
+sales_returns | fk_sr_usuario | 1 | usuario_id | 1 | BTREE | 
+sales_returns | PRIMARY | 1 | id | 0 | BTREE | 
+system_config | fk_system_config_store | 1 | store_id | 1 | BTREE | 
+system_config | fk_system_config_user | 1 | updated_by | 1 | BTREE | 
+system_config | PRIMARY | 1 | config_key | 0 | BTREE | 
+token_blacklist | ix_token_blacklist_expires | 1 | expires_at | 1 | BTREE | 
+token_blacklist | PRIMARY | 1 | id | 0 | BTREE | 
+token_blacklist | uq_token_blacklist_hash | 1 | token_hash | 0 | BTREE | 
+
+== TRIGGERS ==
+trg_ledger_vs_stock | AFTER INSERT ON ctrl_ledger_entries | definer=root@localhost | IF NEW.tipo = 'salida'\n     AND NOT EXISTS (\n       SELECT 1\n         FROM inventory_movements m\n        WHERE m.ref_tipo = NEW.ref_tipo\n          AND m.ref_id   = NEW.ref_id\n     )\n  THEN\n    SIGNAL SQLSTATE '45000'\n      SET MESSAGE_TEXT = 'ctrl_ledger_entries: asiento de salida sin movimiento de inventario correspondiente';\n  END IF
+trg_movements_sign | AFTER INSERT ON inventory_movements | definer=root@localhost | IF (NEW.cantidad <= 0)\n     OR (NEW.signo NOT IN (-1, 1))\n     OR (NEW.tipo IN ('entrada', 'ajuste_incremento', 'transferencia_entrada')\n         AND NEW.signo <> 1)\n     OR (NEW.tipo IN ('salida', 'ajuste_baja', 'transferencia_salida')\n         AND NEW.signo <> -1)\n  THEN\n    SIGNAL SQLSTATE '45000'\n      SET MESSAGE_TEXT = 'inventory_movements: cantidad o signo incoherentes con el tipo de movimiento';\n  END IF

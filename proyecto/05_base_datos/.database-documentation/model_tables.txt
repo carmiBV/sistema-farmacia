@@ -1,0 +1,46 @@
+# Tablas del modelo fisico (parseado de 13_sql/V1.0.0__esquema_base.sql)
+# Parseado: 2026-10-03 03:15:00 | Tier T3 (derivado de artefacto versionado)
+# Conteo: 42
+
+auth_roles
+auth_permissions
+auth_role_permissions
+auth_users
+auth_user_roles
+token_blacklist
+ops_stores
+ops_registers
+system_config
+catalog_categories
+catalog_products
+catalog_product_categories
+catalog_prices
+catalog_promotions
+catalog_suppliers
+catalog_patients
+catalog_prescribers
+purchase_orders
+purchase_order_items
+purchase_receptions
+purchase_reception_items
+inventory_lots
+inventory_stock
+inventory_movements
+inventory_transfers
+inventory_transfer_items
+inventory_alerts
+inventory_incidents
+rx_prescriptions
+rx_prescription_items
+sales_orders
+sales_order_items
+payments_transactions
+sales_returns
+sales_return_items
+inventory_reservations
+ctrl_ledger_entries
+ctrl_balances
+audit_operations
+audit_pii_access
+idempotency_keys
+outbox_events
