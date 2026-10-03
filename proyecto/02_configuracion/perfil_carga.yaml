@@ -1,0 +1,156 @@
+# Parámetros de capacidad y operación: sistema de gestión de farmacia
+# Referencias: RNF-001, RNF-002, RNF-004, RNF-011 (capacidad y escalabilidad)
+#
+# Convención de estado de los valores:
+#   "propuesto, pendiente de aprobación" = sugerido por el equipo de análisis, no aprobado por el cliente
+#   null                                 = sin valor; debe definirse con el cliente
+#   sin comentario de estado             = dato de partida o regla ya establecida en contexto/requisitos
+
+# --- Carga de negocio ---
+transacciones_negocio_por_hora_objetivo: 25000   # valor de referencia, a validar con el cliente (RNF-001)
+multiplicador_pico: 3.0                          # RNF-004
+factor_crecimiento_a_evaluar: 10                 # RNF-011
+
+# Definición de "transacción de negocio" (RNF-003):
+# una operación completa con efecto de negocio, no una sentencia SQL.
+# Las consultas de stock/producto NO cuentan como transacción de negocio; se miden aparte.
+tipos_transaccion_negocio:
+  - dispensacion_o_venta_confirmada
+  - recepcion_de_compra
+  - ajuste_o_baja_de_inventario
+  - transferencia_entre_sucursales
+  - devolucion
+
+consultas_por_hora_estimadas: null              # a estimar con el cliente; se dimensionan aparte de las 25.000 txn/h
+
+# --- Dimensionamiento de la operación ---
+sucursales: 8
+cajas_por_sucursal: 6
+usuarios_internos_concurrentes_estimados: 180   # cajeros, auxiliares, químicos farmacéuticos, administrativos
+clientes_web_concurrentes_estimados: 0          # canal web fuera de alcance inicial
+
+# --- Latencia objetivo (percentil 95, en milisegundos) ---
+latencia_ms_p95:
+  consulta_producto: 500                        # propuesto, pendiente de aprobación
+  consulta_stock: 500                           # propuesto, pendiente de aprobación; incluye stock por lote y sucursal
+  confirmar_venta_sin_pago_externo: 1200        # propuesto, pendiente de aprobación
+  confirmar_dispensacion_con_receta: 1500       # propuesto, pendiente de aprobación; incluye validación de receta y FEFO
+  consulta_trazabilidad_por_lote: null          # RNF-048, sin valor, definir con el cliente
+  consulta_trazabilidad_por_paciente: null      # RNF-048, sin valor, definir con el cliente
+
+# --- Disponibilidad y recuperación ---
+disponibilidad_objetivo_porcentaje: 99.9        # propuesto, pendiente de aprobación (RNF-044)
+disponibilidad_medida_en: horario_de_atencion   # propuesto, pendiente de aprobación: 24x7 o solo horario de atención (RNF-044)
+rpo_minutos: null                               # RNF-041, definir antes de producción
+rto_minutos: null                               # RNF-041, definir antes de producción
+frecuencia_prueba_restauracion_dias: null       # RNF-040, definir con el cliente
+
+# --- Reglas operativas parametrizables (RF-100) ---
+inventario:
+  dias_alerta_proximo_vencimiento: 90           # propuesto, pendiente de aprobación
+  dias_minimo_vida_util_para_dispensar: 0       # propuesto, pendiente de aprobación; 0 = solo se bloquea lo vencido
+  politica_salida: FEFO                         # RN-03
+  permitir_stock_negativo: false                # RN-02
+
+sesiones:
+  expiracion_inactividad_pos_minutos: 5         # RNF-037, propuesto, pendiente de aprobación
+  expiracion_inactividad_administrativa_minutos: 15   # RNF-037, propuesto, pendiente de aprobación
+  mfa_requerido_para_roles: [administrador, auditor, quimico_farmaceutico]   # RNF-030, CAM-003-a, propuesto, pendiente de aprobación; MFA al iniciar sesión
+  roles_sin_mfa_por_accion: [cajero, auxiliar]  # RNF-030, CAM-003-a, propuesto, pendiente de aprobación
+  verificacion_en_dispensacion:                 # RNF-030, CAM-003-a, propuesto, pendiente de aprobación
+    roles: [quimico_farmaceutico]
+    aplica_a: [bajo_receta, controlado]
+    metodo: null                                # reautenticación o PIN, definir con el cliente
+
+modo_degradado:                                 # RNF-043, a definir con el cliente
+  habilitado: null
+  permitir_venta_libre_sin_conexion: null
+  permitir_bajo_receta_sin_conexion: null       # I-14: el saldo de receta es global (RF-053) y no puede verificarse sin conexión; definir con cliente y químico
+  permitir_controlados_sin_conexion: false      # propuesto, pendiente de aprobación: bloqueado (RN-05)
+  tiempo_maximo_operacion_sin_conexion_minutos: null
+
+# --- Datos sensibles y retención (RNF-038, RNF-039) ---
+retencion_anios:
+  dispensaciones: null                          # según normativa por validar
+  recetas: null                                 # según normativa por validar
+  libro_controlados: null                       # según normativa por validar
+  auditoria: null                               # según normativa por validar
+
+  # ==============================================================================
+# PERFIL DE CARGA, DISPONIBILIDAD Y PARÁMETROS OPERATIVOS (Filtro F1)
+# Proyecto: Sistema de Gestión de Farmacia (Control de Inventario y Dispensación)
+# Fecha de actualización: 2026-10-02
+# Fuente de verdad: 10_cliente_quimico_validation.md (CAM-005)
+# ==============================================================================
+
+version: "1.0"
+estado: "APROBADO_F1"
+
+# ------------------------------------------------------------------------------
+# 1. PERFIL DE CARGA Y VOLUMEN TRANSACCIONAL (CA-05, CA-06, P-06)
+# ------------------------------------------------------------------------------
+perfil_carga:
+  transacciones_negocio_por_hora: 25000       # Transacciones de mutación (dispensación, cobro, recepciones, etc.)
+  factor_pico: 3.0                            # Multiplicador para momentos de alta demanda
+  transacciones_pico_por_hora: 75000          # Equivalente a ~20.8 txn/seg en pico
+  
+  consultas_por_hora_base: 50000             # Búsquedas de stock/catalogo (solo lectura)
+  consultas_por_hora_pico: 150000            # Búsquedas en hora pico (~41.6 consultas/seg)
+
+  distribucion_operaciones_pct:
+    dispensacion_venta_libre: 50
+    dispensacion_receta: 30
+    recepcion_proveedor: 10
+    transferencia_inter_sucursal: 5
+    ajustes_y_bajas: 5
+
+  proyeccion_escalabilidad_10x:
+    transacciones_por_hora: 250000            # Criterio CA-06 (~69.4 txn/seg base, ~208 txn/seg pico)
+
+# ------------------------------------------------------------------------------
+# 2. CONTINUIDAD, DISPONIBILIDAD Y SLA (CA-08, RNF-040, RNF-044, P-01)
+# ------------------------------------------------------------------------------
+continuidad_y_sla:
+  disponibilidad_objetivo_pct: 99.9          # RNF-044 (Medida sobre horario operativo comercial)
+  ventana_medicion: "horario_atencion_comercial"
+  
+  recuperacion:
+    rpo_minutos: 5                          # Pérdida máxima de datos tolerable (P-01)
+    rto_minutos: 60                         # Tiempo máximo de recuperación de servicio (P-01)
+    frecuencia_prueba_restauracion_dias: 90 # RNF-040 (Frecuencia de simulacro de recuperación)
+
+# ------------------------------------------------------------------------------
+# 3. RETENCIÓN LEGAL Y ANONIMIZACIÓN DE DATOS (RNF-038, RNF-039, P-02)
+# ------------------------------------------------------------------------------
+retencion_datos_anios:
+  dispensaciones_y_ventas: 5                # P-02
+  recetas_medicas: 5                         # P-02
+  libro_controlados: 10                     # P-02 (Exigencia de la autoridad sanitaria)
+  registros_auditoria: 5                    # P-02 (Logs de cambios e inventario)
+  
+  politica_anonimizacion_pii:
+    metodo: "anonimizacion_irreversible"
+    alcance: "datos_paciente_y_medico"
+    preserva_movimientos_inventario: true    # Conserva la trazabilidad del libro de controlados
+
+# ------------------------------------------------------------------------------
+# 4. MODO DEGRADADO Y OPERATIVA SIN CONEXIÓN (P-03, P-15, RN-05, RN-09, RF-053)
+# ------------------------------------------------------------------------------
+modo_degradado:
+  permitir_venta_libre_sin_conexion: true   # Registra en cola local y concilia al reconectar
+  permitir_bajo_receta_sin_conexion: false  # Opción A (Estricta): Bloqueado sin red para evitar saldo negativo de receta
+  permitir_controlados_sin_conexion: false  # RN-05: Estrictamente prohibido sin red
+  
+  idempotencia:
+    ventana_retencion_claves_dias: 7        # Ventana para deduplicación de cobro, dispensación y transferencias (S-8)
+
+# ------------------------------------------------------------------------------
+# 5. AUTENTICACIÓN Y SEGURIDAD EN MOSTRADOR (RNF-030, RF-046, DEC-02x)
+# ------------------------------------------------------------------------------
+seguridad_operativa:
+  dispensacion_mostrador:
+    mecanismo_autenticacion: "pin_4_digitos" # PIN personal rápido del Químico Farmacéutico (RNF-030)
+    
+  ajustes_y_bajas_controlados:
+    requiere_doble_autorizacion: true       # RF-046
+    mecanismo_autorizante: "usuario_y_clave_completa" # Reautenticación estricta del Químico
