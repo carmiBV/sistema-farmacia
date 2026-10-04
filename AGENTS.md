@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Reglas universales para agentes
 
 Este repositorio es un framework de análisis arquitectónico reutilizable. En esta instancia se aplica al **sistema de gestión de farmacia** (control de inventario de medicamentos por lote y registro de dispensación).
@@ -80,7 +79,6 @@ Cuando se solicite diseño/implementación de base de datos:
 - No guardar credenciales en archivos versionados.
 - No desplegar antes de STATUS: APPROVED.
 - No ejecutar operaciones destructivas sin autorización explícita.
-=======
 # Reglas universales para agentes
 
 Este repositorio es un framework de análisis arquitectónico reutilizable. En esta instancia se aplica al **sistema de gestión de farmacia** (control de inventario de medicamentos por lote y registro de dispensación).
@@ -162,5 +160,69 @@ Cuando se solicite diseño/implementación de base de datos:
 - No guardar credenciales en archivos versionados.
 - No desplegar antes de STATUS: APPROVED.
 - No ejecutar operaciones destructivas sin autorización explícita.
->>>>>>> 5e30ee8d479d3bb84f19c322844832eef42dc31d
-  
+
+
+## Desarrollo de aplicación — API, backend y frontend
+
+Después del workflow de base de datos (`02_database_workflow.md`)[cite: 12], ejecutar en orden estricto:
+
+1. `.agents/workflows/03_api_pilot_workflow.md` (API piloto: `catalog_categories`)[cite: 13]
+2. `.agents/workflows/04_backend_workflow.md` (Backend modular: 42 tablas / 25 módulos)[cite: 14]
+3. `.agents/workflows/05_frontend_workflow.md` (Frontend y POS: 21 pantallas operativas)[cite: 15]
+4. `.agents/workflows/06_integration_workflow.md` (Integración E2E, auditoría y certificación)[cite: 16]
+
+States de control:
+- `.agents/state/api-pilot-workflow.json`
+- `.agents/state/backend-workflow.json`
+- `.agents/state/frontend-workflow.json`
+- `.agents/state/integration-workflow.json`
+
+### Regla obligatoria de checkpoint
+
+- Ejecutar **UN** solo punto de control (`CP`) por interacción.
+- Probar la funcionalidad implementada.
+- Actualizar el archivo de estado `.json` correspondiente.
+- Marcar `HUMAN_STATUS: PENDING`.
+- Detenerse inmediatamente y esperar confirmación del usuario para continuar.
+
+### Código de la aplicación
+
+Todo el código fuente del proyecto se debe crear e integrar en:
+
+`proyecto/06_codigo/`
+
+### Decisiones de arquitectura vigentes
+
+- `proyecto/04_decisiones/decisiones_api.md`
+- `proyecto/04_decisiones/decisiones_backend.md`
+- `proyecto/04_decisiones/decisiones_frontend.md`
+- `proyecto/04_decisiones/decisiones_desarrollo_incremental.md`
+
+### Stack tecnológico oficial
+
+- PHP 8.x puro (Front Controller en `public/index.php`, sin frameworks externos)[cite: 13, 14].
+- Arquitectura multicapa: Controllers, Services, Repositories, Models, Validators[cite: 13, 14].
+- MySQL 8.x / InnoDB / Driver PDO con consultas preparadas[cite: 12, 13].
+- API RESTful con respuestas estandarizadas en formato JSON (`/api/v1/...`)[cite: 13, 14].
+- Frontend web modular en PHP + HTML5 + CSS3 + JavaScript JS (vanilla) optimizado para terminales POS y pantallas táctiles[cite: 15].
+
+### Lectura progresiva de contexto
+
+Al recibir la instrucción de continuar, el agente debe leer únicamente el `.json` de estado y el archivo de workflow actual. No releer la totalidad del repositorio a menos que exista un conflicto explicito, una actualización en las decisiones o que el punto de control lo requiera.
+
+## Alcance del desarrollo
+
+El alcance del desarrollo abarca la cobertura completa de la base de datos de **42 tablas** distribuida en 21 módulos de interfaz[cite: 6, 14, 15]:
+
+- **Autenticación y Seguridad:** `/login`, `/dashboard`, gestión de usuarios y roles RBAC (`auth_*`, `token_blacklist`)[cite: 14, 15].
+- **Configuración y Operaciones:** Gestión de sucursales, cajas y parámetros globales (`ops_*`, `system_config`)[cite: 14, 15].
+- **Catálogos y Precios:** Categorías (`catalog_categories`), productos (`catalog_products`), listas de precios, promociones, proveedores, pacientes y prescriptores[cite: 14, 15].
+- **Compras e Inventario FEFO:** Órdenes de compra, recepciones con vinculación estricta de lotes (`reception_item_id NOT NULL`), stock por sucursal, kárdex append-only, transferencias y alertas de vencimiento (`inventory_*`, `purchase_*`)[cite: 6, 14, 15].
+- **Recetas y Controlados:** Dispensación con validación médica (`rx_*`) y Libro Oficial de Controlados inmutable (`ctrl_ledger_entries`, `ctrl_balances`)[cite: 14, 15].
+- **Punto de Venta (POS), Pagos y Devoluciones:** Interfaz ágil de caja, claves de idempotencia (`idempotency_keys`), transacciones de pago y flujo de devoluciones (`sales_*`, `payments_transactions`)[cite: 14, 15].
+- **Auditoría y Seguridad PII:** Logs inmutables de operaciones y registro explícito de acceso a datos sensibles de pacientes (`audit_operations`, `audit_pii_access`)[cite: 14, 15].
+
+**Reglas de datos:**
+- La tabla piloto oficial para el inicio de la API es **`catalog_categories`**[cite: 13].
+- Todos los módulos utilizan **borrado lógico** (`estado='inactivo'`) o registros **append-only** inmutables. Prohibido el uso de `DELETE FROM`[cite: 13, 14, 15, 16].
+- Ejecución estricta de un checkpoint por interacción con validación humana obligatoria.
