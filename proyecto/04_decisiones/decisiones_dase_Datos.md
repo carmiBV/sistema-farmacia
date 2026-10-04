@@ -1,4 +1,3 @@
-<<<<<<< HEAD
  # Decisiones de Base de Datos
 
 *Proyecto:* Sistema de Farmacia  
@@ -1163,7 +1162,6 @@ Nueva decisión
 Impacto
 Fecha
 Fuente
-=======
  # Decisiones de Base de Datos
 
 *Proyecto:* Sistema de Farmacia  
@@ -2328,5 +2326,4 @@ Nueva decisión
 Impacto
 Fecha
 Fuente
->>>>>>> 5e30ee8d479d3bb84f19c322844832eef42dc31d
 ---

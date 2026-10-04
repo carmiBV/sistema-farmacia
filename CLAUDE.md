@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Claude Code — instrucciones del proyecto
 
 @AGENTS.md
@@ -15,7 +14,6 @@ Para el ejemplo actual, trabaja con:
 
 
 
-=======
 # Claude Code — instrucciones del proyecto
 
 @AGENTS.md
@@ -32,5 +30,4 @@ Para el ejemplo actual, trabaja con:
 
 
 
->>>>>>> 5e30ee8d479d3bb84f19c322844832eef42dc31d
 No modifiques RF/RNF sin autorización humana.
