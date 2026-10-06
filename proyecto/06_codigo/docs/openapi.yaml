@@ -1,0 +1,288 @@
+openapi: 3.1.0
+info:
+  title: API Farmacia — Catálogo de Categorías
+  version: 0.1.0-pilot
+  description: |
+    Contrato piloto del recurso `catalog_categories` (Workflow 03, CP-API-01).
+
+    Trazabilidad:
+    - RF-020 / RN-04: categorías de medicamentos con jerarquía y unicidad.
+    - decisiones_api.md: prefix `/api/v1/`, JSON estandarizado, DELETE = inactivación lógica.
+    - decisiones_backend.md: multicapa Controller → Validator → Service → Repository (PDO).
+
+    Puntos abiertos (requieren validación humana, no se han inventado valores):
+    - **Autenticación/autorización:** pendiente de definir en el workflow de backend.
+    - **DELETE lógico:** RESUELTO (OPEN-API-01, aprobado 2026-10-04). La migración
+      `V1.5.0__catalog_categories_estado.sql` añadió `estado ENUM('activo','inactivo')
+      NOT NULL DEFAULT 'activo'` a `catalog_categories`.
+servers:
+  - url: http://localhost:8000
+    description: Entorno local de desarrollo (puerto definitivo a validar en CP-API-02)
+tags:
+  - name: categories
+    description: Categorías de productos (catálogo jerárquico)
+paths:
+  /api/v1/catalog/categories:
+    get:
+      tags: [categories]
+      operationId: listCategories
+      summary: Listar categorías
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema: { type: integer, minimum: 1, default: 1 }
+        - name: limit
+          in: query
+          required: false
+          schema: { type: integer, minimum: 1, maximum: 100, default: 20 }
+        - name: q
+          in: query
+          required: false
+          description: Filtrado por nombre (contiene, case-insensitive).
+          schema: { type: string, maxLength: 150 }
+        - name: parent_id
+          in: query
+          required: false
+          description: >
+            Filtra por categoría padre. Usa `0` para categorías raíz
+            (equivalente a `parent_id IS NULL`, misma convención que
+            `parent_id_key = IFNULL(parent_id,0)`).
+          schema: { type: integer, minimum: 0 }
+      responses:
+        "200":
+          description: Colección de categorías (puede ser vacía).
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [success, data, meta]
+                properties:
+                  success: { type: boolean, const: true }
+                  data:
+                    type: array
+                    items: { $ref: "#/components/schemas/Category" }
+                  meta: { $ref: "#/components/schemas/Meta" }
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "500":
+          description: Error de base de datos (mensaje genérico, sin stack trace).
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ErrorEnvelope" }
+    post:
+      tags: [categories]
+      operationId: createCategory
+      summary: Crear categoría
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CategoryCreate" }
+      responses:
+        "201":
+          description: Categoría creada.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [success, data]
+                properties:
+                  success: { type: boolean, const: true }
+                  data: { $ref: "#/components/schemas/Category" }
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "409":
+          description: |
+            Conflicto: nombre duplicado en la misma rama (`nombre`,`parent_id_key`),
+            `parent_id` inexistente o ciclo jerárquico.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ErrorEnvelope" }
+              example:
+                success: false
+                error:
+                  code: DUPLICATE_NAME
+                  message: "Ya existe una categoría con ese nombre en la misma rama."
+        "500":
+          $ref: "#/components/responses/DatabaseError"
+  /api/v1/catalog/categories/{id}:
+    parameters:
+      - $ref: "#/components/parameters/CategoryId"
+    get:
+      tags: [categories]
+      operationId: getCategory
+      summary: Obtener una categoría por ID
+      responses:
+        "200":
+          description: Categoría encontrada.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [success, data]
+                properties:
+                  success: { type: boolean, const: true }
+                  data: { $ref: "#/components/schemas/Category" }
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/DatabaseError"
+    put:
+      tags: [categories]
+      operationId: updateCategory
+      summary: Actualizar categoría
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CategoryUpdate" }
+      responses:
+        "200":
+          description: Categoría actualizada.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [success, data]
+                properties:
+                  success: { type: boolean, const: true }
+                  data: { $ref: "#/components/schemas/Category" }
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          description: Nombre duplicado en la rama, parent_id inexistente o ciclo jerárquico.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ErrorEnvelope" }
+        "500":
+          $ref: "#/components/responses/DatabaseError"
+    delete:
+      tags: [categories]
+      operationId: deleteCategory
+      summary: Inactivar categoría (borrado lógico)
+      description: |
+        Según `decisiones_api.md`, la acción es inactivación lógica
+        (`estado='inactivo'`); está prohibido `DELETE FROM`.
+
+        Implementado en CP-API-07 sobre la migración `V1.5.0` (columna `estado`).
+        Un registro inactivo queda fuera de la API: `GET`, `PUT`, `DELETE`
+        posteriores devuelven 404 y no aparece en el listado. La segunda
+        eliminación (ya inactiva) también responde 404. El nombre NO se
+        reutiliza en la misma rama: el índice único `(nombre, parent_id_key)`
+        cubre también las filas inactivas. En otra rama sí es posible crear
+        una categoría con el mismo nombre (la uq es por rama).
+      responses:
+        "204":
+          description: Categoría inactivada.
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/DatabaseError"
+components:
+  parameters:
+    CategoryId:
+      name: id
+      in: path
+      required: true
+      description: Identificador numérico de la categoría.
+      schema: { type: integer, minimum: 1 }
+  schemas:
+    Category:
+      type: object
+      required: [id, nombre, parent_id]
+      properties:
+        id: { type: integer, description: PK autoincremental, readOnly. }
+        nombre:
+          type: string
+          minLength: 1
+          maxLength: 150
+        parent_id:
+          type: [integer, "null"]
+          description: Categoría padre; `null` en categorías raíz.
+    CategoryCreate:
+      type: object
+      required: [nombre]
+      properties:
+        nombre:
+          type: string
+          minLength: 1
+          maxLength: 150
+        parent_id:
+          type: [integer, "null"]
+          minimum: 1
+          description: Categoría padre opcional; debe existir.
+    CategoryUpdate:
+      type: object
+      required: [nombre]
+      properties:
+        nombre:
+          type: string
+          minLength: 1
+          maxLength: 150
+        parent_id:
+          type: [integer, "null"]
+          minimum: 1
+    Meta:
+      type: object
+      required: [total, page, limit]
+      properties:
+        total: { type: integer, minimum: 0 }
+        page: { type: integer, minimum: 1 }
+        limit: { type: integer, minimum: 1, maximum: 100 }
+    ErrorEnvelope:
+      type: object
+      required: [success, error]
+      properties:
+        success: { type: boolean, const: false }
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code:
+              type: string
+              enum:
+                - VALIDATION_ERROR
+                - NOT_FOUND
+                - DUPLICATE_NAME
+                - HIERARCHY_CYCLE
+                - DATABASE_ERROR
+                - INTERNAL_ERROR
+            message: { type: string }
+  responses:
+    ValidationError:
+      description: Entrada inválida (400).
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/ErrorEnvelope" }
+          example:
+            success: false
+            error:
+              code: VALIDATION_ERROR
+              message: "El campo 'nombre' es obligatorio."
+    NotFound:
+      description: Categoría inexistente (404).
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/ErrorEnvelope" }
+          example:
+            success: false
+            error:
+              code: NOT_FOUND
+              message: "Categoría no encontrada."
+    DatabaseError:
+      description: Error interno de base de datos (500), sin detalle sensible.
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/ErrorEnvelope" }
+          example:
+            success: false
+            error:
+              code: DATABASE_ERROR
+              message: "Error interno."

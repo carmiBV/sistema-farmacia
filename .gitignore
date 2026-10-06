@@ -1,3 +1,4 @@
+.env
 .opencode/*
 opencode.json
 opencode.example.json

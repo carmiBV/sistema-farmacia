@@ -1,43 +1,228 @@
 {
-  "workflow": "03_api_pilot_workflow",
-  "phase": "api_pilot",
-  "scope": [
-    "/api/v1/auth",
-    "/api/v1/ops/stores",
-    "/api/v1/ops/config",
-    "/api/v1/catalog/categories",
-    "/api/v1/catalog/products",
-    "/api/v1/catalog/prices",
-    "/api/v1/catalog/promotions",
-    "/api/v1/catalog/suppliers",
-    "/api/v1/catalog/patients",
-    "/api/v1/catalog/prescribers",
-    "/api/v1/purchases/orders",
-    "/api/v1/purchases/receptions",
-    "/api/v1/inventory/lots",
-    "/api/v1/inventory/stock",
-    "/api/v1/inventory/movements",
-    "/api/v1/inventory/transfers",
-    "/api/v1/inventory/alerts",
-    "/api/v1/inventory/incidents",
-    "/api/v1/prescriptions",
-    "/api/v1/sales/orders",
-    "/api/v1/sales/payments",
-    "/api/v1/sales/returns",
-    "/api/v1/control/ledger",
-    "/api/v1/audit/operations",
-    "/api/v1/audit/pii"
-  ],
-  "current_checkpoint": "CP-API-01",
-  "last_completed_checkpoint": null,
-  "technical_status": "PENDING",
-  "human_status": "PENDING",
-  "blocked": false,
-  "can_continue": true,
-  "next": "Diseñar contrato de categorías. No programar todavía.",
-  "skills_allowed": [
-    "php-development",
-    "api-design-principles",
-    "openapi-spec-generation"
-  ]
+    "workflow": "03_api_pilot_workflow",
+    "phase": "api_pilot",
+    "scope": [
+        "/api/v1/auth",
+        "/api/v1/ops/stores",
+        "/api/v1/ops/config",
+        "/api/v1/catalog/categories",
+        "/api/v1/catalog/products",
+        "/api/v1/catalog/prices",
+        "/api/v1/catalog/promotions",
+        "/api/v1/catalog/suppliers",
+        "/api/v1/catalog/patients",
+        "/api/v1/catalog/prescribers",
+        "/api/v1/purchases/orders",
+        "/api/v1/purchases/receptions",
+        "/api/v1/inventory/lots",
+        "/api/v1/inventory/stock",
+        "/api/v1/inventory/movements",
+        "/api/v1/inventory/transfers",
+        "/api/v1/inventory/alerts",
+        "/api/v1/inventory/incidents",
+        "/api/v1/prescriptions",
+        "/api/v1/sales/orders",
+        "/api/v1/sales/payments",
+        "/api/v1/sales/returns",
+        "/api/v1/control/ledger",
+        "/api/v1/audit/operations",
+        "/api/v1/audit/pii"
+    ],
+    "current_checkpoint": "COMPLETED",
+    "last_completed_checkpoint": "CP-API-08",
+    "technical_status": "PASSED",
+    "human_status": "APPROVED",
+    "blocked": false,
+    "can_continue": false,
+    "next": "Workflow 03 COMPLETO y APROBADO por el cliente (2026-10-05). Sin CP pendientes en este workflow. El desarrollo continuo en 04_backend_workflow.md (autorizado por el cliente); ver backend-workflow.json para el estado del backend.",
+    "checkpoint_results": [
+        {
+            "cp": "CP-API-01",
+            "summary": "Contrato OpenAPI 3.1 para /api/v1/catalog/categories (5 operaciones). Sin código de aplicación.",
+            "artifacts": [
+                "proyecto/06_codigo/docs/openapi.yaml",
+                "proyecto/06_codigo/tools/validate_openapi.py"
+            ],
+            "test": "python proyecto/06_codigo/tools/validate_openapi.py => PASS",
+            "traceability": "RF-020, RN-04, decisiones_api.md, decisiones_backend.md, modelo físico catalog_categories (V1.0.0)"
+        },
+        {
+            "cp": "CP-API-02",
+            "summary": "Bootstrap PHP 8: Front Controller public/index.php (solo bootstrap/despacho, sin SQL ni tablas de negocio), Env (.env), PDO MySQL, Router/Response con envelope {success, data|error}, y GET /api/v1/health.",
+            "artifacts": [
+                "proyecto/06_codigo/public/index.php",
+                "proyecto/06_codigo/src/Support/Env.php",
+                "proyecto/06_codigo/src/Support/Database.php",
+                "proyecto/06_codigo/src/Http/Router.php",
+                "proyecto/06_codigo/src/Http/Response.php",
+                "proyecto/06_codigo/src/Controllers/HealthController.php",
+                "proyecto/06_codigo/.env.example",
+                "proyecto/06_codigo/tools/verify_cp02.php"
+            ],
+            "test": "php -S 127.0.0.1:8000 -t public public/index.php + php tools/verify_cp02.php => PASS (1 SKIP: health 503 DATABASE_ERROR por BD no desplegada)",
+            "traceability": "decisiones_backend.md (Front Controller, PDO, .env), decisiones_api.md (prefijo /api/v1, envelope), RNF-034 (sin secretos impresos)"
+        },
+        {
+            "cp": "CP-API-03",
+            "summary": "GET /api/v1/catalog/categories con CategoriaController, CategoriaService y CategoriaRepository: listado paginado (page/limit), filtros q (contiene, ai_ci) y parent_id (0 => raíz via parent_id IS NULL, sin exponer parent_id_key), envelope {success, data, meta{total,page,limit}}, AppException con mapeo a códigos del contrato.",
+            "artifacts": [
+                "proyecto/06_codigo/src/Controllers/CategoriaController.php",
+                "proyecto/06_codigo/src/Services/CategoriaService.php",
+                "proyecto/06_codigo/src/Repositories/CategoriaRepository.php",
+                "proyecto/06_codigo/src/Http/AppException.php",
+                "proyecto/06_codigo/public/index.php",
+                "proyecto/06_codigo/tools/verify_cp03.php"
+            ],
+            "test": "php tools/verify_cp03.php <base> empty => PASS (4/4, colección vacía) + datos => PASS (17/17: datos, paginación limit/page, q=IBU, parent_id=0, 400 VALIDATION_ERROR, sin parent_id_key) + error (servidor con DB_NAME inexistente) => PASS (5/5: 500 DATABASE_ERROR sin SQLSTATE ni stack traces); python tools/validate_openapi.py => PASS",
+            "contract_change": "REGISTRADO (qué/por quién: agente en CP-API-03): se añade respuesta 400 VALIDATION_ERROR a GET /catalog/categories en docs/openapi.yaml (parámetros page/limit/q inválidos o fuera de rango). Por qué: el servicio valida entrada en confianza (INSTRUCTIONS.md) y el enum de códigos ya incluía VALIDATION_ERROR. Requiere aprobación del humano junto con este CP.",
+            "traceability": "RF-020, RN-04, decisiones_api.md (GET 200/500 del contrato), decisiones_backend.md (Controller→Service→Repository), INSTRUCTIONS.md (validación de entrada), OPEN-API-01 (parent_id=0 ⇒ IS NULL sin exponer parent_id_key)"
+        },
+        {
+            "cp": "CP-API-04",
+            "summary": "GET /api/v1/catalog/categories/{id}: Router con path params ({id} ⇒ (?P<id>[^/]+)), CategoriaController::show, CategoriaService::obtener (filter_var id min 1), CategoriaRepository::buscarPorId. Respuestas: 200 encontrado, 404 NOT_FOUND inexistente, 400 VALIDATION_ERROR formato inválido (no numérico, <1, fuera de rango int).",
+            "artifacts": [
+                "proyecto/06_codigo/src/Http/Router.php",
+                "proyecto/06_codigo/src/Controllers/CategoriaController.php",
+                "proyecto/06_codigo/src/Services/CategoriaService.php",
+                "proyecto/06_codigo/src/Repositories/CategoriaRepository.php",
+                "proyecto/06_codigo/public/index.php",
+                "proyecto/06_codigo/tools/verify_cp04.php"
+            ],
+            "test": "php -l (6 archivos) => sin errores; php tools/verify_cp04.php http://127.0.0.1:8000 => PASS (17/17: 200 id=1, 404 999999, 400 abc/0/99999999999999999999, 404 ruta sin id, sin parent_id_key); regresión verify_cp03.php datos => PASS (17/17)",
+            "traceability": "RF-020, RN-04, decisiones_api.md (parámetro path CategoryId integer min 1; respuestas 200/400/404/500 ya definidas en CP-API-01, sin cambio de contrato), decisiones_backend.md (Controller→Service→Repository, consultas preparadas)"
+        },
+        {
+            "cp": "CP-API-05",
+            "summary": "POST /api/v1/catalog/categories: Request::jsonBody (400 si cuerpo falta/no es objeto JSON), CategoriaValidator (nombre requerido string trim 1-150, parent_id opcional entero >=1), Service::crear (padre inexistente => 409 NOT_FOUND por contrato; unicidad por rama con IFNULL(parent_id,0) => 409 DUPLICATE_NAME; carrera INSERT => catch SQLSTATE 1062 => 409), Repository insertar/padreExiste/existeNombre. Respuestas: 201 creado, 400 VALIDATION_ERROR, 409 DUPLICATE_NAME/NOT_FOUND, 500 DATABASE_ERROR.",
+            "artifacts": [
+                "proyecto/06_codigo/src/Http/Request.php",
+                "proyecto/06_codigo/src/Validators/CategoriaValidator.php",
+                "proyecto/06_codigo/src/Services/CategoriaService.php",
+                "proyecto/06_codigo/src/Repositories/CategoriaRepository.php",
+                "proyecto/06_codigo/src/Controllers/CategoriaController.php",
+                "proyecto/06_codigo/public/index.php",
+                "proyecto/06_codigo/tools/verify_cp05.php"
+            ],
+            "test": "php -l (7 archivos) => sin errores; php tools/verify_cp05.php => PASS (29/29: 201 raíz/hija/otra rama, 409 DUPLICATE_NAME misma rama, 400 en 6 inválidos, 409 NOT_FOUND padre inexistente, 400 cuerpo malformado, GET integración); regresiones cp04 PASS, cp03 datos PASS, validate_openapi.py PASS. Nota: fixtures con nombre único por ejecución quedan en BD local (sin DELETE FROM); sin cambio de contrato (201/400/409/500 ya estaban en CP-API-01).",
+            "traceability": "RF-020, RN-04, decisiones_api.md (POST 201/400/409/500 de CategoryCreate), decisiones_backend.md (Controller→Service→Repository/Validator, consultas preparadas), INSTRUCTIONS.md (validación de entrada obligatoria), F14 (uq nombre+parent_id_key)"
+        },
+        {
+            "cp": "CP-API-06",
+            "summary": "PUT /api/v1/catalog/categories/{id}: actualización completa con integridad jerárquica. Semántica: parent_id ausente = conservar actual, null = mover a raíz. Ciclos detectados subiendo la cadena de padres (self y descendiente => 409 HIERARCHY_CYCLE, tope 64 niveles); padre inexistente => 409 NOT_FOUND; unicidad por rama excluyendo el propio id (existeNombreExcluyendo) => 409 DUPLICATE_NAME + carrera SQLSTATE 1062; id inválido => 400, id inexistente => 404, sin cambio de contrato (200/400/404/409/500 ya definidos en CP-API-01). Validador renombrado de validarCreacion a validar (compartido create/update); helper idEntero() extraído del flujo GET.",
+            "artifacts": [
+                "proyecto/06_codigo/src/Validators/CategoriaValidator.php",
+                "proyecto/06_codigo/src/Services/CategoriaService.php",
+                "proyecto/06_codigo/src/Repositories/CategoriaRepository.php",
+                "proyecto/06_codigo/src/Controllers/CategoriaController.php",
+                "proyecto/06_codigo/public/index.php",
+                "proyecto/06_codigo/tools/verify_cp06.php"
+            ],
+            "test": "php -l (6 archivos) => sin errores; php tools/verify_cp06.php => PASS (21/21: 200 rename/mover a raíz/re-padre/conservar padre, 409 HIERARCHY_CYCLE self y descendiente, 409 NOT_FOUND padre inexistente, 409 DUPLICATE_NAME misma rama, 200 mismo nombre en otra rama, 404 id inexistente, 400 en 5 inválidos + cuerpo malformado, GET integración); regresiones cp03/cp04/cp05 PASS, validate_openapi.py PASS. Nota: fixtures con nombre único por ejecución quedan en BD local (sin DELETE FROM).",
+            "traceability": "RF-020, RN-04, decisiones_api.md (PUT 200/400/404/409/500 de updateCategory), decisiones_backend.md (Controller→Service→Repository/Validator), INSTRUCTIONS.md (validación de entrada obligatoria), F14 (uq nombre+parent_id_key), CA-03 (integridad de datos)"
+        },
+        {
+            "cp": "CP-API-07",
+            "summary": "DELETE /api/v1/catalog/categories/{id} = borrado lógico sobre la migración V1.5.0 (estado ENUM('activo','inactivo') NOT NULL DEFAULT 'activo'). Filtros estado='activo' en listar/contar/buscarPorId/padreExiste (GET/PUT de inactiva => 404); Service::inactivar (400 id, 404 inexistente, 204 Response::noContent sin cuerpo); segunda eliminación => 404; fila inactiva persiste en BD (prueba indirecta: POST del nombre => 409 porque la uq (nombre, parent_id_key) cubre filas inactivas). Controller::destroy + ruta DELETE en index.php (Router genérico, sin cambios).",
+            "artifacts": [
+                "proyecto/05_base_datos/13_sql/V1.5.0__catalog_categories_estado.sql",
+                "proyecto/06_codigo/src/Http/Response.php",
+                "proyecto/06_codigo/src/Repositories/CategoriaRepository.php",
+                "proyecto/06_codigo/src/Services/CategoriaService.php",
+                "proyecto/06_codigo/src/Controllers/CategoriaController.php",
+                "proyecto/06_codigo/public/index.php",
+                "proyecto/06_codigo/docs/openapi.yaml",
+                "proyecto/06_codigo/tools/verify_cp07.php"
+            ],
+            "test": "Migración aplicada y verificada en BD local (SHOW COLUMNS: estado ENUM presente, 19 filas default 'activo'); php -l (6 archivos) => sin errores; php tools/verify_cp07.php => PASS (14/14: 204 sin cuerpo, 404 GET/PUT tras DELETE, lista sin inactivada, activa presente, 404 repetido/inexistente, 400 id abc, 409 DUPLICATE_NAME del nombre inactivado, limpieza raíz); regresiones cp06/cp05/cp04/cp03 datos => PASS; validate_openapi.py => PASS. Servidor detenido.",
+            "contract_change": "REGISTRADO (qué/por quién: agente en CP-API-07, requiere aprobación del humano junto con este CP): (1) docs/openapi.yaml descripción de DELETE — se resuelve la nota PENDIENTE/OPEN-API-01 y se documenta el comportamiento implementado (204 sin cuerpo, 404 tras inactivar, nombre no reutilizable por la uq que cubre filas inactivas); (2) se añade INTERNAL_ERROR al enum de error.code (faltaba; la app ya respondía ese código desde CP-API-02 en el catch global de Throwable). Qué cambia: descripción del endpoint + enum. Por qué: reflejar el contrato implementado y eliminar un bloqueo resuelto. Quién lo aprueba: cliente.",
+            "traceability": "RF-020, RN-04, decisiones_api.md (DELETE = inactivación lógica), decisiones_backend.md (multicapa, consultas preparadas), F14 (uq incluye filas inactivas), OPEN-API-01 (resuelto con V1.5.0 aprobado por el cliente 2026-10-04)"
+        },
+        {
+            "cp": "CP-API-08",
+            "summary": "Spec OpenAPI final + suite CRUD completa de integración. verify_cp08.php: health, POST raíz/hija (201, parent_id), GET lista (q+sufijo, sin parent_id_key), GET {id}, filtro parent_id=0, PUT rename/mover a raíz/re-padre + persistencia por GET, DELETE 204 sin cuerpo y 404s tras inactivar, uq por rama (409 misma rama, 201 otra rama), 400s (nombre vacío, limit=0, id abc), 404 inexistente, limpieza lógica de fixtures.",
+            "artifacts": [
+                "proyecto/06_codigo/docs/openapi.yaml",
+                "proyecto/06_codigo/tools/verify_cp08.php",
+                "proyecto/06_codigo/tools/validate_openapi.py"
+            ],
+            "test": "php -l tools/verify_cp08.php => sin errores; php tools/verify_cp08.php => PASS (28/28, tras corregir 2 expectativas del test que no coincidían con la uq por rama); regresiones cp03/cp04/cp05/cp06/cp07 => PASS; validate_openapi.py => PASS. Servidor detenido.",
+            "contract_change": "REGISTRADO (qué/por quién: agente en CP-API-08, requiere aprobación del humano junto con este CP): en la descripción de DELETE (docs/openapi.yaml) se precisa que la reserva de nombre por la uq (nombre, parent_id_key) es POR RAMA — mismo nombre en otra rama sí es permitido (201). Por qué: la implementación y la constraint existente (F14) siempre fueron por rama; la redacción anterior ('el nombre NO se reutiliza') era ambigua e incorrecta. Quién lo aprueba: cliente.",
+            "traceability": "RF-020, RN-04, decisiones_api.md (las 5 operaciones del contrato), F14 (uq por rama), CA-02/CA-06 (suite de verificación), 03_api_pilot_workflow.md (CP-API-08)"
+        }
+    ],
+    "open_items": [
+        {
+            "id": "OPEN-API-01",
+            "description": "RESUELTO (2026-10-04, decisión del usuario vía question): migración que agrega estado='inactivo' a catalog_categories. Adaptada a la secuencia Flyway como V1.5.0__catalog_categories_estado.sql (V1.0.1 quedaría fuera de orden y Flyway lo rechaza; usuario notificado de la adaptación). Aplicada y verificada en BD local. Usada por CP-API-07.",
+            "impact": "Sin bloqueo. CP-API-07 desbloqueado y completado.",
+            "owner": "Cliente (elegido) / solution-leader",
+            "status": "RESOLVED"
+        },
+        {
+            "id": "OPEN-API-02",
+            "description": "Autenticación/autorización del recurso: no definida en el contrato piloto; TBD en workflow de backend.",
+            "impact": "Contract security section pendiente.",
+            "owner": "Cliente / security-reviewer"
+        },
+        {
+            "id": "OPEN-API-03",
+            "description": "Puerto/host del servidor: probado con 127.0.0.1:8000 en CP-API-02 (coincide con localhost:8000 del contrato).",
+            "impact": "Confirmar para fijar servers[] del OpenAPI.",
+            "owner": "Cliente"
+        },
+        {
+            "id": "OPEN-API-04",
+            "description": "RESUELTO (2026-10-04, autorización del usuario): base local desplegada en MySQL 127.0.0.1:3306 (DB_NAME=sistema, utf8mb4_0900_ai_ci) aplicando V1.0.0__esquema_base.sql, V1.1.0__indices.sql, V1.3.0__datos_iniciales.sql y V1.4.0__triggers_auditoria.sql => 42 tablas. V1.2.0__grants.sql OMITIDO: usa placeholders Flyway (${app_rw_password} etc.) no resueltos; la app conecta como root local (credenciales vacías). Ver OPEN-API-06.",
+            "impact": "Sin bloqueo. CP-API-02/health y CP-API-03 verificados contra la BD real.",
+            "owner": "Cliente (aprobado) / devops-architect",
+            "status": "RESOLVED"
+        },
+        {
+            "id": "OPEN-API-05",
+            "description": "Archivos .env trackeados en git (raíz y proyecto/06_codigo/tools/.env, commit 9da5b80). Ya agregado .env a .gitignore pero siguen cacheados.",
+            "impact": "Posible fuga de credenciales (RNF-034, política de secretos). Requiere git rm --cached y rotación si hubo credenciales reales.",
+            "owner": "Cliente / security-reviewer"
+        },
+        {
+            "id": "OPEN-API-06",
+            "description": "APROBADO por el cliente (2026-10-04, al validar CP-API-03): cambio de contrato — se añadió respuesta 400 VALIDATION_ERROR a GET /api/v1/catalog/categories en docs/openapi.yaml. Qué cambia: enum/listado de respuestas. Por qué: validación de parámetros de entrada (page/limit/q). Quién lo aprueba: cliente, junto con CP-API-03.",
+            "impact": "Contrato validado tras el cambio (validate_openapi.py => PASS). Aprobado.",
+            "owner": "Cliente / solution-leader",
+            "status": "APPROVED"
+        },
+        {
+            "id": "OPEN-API-07",
+            "description": "V1.2.0__grants.sql no aplicado en la BD local (placeholders Flyway sin resolver) y despliegue local conecta como root con contraseña vacía. Antes de cualquier entorno que no sea desarrollo local hay que generar los grants con credenciales reales.",
+            "impact": "Seguridad operativa (RNF-034); no bloquea CP piloto en local.",
+            "owner": "devops-architect / Cliente",
+            "status": "OPEN"
+        }
+    ],
+    "skills_allowed": [
+        "php-development",
+        "api-design-principles",
+        "openapi-spec-generation"
+    ],
+    "last_regression": {
+        "date": "2026-10-05",
+        "scope": "Re-verificacion completa del piloto catalog_categories (sin codigo nuevo; workflow 03 sin CP pendientes)",
+        "result": "PASS",
+        "checks": [
+            "python tools/validate_openapi.py => PASS (contrato OpenAPI valido)",
+            "verify_cp03 datos => PASS (50 checks)",
+            "verify_cp03 error (servidor 8001 DB_NAME=basenoexiste) => PASS (5/5: 500 DATABASE_ERROR sin SQLSTATE ni stack traces)",
+            "verify_cp04 => PASS (17/17)",
+            "verify_cp05 => PASS (29/29)",
+            "verify_cp06 => PASS (21/21)",
+            "verify_cp07 => PASS (14/14)",
+            "verify_cp08 suite CRUD => PASS (28/28)"
+        ],
+        "note": "Los 8 CP del workflow 03 (CP-API-01..08) siguen PASANDO contra BD local MySQL 127.0.0.1:3306 (DB_NAME=sistema). Servidores de prueba detenidos (8000/8001)."
+    },
+    "human_validation": {
+        "date": "2026-10-05",
+        "by": "Cliente (via question en la sesion)",
+        "scope": "CP-API-08 y workflow 03 completo (CP-API-01..08)",
+        "decision": "APPROBAR el piloto de catalog_categories y AUTORIZAR continuar el workflow 04 con CP-BACK-08."
+    }
 }

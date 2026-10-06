@@ -1,55 +1,500 @@
 {
-  "workflow": "04_backend_workflow",
-  "phase": "backend",
-  "scope": [
-    "auth_roles",
-    "auth_permissions",
-    "auth_role_permissions",
-    "auth_users",
-    "auth_user_roles",
-    "token_blacklist",
-    "ops_stores",
-    "ops_registers",
-    "system_config",
-    "catalog_categories",
-    "catalog_products",
-    "catalog_product_categories",
-    "catalog_prices",
-    "catalog_promotions",
-    "catalog_suppliers",
-    "catalog_patients",
-    "catalog_prescribers",
-    "purchase_orders",
-    "purchase_order_items",
-    "purchase_receptions",
-    "purchase_reception_items",
-    "inventory_lots",
-    "inventory_stock",
-    "inventory_movements",
-    "inventory_transfers",
-    "inventory_transfer_items",
-    "inventory_alerts",
-    "inventory_incidents",
-    "rx_prescriptions",
-    "rx_prescription_items",
-    "sales_orders",
-    "sales_order_items",
-    "payments_transactions",
-    "sales_returns",
-    "sales_return_items",
-    "inventory_reservations",
-    "ctrl_ledger_entries",
-    "ctrl_balances",
-    "audit_operations",
-    "audit_pii_access",
-    "idempotency_keys",
-    "outbox_events"
-  ],
-  "current_checkpoint": "CP-BACK-01",
-  "technical_status": "BLOCKED",
-  "human_status": "PENDING",
-  "blocked": true,
-  "can_continue": false,
-  "blocked_by": "03_api_pilot_workflow",
-  "next": "Esperar API categorías PASSED + APPROVED."
+    "workflow": "04_backend_workflow",
+    "phase": "backend",
+    "scope": [
+        "auth_roles",
+        "auth_permissions",
+        "auth_role_permissions",
+        "auth_users",
+        "auth_user_roles",
+        "token_blacklist",
+        "ops_stores",
+        "ops_registers",
+        "system_config",
+        "catalog_categories",
+        "catalog_products",
+        "catalog_product_categories",
+        "catalog_prices",
+        "catalog_promotions",
+        "catalog_suppliers",
+        "catalog_patients",
+        "catalog_prescribers",
+        "purchase_orders",
+        "purchase_order_items",
+        "purchase_receptions",
+        "purchase_reception_items",
+        "inventory_lots",
+        "inventory_stock",
+        "inventory_movements",
+        "inventory_transfers",
+        "inventory_transfer_items",
+        "inventory_alerts",
+        "inventory_incidents",
+        "rx_prescriptions",
+        "rx_prescription_items",
+        "sales_orders",
+        "sales_order_items",
+        "payments_transactions",
+        "sales_returns",
+        "sales_return_items",
+        "inventory_reservations",
+        "ctrl_ledger_entries",
+        "ctrl_balances",
+        "audit_operations",
+        "audit_pii_access",
+        "idempotency_keys",
+        "outbox_events"
+    ],
+    "current_checkpoint": "CP-BACK-10",
+    "technical_status": "PASS",
+    "human_status": "PENDING",
+    "blocked": false,
+    "can_continue": false,
+    "blocked_by": null,
+    "next": "CP-BACK-10 PASS (89/89). Esperar aprobacion humana. Luego: CP-BACK-11 suite completa de pruebas del backend y verificacion de borrado logico / append-only (ultimo CP del workflow 04).",
+    "checkpoint_results": [
+        {
+            "checkpoint": "CP-BACK-01",
+            "date": "2026-10-05",
+            "result": "PASS",
+            "summary": "PatrÃ³n multicapa consolidado en el piloto catalog_categories con la capa Models aÃ±adida (src/Models/Categoria.php: fromRow/toArray con whitelist de campos; parent_id_key jamÃ¡s expuesto). Repository devuelve modelos, Service opera sobre modelos (firmas Categoria), Controller serializa con toArray(). Plantilla replicable documentada en proyecto/06_codigo/docs/arquitectura_backend.md (capas, reglas transversales, orden de checkpoint).",
+            "evidence": [
+                "php -l OK en todos los .php de src/, public/ y tools/",
+                "verify_cp03 datos PASS | verify_cp03 error PASS (servidor 8001 con DB_NAME=basenoexiste)",
+                "verify_cp04 PASS | verify_cp05 PASS | verify_cp06 PASS | verify_cp07 PASS | verify_cp08 PASS",
+                "validate_openapi.py PASS",
+                "Servidores de prueba detenidos (8000/8001); logs temporales eliminados"
+            ],
+            "files": [
+                "proyecto/06_codigo/src/Models/Categoria.php",
+                "proyecto/06_codigo/src/Repositories/CategoriaRepository.php",
+                "proyecto/06_codigo/src/Services/CategoriaService.php",
+                "proyecto/06_codigo/src/Controllers/CategoriaController.php",
+                "proyecto/06_codigo/docs/arquitectura_backend.md"
+            ],
+            "human_status": "APPROVED",
+            "human_validation": {
+                "date": "2026-10-05",
+                "by": "Cliente (mensaje \"aprobar\")",
+                "decision": "APROBADO el patron de arquitectura multicapa consolidado (observacion de coherencia reportada al cliente; los CP-BACK-02..06 ya se habian aprobado por encima de el)."
+            }
+        },
+        {
+            "checkpoint": "CP-BACK-02",
+            "date": "2026-10-05",
+            "result": "PASS",
+            "summary": "MÃ³dulo de autenticaciÃ³n y seguridad completo: JWT HS256 manual (App\\Support\\Jwt), throttle de login 5 fallos/300s, blacklist de tokens en token_blacklist (purge de expirados justificado con ponytail:), RBAC por criterio 3/4 en Router::add + Auth::guard (null=pÃºblica, ''=token, 'clave'=permiso). Endpoints /api/v1/auth/login|logout|me y /auth/users|roles con permiso 'auth.users.manage'. Seed CLI tools/init_admin.php idempotente (rol admin + permiso + usuario desde env, sin imprimir credenciales). Comportamientos: credenciales malas e inexistente -> 401 INVALID_CREDENTIALS idÃ©ntico, cuenta inactiva -> 403 ACCOUNT_DISABLED, reuso de token revocado -> 401, duplicado -> 409 DUPLICATE_NAME. .env.example: JWT_SECRET/JWT_TTL_SECONDS.",
+            "evidence": [
+                "php -l OK en los 16 archivos src/, public/ y tools/ del CP",
+                "tools/init_admin.php: rol admin (id 6) + permiso auth.users.manage (id 1) + usuario seed creados",
+                "tools/verify_cp_back02.php: RESULTADO: PASS (32/32 checks)",
+                "Checks clave: 401 sin token, token alterado 401, logout+reuso 401, RBAC 403->PUT rol->200, 409 duplicado, 400 validaciones, 429 throttle, 403 cuenta inactiva, sin password_hash en respuestas",
+                "Servidor de prueba detenido (sin procesos php en 8000/8001); fixtures desactivadas por borrado lÃ³gico"
+            ],
+            "files": [
+                "proyecto/06_codigo/src/Support/Jwt.php",
+                "proyecto/06_codigo/src/Support/Throttle.php",
+                "proyecto/06_codigo/src/Http/Auth.php",
+                "proyecto/06_codigo/src/Http/Router.php",
+                "proyecto/06_codigo/src/Models/Usuario.php",
+                "proyecto/06_codigo/src/Repositories/UsuarioRepository.php",
+                "proyecto/06_codigo/src/Repositories/RoleRepository.php",
+                "proyecto/06_codigo/src/Repositories/TokenBlacklistRepository.php",
+                "proyecto/06_codigo/src/Validators/AuthValidator.php",
+                "proyecto/06_codigo/src/Services/AuthService.php",
+                "proyecto/06_codigo/src/Services/UsuarioService.php",
+                "proyecto/06_codigo/src/Controllers/AuthController.php",
+                "proyecto/06_codigo/src/Controllers/UsuarioController.php",
+                "proyecto/06_codigo/public/index.php",
+                "proyecto/06_codigo/.env.example",
+                "proyecto/06_codigo/tools/init_admin.php",
+                "proyecto/06_codigo/tools/verify_cp_back02.php"
+            ],
+            "pending": [
+                "Endpoints /api/v1/auth/* no estÃ¡n en docs/openapi.yaml (quedÃ³ registrado como pendiente fuera de este CP)"
+            ],
+            "human_status": "APPROVED"
+        },
+        {
+            "checkpoint": "CP-BACK-03",
+            "date": "2026-10-05",
+            "result": "PASS",
+            "summary": "ConfiguraciÃ³n operativa completa: ops_stores (codigo UNIQUE global), ops_registers (UNIQUE(store_id,codigo)), system_config (PK config_key + CHECK store.* requiere store_id). Capas Model/Repository/Service/Validator/Controller replicando el patrÃ³n Catalog. Turnos de caja modelados en system_config como clave register.shift.<id> (value_type json, estado abierto/cerrada con abierto_por/abierto_at/cerrado_por/cerrado_at), store_id = sucursal de la caja, por clave (sin historial) con regla doble: open -> 409 SHIFT_ALREADY_OPEN, close sin turno -> 409 SHIFT_NOT_OPEN. Escrituras protegidas con permiso nuevo 'ops.config.manage' (seed idempotente en init_admin.php); lecturas requieren solo token. 14 endpoints: GET/POST /ops/stores, GET/PUT/DELETE /ops/stores/{id}, GET/POST /ops/registers (+?store_id=), GET/PUT/DELETE /ops/registers/{id}, GET /registers/{id}/shift, POST .../shift/open, POST .../shift/close, GET /ops/config (+?store_id=), GET/PUT /ops/config/{key} (upsert). Validaciones: codigo ^[A-Za-z0-9_-]$ 1-20, nombre 1-150, store_id requerido int>=1 estricto, config key ^[A-Za-z0-9_.-]$, value <=4000 chars con value_type (texto/numero/booleano/json) validado; store_id inexistente -> 409 NOT_FOUND; duplicados -> 409 DUPLICATE_CODE. DELETE = borrado logico (204, luego 404) sin DELETE FROM. ConfigService::listar pagina en memoria (ponytail:).",
+            "evidence": [
+                "php -l OK en los 14 archivos src/, public/ y tools/ del CP",
+                "tools/init_admin.php: permiso ops.config.manage (id 2) creado y vinculado al rol admin (id 6)",
+                "tools/verify_cp_back03.php: RESULTADO: PASS (52/52 checks)",
+                "Checks clave: 401 sin token, GET 200 con token sin permiso vs POST/PUT/DELETE 403 FORBIDDEN, CRUD 201/200/400/404/409/204, ciclo de turno abierto->doble open 409->close->close 409, config upsert 200 + 404 + validaciones 400 + store.* 400/409/200",
+                "Servidor de prueba 127.0.0.1:8000 detenido; fixtures de usuario inactivadas (borrado logico)",
+                "MySQL 8.4 acepta INSERT ... ON DUPLICATE KEY UPDATE ... VALUES() (verificado en upsert create/update)"
+            ],
+            "files": [
+                "proyecto/06_codigo/src/Models/Sucursal.php",
+                "proyecto/06_codigo/src/Models/Caja.php",
+                "proyecto/06_codigo/src/Repositories/SucursalRepository.php",
+                "proyecto/06_codigo/src/Repositories/CajaRepository.php",
+                "proyecto/06_codigo/src/Repositories/ConfigRepository.php",
+                "proyecto/06_codigo/src/Validators/OpsValidator.php",
+                "proyecto/06_codigo/src/Services/SucursalService.php",
+                "proyecto/06_codigo/src/Services/CajaService.php",
+                "proyecto/06_codigo/src/Services/ConfigService.php",
+                "proyecto/06_codigo/src/Controllers/SucursalController.php",
+                "proyecto/06_codigo/src/Controllers/CajaController.php",
+                "proyecto/06_codigo/src/Controllers/ConfigController.php",
+                "proyecto/06_codigo/public/index.php",
+                "proyecto/06_codigo/tools/init_admin.php",
+                "proyecto/06_codigo/tools/verify_cp_back03.php"
+            ],
+            "assumptions": [
+                "Turnos modelados como claves register.shift.<id> en system_config: sin historial (la apertura sobrescribe el valor); upgrade path = tabla ops_shifts cuando se requiera auditoria de turnos. Race check-then-write: ultimo escritor gana.",
+                "Sin chequeo de dependencias al inactivar una sucursal (sus cajas quedan tambien inactivables).",
+                "Residuos de prueba: claves test.cp3.* permanecen en system_config (sin DELETE FROM en este CP)."
+            ],
+            "pending": [
+                "Endpoints /api/v1/ops/* no estan en docs/openapi.yaml (pendiente fuera de este CP, igual que /api/v1/auth/*)"
+            ],
+            "human_status": "APPROVED"
+        },
+        {
+            "checkpoint": "CP-BACK-04",
+            "date": "2026-10-05",
+            "result": "PASS",
+            "summary": "Modulo Catalog completo (7 recursos): productos (catalog_products + junction catalog_product_categories), precios y promociones (append-only), y directorios proveedores/pacientes/prescriptores. Capa Model/Repository/Service/Validator/Controller replicando el patron Catalog, rutas registradas en public/index.php (lecturas requieren token, escrituras permiso nuevo 'catalog.manage' con seed idempotente en init_admin.php), DELETE = borrado logico (204 -> 404) o cierre de vigencia por PUT (precios/promos), pacientes anonimizan PII. Validaciones: SKU/identificacion UNIQUE -> 409, fechas Y-m-d con round-trip, descuento_pct en (0,100], condicion_venta enum, sincronizacion de categorias por reemplazo completo. Sin DELETE FROM fuera de los patrones preexistentes (junction/Blacklist/roles). Verificacion E2E independiente: 74/74 PASS.",
+            "evidence": [
+                "php -l OK: src/ completo + public/index.php + tools/init_admin.php + tools/verify_cp_back04.php",
+                "tools/init_admin.php: permiso catalog.manage (id 3) creado y vinculado al rol admin (id 6)",
+                "tools/verify_cp_back04.php: RESULTADO: PASS (74/74 checks, servidor 127.0.0.1:8000 detenido tras la corrida)",
+                "Checks clave: 401 sin token (GET/POST/PUT/DELETE), RBAC 200 lectura vs 403 FORBIDDEN escritura con usuario sin catalog.manage, productos 201/409 DUPLICATE_SKU/400/404 + PUT 200 (reemplazo completo), subrecurso categorias 200 {product_id,categories:[id+nombre]} + 409 NOT_FOUND + vaciado [], precios 201/409 DUPLICATE_PRICE/400 negativo/409 FK inexistente + PUT 200 + DELETE 404 (ruta inexistente), promos 201/400 sin alcance/pct 0/hasta<desde/409 + PUT 200, directorios 201/409 DUPLICATE_IDENTIFICATION/400 + DELETE 204 -> GET 404, anonimizacion de paciente",
+                "Limpieza E2E: category/store fixture -> DELETE 204; sin procesos php residuales en 8000; JWT_SECRET anadido a .env local (gitignored, .env.example ya lo documentaba)"
+            ],
+            "files": [
+                "proyecto/06_codigo/src/Models/Producto.php",
+                "proyecto/06_codigo/src/Models/Proveedor.php",
+                "proyecto/06_codigo/src/Models/Paciente.php",
+                "proyecto/06_codigo/src/Models/Prescriptor.php",
+                "proyecto/06_codigo/src/Models/Precio.php",
+                "proyecto/06_codigo/src/Models/Promocion.php",
+                "proyecto/06_codigo/src/Repositories/ProductoRepository.php",
+                "proyecto/06_codigo/src/Repositories/ProveedorRepository.php",
+                "proyecto/06_codigo/src/Repositories/PacienteRepository.php",
+                "proyecto/06_codigo/src/Repositories/PrescriptorRepository.php",
+                "proyecto/06_codigo/src/Repositories/PrecioRepository.php",
+                "proyecto/06_codigo/src/Repositories/PromocionRepository.php",
+                "proyecto/06_codigo/src/Validators/ProductoValidator.php",
+                "proyecto/06_codigo/src/Validators/DirectorioValidator.php",
+                "proyecto/06_codigo/src/Validators/CatalogValidator.php",
+                "proyecto/06_codigo/src/Services/ProductoService.php",
+                "proyecto/06_codigo/src/Services/ProveedorService.php",
+                "proyecto/06_codigo/src/Services/PacienteService.php",
+                "proyecto/06_codigo/src/Services/PrescriptorService.php",
+                "proyecto/06_codigo/src/Services/PrecioService.php",
+                "proyecto/06_codigo/src/Services/PromocionService.php",
+                "proyecto/06_codigo/src/Controllers/ProductoController.php",
+                "proyecto/06_codigo/src/Controllers/ProveedorController.php",
+                "proyecto/06_codigo/src/Controllers/PacienteController.php",
+                "proyecto/06_codigo/src/Controllers/PrescriptorController.php",
+                "proyecto/06_codigo/src/Controllers/PrecioController.php",
+                "proyecto/06_codigo/src/Controllers/PromocionController.php",
+                "proyecto/06_codigo/public/index.php",
+                "proyecto/06_codigo/tools/init_admin.php",
+                "proyecto/06_codigo/tools/verify_cp_back04.php"
+            ],
+            "assumptions": [
+                "RBAC: lecturas /catalog/* con solo token (''), escrituras con permiso nuevo 'catalog.manage' (mismo patron que ops.config.manage). A validar con el cliente/contrato.",
+                "PUT de catalog_* es REEMPLAZO COMPLETO: los validadores exigen todos los campos obligatorios (parcial -> 400 VALIDATION_ERROR).",
+                "GET /products/{id}/categories devuelve {product_id, categories:[{id,nombre}]} (no array plano).",
+                "Rutas /catalog/categories (CP-BACK-01) siguen publicas (null): fuera de alcance de este CP.",
+                "DELETE FROM en src/ solo en patrones preexistentes: junction catalog_product_categories (reemplazo de asociaciones, ProductoRepository:210), purge de token_blacklist y auth_user_roles.",
+                "Residuo de prueba persistente por diseno append-only: filas de catalog_prices/catalog_promotions con vigencias cerradas via UPDATE, posibles filas de catalog_categories creadas en el test (inactivadas), usuarios cat_t_* creados para el test de 403 (inactivados).",
+                "JWT_SECRET anadido a .env local (gitignored) porque sin el, login y verificacion de tokens dan 500 CONFIG_ERROR.",
+                "PromocionRepository::existeAlcance declarado (?int, ?int) en vez de (int, ?int): product_id opcional para poder evaluar filtro de categoria. A validar.",
+                "productoExiste en PrecioRepository NO filtra estado (literal del SQL del contrato) mientras PromocionRepository si filtra estado='activo': asimetria intencional, a validar.",
+                "Mensajes no especificados en el contrato: 'precio'/'descuento_pct'/'vigente_desde'/'desde'/'hasta' obligatorios; formato Y-m-d invalido; 'hasta' >= 'desde'; 'precio' <= 9999999999.99; 404 promocion = 'Promocion no encontrada.'",
+                "CatalogValidator::numero acepta int/float/string numerico y normaliza con number_format(...,2) para los DECIMAL.",
+                "Helper texto() requerido por el CP queda sin uso: los listados de precios/promociones no tienen parametro q."
+            ],
+            "pending": [
+                "Endpoints no estan en docs/openapi.yaml (pendiente recurrente fuera de CP: /api/v1/auth/*, /api/v1/ops/*, /api/v1/catalog/*)",
+                "Supuestos a reportar/validar con el cliente en el ADR (RBAC catalog.manage, residuos append-only, asimetria estado en precio/promo)"
+            ],
+            "human_status": "APPROVED"
+        },
+        {
+            "checkpoint": "CP-BACK-05",
+            "date": "2026-10-05",
+            "result": "PASS",
+            "summary": "Compras y Recepciones completas: ordenes de compra (borrador->emitida->recibida/cancelada) y recepciones con vinculacion estricta de lote (RF-031, reception_item_id NOT NULL). Capas Model/Repository/Service/Validator/Controller (OrdenCompra, Recepcion), rutas /api/v1/purchases/* en public/index.php (lecturas con token, escrituras con permiso purchases.manage seedeado en init_admin.php). RN-07: recepcion solo sobre orden emitida (409 ORDER_NOT_ISSUED) y stock NO se mueve hasta confirmar (items con lot_id null). RN-09: idempotency_key poblada -> misma recepcion (201 idempotent_reused=false / 200 true). RF-032: al confirmar (T-3, transaccion) se crea inventory_lots en cuarentena 1:1 con el item, se suma inventory_stock, se registra inventory_movements entrada signo 1 ref recepcion (CA-10), se incrementa cantidad_recibida y se inserta outbox_events recepcion.confirmada estado pendiente. Cierre automatico de la orden al 100% (estado recibida). Cancelacion logica de ordenes (204 -> estado cancelada, fila visible, RNF-023) con 409 ORDER_NOT_CANCELLABLE / ORDER_HAS_RECEPTIONS / ORDER_NOT_DRAFT / RECEPTION_NOT_PENDING / DUPLICATE_LOT / ITEM_NOT_IN_ORDER / EXCEEDS_PENDING. Verificacion E2E independiente con checks directos de BD: 84/84 PASS.",
+            "evidence": [
+                "php -l OK: 11 archivos del CP (Models, Repositories, Validator, Services, public/index.php) + tools/verify_cp_back05.php",
+                "tools/init_admin.php: permiso purchases.manage (id 4) creado y vinculado al rol admin (id 6)",
+                "tools/verify_cp_back05.php: RESULTADO: PASS (84/84 checks, EXIT=0, servidor 127.0.0.1:8000 detenido tras la corrida)",
+                "Checks clave: 401 sin token (4), RBAC 200 lectura vs 7 escrituras 403 FORBIDDEN, ordenes 201/400 VALIDATION_ERROR/409 PRODUCT_NOT_FOUND/SUPPLIER_NOT_FOUND/DUPLICATE_NUMERO/404, PUT reemplazo en borrador 200 (emitida 409), emitir 200 -> re-emitir 409, DELETE 204 -> cancelada visible -> 409; recepciones RN-09 idempotencia (201 false/200 true), ITEM_NOT_IN_ORDER, EXCEEDS_PENDING, DUPLICATE_LOT, ORDER_NOT_ISSUED (borrador/recibida), 404, filtros ?estado invalido 400",
+                "Confirmacion T-3: 200 confirmada + lot_id asignado; doble confirmar/rechazar 409 RECEPTION_NOT_PENDING; cierre automatico 10/10 -> recibida",
+                "Checks directos de BD (6): purchase_reception_items id>0, inventory_lots cuarentena vinculado al item (RF-032), inventory_stock stock_available=4 solo al confirmar (RN-07), inventory_movements entrada|1|recepcion|id (CA-10), cantidad_recibida 4 -> 10, outbox_events recepcion.confirmada pendiente",
+                "Limpieza E2E: fixtures product2/supplier/store -> DELETE 204 (product1 y ordenes quedan referenciados); sin procesos php residuales en 8000"
+            ],
+            "files": [
+                "proyecto/06_codigo/src/Models/OrdenCompra.php",
+                "proyecto/06_codigo/src/Models/Recepcion.php",
+                "proyecto/06_codigo/src/Repositories/OrdenCompraRepository.php",
+                "proyecto/06_codigo/src/Repositories/RecepcionRepository.php",
+                "proyecto/06_codigo/src/Validators/CompraValidator.php",
+                "proyecto/06_codigo/src/Services/OrdenCompraService.php",
+                "proyecto/06_codigo/src/Services/RecepcionService.php",
+                "proyecto/06_codigo/src/Controllers/OrdenCompraController.php",
+                "proyecto/06_codigo/src/Controllers/RecepcionController.php",
+                "proyecto/06_codigo/public/index.php",
+                "proyecto/06_codigo/tools/init_admin.php",
+                "proyecto/06_codigo/tools/verify_cp_back05.php"
+            ],
+            "assumptions": [
+                "confirmar REQUIERE store_id en el body (FK invalida -> 404 NOT_FOUND, body ausente -> 400). Supuesto a validar con el cliente.",
+                "SI se inserta fila en outbox_events en T-3: agregado_tipo='recepcion', tipo_evento='recepcion.confirmada', estado='pendiente'. ctrl_ledger NO participa en este CP (es CP-09/10).",
+                "PUT de orden = reemplazo completo (DELETE+INSERT sobre purchase_order_items con ponytail:) SOLO en borradores sin recepciones; emitida/recibida -> 409 ORDER_NOT_DRAFT.",
+                "RBAC: lecturas /purchases/* con solo token (''), escrituras con purchases.manage (mismo patron que ops.config.manage/catalog.manage).",
+                "Filtro ?estado invalido -> 400 VALIDATION_ERROR en ambos listados (orders: borrador|emitida|recibida|cancelada; receptions: recibida|confirmada|rechazada).",
+                "Residuos de prueba: recepciones confirmadas/rechazadas, 3 ordenes (A cancelada, B recibida, C emitida con recepcion pendiente), lote/recepciones en BD (append-only, sin DELETE FROM); usuarios pch_* inactivables fuera de este CP."
+            ],
+            "pending": [
+                "Endpoints /api/v1/purchases/* no estan en docs/openapi.yaml (pendiente recurrente fuera de CP: /auth/*, /ops/*, /catalog/*, /purchases/*)",
+                "Supuestos del CP a reportar/validar con el cliente en el ADR (store_id obligatorio en confirmar, outbox en T-3, PUT reemplazo en borrador)"
+            ],
+            "human_status": "APPROVED"
+        },
+        {
+            "checkpoint": "CP-BACK-06",
+            "date": "2026-10-05",
+            "result": "PASS",
+            "summary": "Motor de Inventario y Trazabilidad FEFO completo: consulta de stock por sucursal con filtros y validacion de parametros, movimientos append-only, transferencias entre sucursales con idempotency_key y ciclo solicitada->despachada->recibida->cerrada (o rechazada), alertas de vencimiento con dedup en aplicacion y umbrales configurables via system_config, incidentes de consumo con doble autorizacion, y reservas temporales que no afectan inventory_stock. RBAC: lecturas /inventory/* con solo token, escrituras con inventory.manage y ajustes de incidente con inventory.adjust (ambos seedeados idempotentemente en init_admin.php). RN-02 sin stock negativo, RN-08 suma en destino al recibir, FEFO: liberar lote en cuarentena con CAS -> 409 LOT_NOT_QUARANTINE y despachar con lote no liberado -> 409 LOT_NOT_RELEASED con rollback verificado en BD. Validaciones: TRANSFER_SAME_STORE 400, FK inexistente 404, STOCK_NOT_ENOUGH 409, ITEM_NOT_IN_TRANSFER/VALIDATION_ERROR 400, EXCEEDS_DESPACHADA 409, DOUBLE_AUTH_REQUIRED/INCIDENT_NOT_OPEN/ALERT_NOT_OPEN/RESERVATION_NOT_PENDING 409. Verificacion E2E independiente con checks directos de BD: 128/128 PASS.",
+            "evidence": [
+                "php -l OK en src/ (modulos inventario, transferencias y reservas), public/index.php y tools/",
+                "tools/init_admin.php re-ejecutado: permisos inventory.manage (id 5) e inventory.adjust (id 6) vinculados al rol admin (id 6) -- causa raiz de los 65 FAIL de la primera corrida (admin sin permisos de inventario)",
+                "tools/verify_cp_back06.php: RESULTADO: PASS (128/128 checks, exit 0)",
+                "Historial de corridas: run 1 = 65 FAIL (permisos ausentes en BD); run 2 = 5 FAIL (el script leia data.estado y el servicio responde data.transferencia.estado); run 3 = PASS tras corregir los 5 checks de extraccion",
+                "Checks clave: 401 sin token (5 rutas), RBAC 200 lectura vs 7 escrituras 403 FORBIDDEN, liberar lote 200 / 409 / 400 / 404, idempotencia de transferencia (201 reused=false / 200 reused=true mismo id), ciclo completo de estados T1 y rechazo T2, despachar lote en cuarentena 409 con rollback (stock sin cambio), doble autorizacion de incidente (409 proponente -> 200 segundo usuario), alertas dedup (creadas>=1 -> 0), reservas no tocan inventory_stock",
+                "9 checks directos de BD: stock A lot1=4 tras despachar, B lot1=2 tras recibir, A lot2=4 tras despachar fallido (rollback), A lot1=3 tras ajuste, movimiento ajuste_baja -1 con proponente <> autorizador, y stock final A lot1=3 / A lot2=4 / B lot1=2 / sin stock negativo (RN-02)",
+                "Servidor de prueba 127.0.0.1:8000 detenido (php PID 1596); sin procesos php residuales del CP"
+            ],
+            "files": [
+                "proyecto/06_codigo/src/Controllers/InventarioController.php",
+                "proyecto/06_codigo/src/Controllers/TransferenciaController.php",
+                "proyecto/06_codigo/src/Controllers/ReservaController.php",
+                "proyecto/06_codigo/src/Services/InventarioService.php",
+                "proyecto/06_codigo/src/Services/TransferenciaService.php",
+                "proyecto/06_codigo/src/Services/ReservaService.php",
+                "proyecto/06_codigo/src/Repositories/InventarioRepository.php",
+                "proyecto/06_codigo/src/Validators/InventarioValidator.php",
+                "proyecto/06_codigo/public/index.php",
+                "proyecto/06_codigo/tools/init_admin.php",
+                "proyecto/06_codigo/tools/verify_cp_back06.php"
+            ],
+            "assumptions": [
+                "Dedup de alertas de vencimiento en aplicacion (sin constraint unica en BD): una alerta abierta por (product_id, tipo) suprime la creacion; upgrade path = UNIQUE parcial o tabla de candidatas. A validar con el cliente.",
+                "RBAC: lecturas /inventory/* con solo token (''), escrituras inventory.manage y ajustes inventory.adjust (mismo patron que los CP anteriores). A validar con el contrato.",
+                "Reservas usan columna status (pending|confirmed|expired|cancelled) mientras transferencias/incidentes/alertas usan estado; reservas solo comprometen stock, no descuentan inventory_stock.",
+                "Doble autorizacion de incidente: segundo usuario distinto al proponente con permiso inventory.adjust, sin limite de tiempo ni rol especifico. A validar con el cliente.",
+                "Filtros invalidos de listados -> 400 VALIDATION_ERROR (mismo patron que CP anteriores); limite de paginacion max 1000.",
+                "Residuos de prueba: lotes, transferencias, incidentes, reservas y alertas de las corridas permanecen en BD (append-only, sin DELETE FROM); usuarios fix_*/adj_* creados para el test quedan como huérfanos (mismo patron que CP-BACK-05)."
+            ],
+            "pending": [
+                "Endpoints /api/v1/inventory/* no estan en docs/openapi.yaml (pendiente recurrente fuera de CP: /auth/*, /ops/*, /catalog/*, /purchases/*)",
+                "Supuestos del CP a reportar/validar con el cliente en el ADR (dedup de alertas en app, RBAC inventory.manage/adjust, reservas sin descuento de stock, doble autorizacion sin plazo)"
+            ],
+            "human_status": "APPROVED"
+        },
+        {
+            "checkpoint": "CP-BACK-07",
+            "date": "2026-10-05",
+            "result": "PASS",
+            "summary": "Recetas medicas (rx_prescriptions + rx_prescription_items) con 4 endpoints: GET /api/v1/rx/prescriptions (filtros patient_id/prescriber_id, paginacion), POST (201, respuesta {prescripcion, items}), GET /{id} y POST /{id}/dispensar (200, respuesta con items y saldo). Opcion A: NO toca stock ni kardex (inventory_movements.ref_tipo sin 'rx'), solo saldo global con CAS: UPDATE ... cantidad_dispensada + ? <= cantidad_prescrita, rowCount 0 -> 409 RX_SALDO_INSUFICIENTE con rollback verificado en BD (cubierto por CHECK chk_rxpi_saldo en DDL). rx_prescriptions sin columna estado (append-only). RBAC: lecturas con solo token, POST/dispensar con permiso rx.manage (seed id 7 en init_admin.php). Validaciones 400: body vacio/no-JSON, patient_id/prescriber_id/product_id no enteros, fecha Y-m-d con checkdate, items vacios/duplicados/cantidad 0/501 items, paginacion limit<=100 y page>=1; 404: prescriptor/paciente/producto/receta inexistente; 409: prescriptor/paciente inactivo o anonimizado, producto inactivo, producto sin condicion receta|controlado, saldo insuficiente. Multi-item atomico (T-1): parcial invalido -> rollback completo de todos los items. Verificacion E2E independiente con checks directos de BD: 74/74 PASS.",
+            "evidence": [
+                "php -l OK: RecetaRepository/RecetaService/RecetaController + public/index.php + tools/verify_cp_back07.php",
+                "tools/init_admin.php re-ejecutado: permiso rx.manage (id 7) vinculado al rol admin (id 6)",
+                "tools/verify_cp_back07.php: RESULTADO: PASS (74/74 checks, servidor 127.0.0.1:8000 detenido tras la corrida)",
+                "Historial: run 1 = 2 FAIL (limpieza duplicada de patient2/prescriber2 ya borrados en seccion 409 -> 409/404); run 2 = PASS tras eliminar el doble DELETE",
+                "Checks clave: 401 en los 4 endpoints, login rx.manage, RBAC (lectura 200 vs escritura 403), 400 (body vacio, crudo, fecha invalida, items vacios, duplicado, 501 items, limit/page), 404 x4, 409 x4, crear 201 con chequeo de respuesta y DB, filtros y paginacion, dispensar parcial 2/5 -> version 1, exceder saldo 409 con rollback, completar -> saldo 0, multi-item atomico con rollback, integridad final (sin saldo negativo, sin items huerfanos, ref_tipo='rx' = 0)",
+                "Limpieza E2E: DELETE pacientes/prescriptores fixtures -> 204; productos fixtures no borrados (referenciados por rx_items); sin procesos php residuales en 8000"
+            ],
+            "files": [
+                "proyecto/06_codigo/src/Repositories/RecetaRepository.php",
+                "proyecto/06_codigo/src/Services/RecetaService.php",
+                "proyecto/06_codigo/src/Controllers/RecetaController.php",
+                "proyecto/06_codigo/public/index.php",
+                "proyecto/06_codigo/tools/init_admin.php",
+                "proyecto/06_codigo/tools/verify_cp_back07.php"
+            ],
+            "assumptions": [
+                "Opcion A (alcance CP-07): dispensacion NO descuenta stock ni escribe inventory_movements/kardex (ref_tipo='rx' = 0); vinculo con stock diferido a CP-08. A validar con el cliente.",
+                "Doble conteo/stock-out con vinculo rx diferido a CP-BACK-08 (reutilizara aumentarDispensado).",
+                "RN-09 idempotency_key NO cubierta en dispensar (sin idempotency_keys) -> pendiente CP-08.",
+                "audit_pii_access (RF-091) fuera de alcance de este CP.",
+                "CAS concurrente cubierto por implementacion (UPDATE condicional) + CHECK chk_rxpi_saldo, no probado en paralelo en E2E.",
+                "rx_prescriptions sin columna estado (append-only); numero_referencia sin UNIQUE; dispensar no recibe userId.",
+                "RBAC: lecturas /rx/* con solo token (''), POST y dispensar con rx.manage (mismo patron que CP anteriores). A validar con el contrato."
+            ],
+            "pending": [
+                "Endpoints /api/v1/rx/* no estan en docs/openapi.yaml (pendiente recurrente fuera de CP: /auth/*, /ops/*, /catalog/*, /purchases/*, /inventory/*)",
+                "Supuestos del CP a reportar/validar con el cliente en el ADR (Opcion A sin stock/kardex, RN-09 diferida, audit_pii fuera de alcance, RBAC rx.manage)"
+            ],
+            "human_status": "APPROVED",
+            "human_validation": {
+                "date": "2026-10-05",
+                "by": "Cliente (via question en la sesion)",
+                "decision": "APROBADO implicitamente al autorizar continuar con CP-BACK-08 (regla de desarrollo incremental: se valida el CP anterior antes de ejecutar el siguiente)."
+            }
+        },
+        {
+            "checkpoint": "CP-BACK-08",
+            "date": "2026-10-05",
+            "result": "PASS",
+            "summary": "Motor de Ventas POS, Pagos y Devoluciones completo (RF-050/RF-060, RN-01/09/10): 8 endpoints /api/v1/sales/* cableados en public/index.php (lecturas con token, escrituras con permiso nuevo sales.manage seedeado en init_admin.php). POST /sales/orders descuenta stock por lote de forma atomica y escribe kardex (salida, signo -1, ref_tipo=venta); /payments acumula y transiciona pendiente->pagada por suma (CAS + lock FOR UPDATE); /returns reingresa condicion vendible al stock y da de baja no_vendible (ref_tipo=devolucion); /anular repone stock con movimientos compensatorios (RN-10: la orden original no se borra, cambia de estado). Validaciones 400/404/409: store/register/paciente/lote, caja ajena a la sucursal (409 REGISTER_NOT_IN_STORE), lote en cuarentena (409 LOT_NOT_RELEASED), lote vencido (409 LOT_EXPIRED), pago excedido (409 PAYMENT_EXCEEDS_DUE), orden no pendiente (409 ORDER_NOT_PENDING), item ajeno (409 ITEM_NOT_IN_ORDER), devolucion excedida (409 RETURN_EXCEEDS_SOLD), re-anulacion (409 ORDER_NOT_CANCELLABLE). RN-09 idempotencia en orden y pago. Verificacion E2E independiente con checks directos de BD: 116/116 PASS.",
+            "bugs_corregidos": [
+                "VentaController: firmas : Response -> : void (Response::json() devuelve void); producia TypeError y 500 en los 8 endpoints.",
+                "VentaController: Request::query() no existe -> $_GET (convencion del resto de controladores).",
+                "VentaService listarDevoluciones: $pag['limit]] con comilla mal cerrada -> error de parseo de PHP; todos los endpoints de venta devolvian 500.",
+                "VentaService: deteccion de duplicado 1062 con $e->getCode() -> $e->errorInfo[1] (convencion del codebase); el fallback de carrera de idempotencia no se disparaba."
+            ],
+            "evidence": [
+                "php -l OK en src/, public/ y tools/ (0 archivos con error)",
+                "tools/init_admin.php: permiso sales.manage (id 8) creado y vinculado al rol admin (id 6)",
+                "tools/verify_cp_back08.php: RESULTADO: PASS (116/116 checks, EXIT=0)",
+                "Checks clave: 401 en las 6 rutas, RBAC 200 lectura vs 403 FORBIDDEN escritura, 10x400 VALIDATION_ERROR, 404 STORE/PATIENT/LOT/ORDER/RETURN_NOT_FOUND, 409 REGISTER_NOT_IN_STORE/LOT_NOT_RELEASED/LOT_EXPIRED/PAYMENT_EXCEEDS_DUE/ORDER_NOT_PENDING/ITEM_NOT_IN_ORDER/RETURN_EXCEEDS_SOLD/ORDER_NOT_CANCELLABLE, venta 201 con total calculado, idempotencia de orden y pago (200 reused=true, misma entidad, sin duplicado)",
+                "9 checks directos de BD: stock inicial lot1=6 lot2=4 lot3=5; descuento 6->4 y 4->1; 2 movimientos salida signo -1 ref_tipo=venta; 1 sola orden por idempotency_key sin doble descuento; 2 pagos sin doble cargo; reingreso vendible 4->5 + movimiento devolucion signo +1; no_vendible sin reingreso; repuesto por anulacion 5->7 y 1->4; 2 movimientos compensatorios",
+                "Regresion: verify_cp08 (piloto catalog_categories) PASS y verify_cp_back07 (rx) PASS tras los cambios en public/index.php y init_admin.php",
+                "Servidor de prueba 127.0.0.1:8000 detenido al finalizar la corrida"
+            ],
+            "files": [
+                "proyecto/06_codigo/public/index.php",
+                "proyecto/06_codigo/tools/init_admin.php",
+                "proyecto/06_codigo/tools/verify_cp_back08.php",
+                "proyecto/06_codigo/src/Controllers/VentaController.php",
+                "proyecto/06_codigo/src/Services/VentaService.php",
+                "proyecto/06_codigo/src/Repositories/VentaRepository.php",
+                "proyecto/06_codigo/src/Validators/VentaValidator.php"
+            ],
+            "assumptions": [
+                "RN-09 idempotencia por columna idempotency_key + UNIQUE en sales_orders y payments_transactions, NO por la tabla idempotency_keys (patron ya usado en CP-BACK-05 purchase_receptions y CP-BACK-06 inventory_transfers). La tabla idempotency_keys queda sin usar; upgrade path = request_hash + expires_at (retencion 30 dias de decisiones_dase_Datos.md seccion 6). A validar con el cliente.",
+                "RBAC: lecturas /sales/* con solo token (\"\"); escrituras con permiso nuevo sales.manage (mismo patron que ops.config.manage/catalog.manage/purchases.manage/inventory.manage/rx.manage). A validar con el contrato.",
+                "La orden NO transiciona a estado devuelta (el CHECK chk_so_devuelta_con_paciente exige paciente_id): la politica RF-100 queda pendiente con el cliente. Reingreso de stock y saldos si se registran.",
+                "anular repone el 100% de los items de la orden sin descontar lo ya devuelto: una orden pagada y devuelta parcialmente, al anularse, repone stock de mas. A validar con el cliente (politica de anulacion).",
+                "pagar no toca stock ni kardex (el stock ya se desconto al crear la orden). payments_transactions no tiene usuario_id: el usuario queda en sales_orders.usuario_id.",
+                "payments_transactions.status se fija en aprobado (no hay pasarela de pago): pendiente/rechazado/reembolsado no se usan en este CP.",
+                "Residuos de prueba: ordenes, pagos, devoluciones, lotes y movimientos de la corrida permanecen en BD (append-only, sin DELETE FROM); usuarios pos_* y vfy_cp8_* creados para el test; permiso sales.manage (id 8) creado."
+            ],
+            "pending": [
+                "Endpoints /api/v1/sales/* no estan en docs/openapi.yaml (pendiente recurrente fuera de CP: /auth/*, /ops/*, /catalog/*, /purchases/*, /inventory/*, /rx/*)",
+                "Supuestos del CP a reportar/validar con el cliente en el ADR (idempotencia por columna vs tabla idempotency_keys, RBAC sales.manage, politica de anulacion con devoluciones previas, RF-100 estado devuelta)"
+            ],
+            "human_status": "APPROVED",
+            "human_validation": {
+                "date": "2026-10-05",
+                "by": "Cliente (mensaje \"aprobar\")",
+                "decision": "APROBADO el motor de Ventas POS, Pagos y Devoluciones (116/116). Autoriza continuar con CP-BACK-09."
+            }
+        },
+        {
+            "checkpoint": "CP-BACK-09",
+            "date": "2026-10-05",
+            "result": "PASS",
+            "summary": "Libro Oficial de Medicamentos Controlados y Saldos (RF-045/046/055/071, RN-05/06, RNF-021/024/046): modulo Ctrl (Repository/Validator/Service/Controller) sobre ctrl_ledger_entries (append-only, solo INSERT) y ctrl_balances (saldo permanente por sucursal y producto). 5 endpoints /api/v1/control/* (lecturas con token, ajustes con permiso nuevo control.manage): GET /ledger con filtros store_id/product_id/tipo/ref_tipo/desde/hasta para reportes por periodo (RF-071), GET /ledger/{id}, GET /balances con saldo_calculado y conciliado, GET /reconciliation (conciliacion automatica de saldos, RNF-024) y POST /adjustments (ajuste con doble autorizacion RF-046: proponente != autorizador, chk_cle_doble_autorizacion + chk_cle_ajuste_autorizado). RF-055 \"asiento obligatorio en cada movimiento de controlado\" implementado con un UNICO hook en InventarioRepository::insertarMovimiento: si el producto es controlado, escribe el asiento en la misma transaccion que el movimiento de inventario (RNF-021), mapeando tipo y ref_tipo al enum del libro y encadenando saldo_resultante bajo lock. Verificacion E2E independiente con checks directos de BD: 97/97 PASS.",
+            "correcciones_durante_el_cp": [
+                "La conciliacion comparaba ctrl_balances.saldo contra SUM(CASE tipo ...) y dejaba los asientos tipo ajuste en 0 (el CHECK chk_cle_cantidad obliga cantidad > 0 y el tipo ajuste no guarda signo explicito). Corregido: saldo_calculado = ultimo saldo_resultante de la cadena de asientos, que equivale a la suma firmada (3 FAIL -> 0 FAIL).",
+                "RecepcionRepository::insertarMovimientoEntrada insertaba directamente en inventory_movements y se habria saltado el hook del libro. Reescrito para delegar en InventarioRepository::insertarMovimiento (mismo INSERT, mas el hook RF-055)."
+            ],
+            "evidence": [
+                "php -l OK en src/, public/ y tools/ (0 archivos con error)",
+                "tools/init_admin.php: permiso control.manage (id 9) creado y vinculado al rol admin (id 6)",
+                "tools/verify_cp_back09.php: RESULTADO: PASS (97/97 checks, EXIT=0)",
+                "Checks clave: 401 en las 4 rutas, RBAC 200 lectura vs 403 FORBIDDEN ajustes, 6x400 VALIDATION_ERROR en el ajuste, 404 PRODUCT_NOT_FOUND/LOT_NOT_FOUND/USER_NOT_FOUND/LEDGER_ENTRY_NOT_FOUND, 409 PRODUCT_NOT_CONTROLLED/LOT_NOT_FOR_PRODUCT/DOUBLE_AUTH_REQUIRED/STOCK_NOT_ENOUGH, filtro por periodo RF-071 (desde/hasta) con 400 en fechas invalidas",
+                "17 checks directos de BD: asiento de entrada 10 u por recepcion (ref recepcion), producto libre sin asientos (alcance del libro), ajuste baja 3 (saldo 7, stock 10->7, movimiento con proponente y autorizador), ajuste incremento 2 (saldo 9), salida 2 u por venta (ref venta), devolucion 1 u (saldo 8), anulacion 2 u (saldo 10), transferencia_out en origen (saldo 10->9) y transferencia_in en destino (saldo 0->1), 8 asientos totales",
+                "Regresion tras los cambios: verify_cp_back08 (ventas POS) PASS, verify_cp_back07 (rx) PASS, verify_cp_back06 (inventario/transferencias) PASS, verify_cp08 (piloto catalog_categories) PASS",
+                "Servidor de prueba 127.0.0.1:8000 detenido al finalizar la corrida"
+            ],
+            "files": [
+                "proyecto/06_codigo/src/Repositories/CtrlRepository.php",
+                "proyecto/06_codigo/src/Validators/CtrlValidator.php",
+                "proyecto/06_codigo/src/Services/CtrlService.php",
+                "proyecto/06_codigo/src/Controllers/CtrlController.php",
+                "proyecto/06_codigo/src/Repositories/InventarioRepository.php",
+                "proyecto/06_codigo/src/Repositories/RecepcionRepository.php",
+                "proyecto/06_codigo/public/index.php",
+                "proyecto/06_codigo/tools/init_admin.php",
+                "proyecto/06_codigo/tools/verify_cp_back09.php"
+            ],
+            "assumptions": [
+                "RF-055 se cumple con un unico hook en InventarioRepository::insertarMovimiento: todo movimiento de un producto controlado genera asiento en la misma transaccion, sin tocar cada flujo. RecepcionRepository::insertarMovimientoEntrada se reescribio para delegar ahi (antes insertaba directo).",
+                "Mapeo movimiento -> asiento: entrada->entrada(+), salida->salida(-), devolucion->devolucion(+), transferencia_salida->transferencia_out(-), transferencia_entrada->transferencia_in(+), ajuste_baja->ajuste(-), ajuste_incremento->ajuste(+), compensatorio->devolucion(+) porque RN-10 la anulacion repone unidades. A validar con el cliente.",
+                "Mapeo ref_tipo inventario -> libro: venta/recepcion/transferencia/devolucion se conservan; incidente y manual -> ajuste (el enum de ctrl_ledger_entries no incluye incidente ni manual). ref_id = el del movimiento, o el id del movimiento cuando es 0.",
+                "El tipo ajuste del libro no guarda signo explicito (CHECK cantidad > 0): la conciliacion reconstruye el saldo desde la cadena de saldo_resultante (ultimo asiento), equivalente a la suma firmada. A validar si el cliente exige una SUM explicita.",
+                "RF-054 (sales_orders.quimico_verificador_id NOT NULL cuando condicion_venta <> libre) NO esta implementado: el metodo de verificacion del quimico sigue pendiente con el cliente y CP-BACK-08 no lo exige. Queda registrado como pendiente.",
+                "RBAC: lecturas /control/* con solo token (\"\"); ajustes con permiso nuevo control.manage (mismo patron que los CP anteriores). A validar con el contrato.",
+                "POST /control/adjustments no es idempotente: RN-09 lista cobro, dispensacion, recepcion y transferencia; el ajuste no esta incluido. A validar.",
+                "Residuos de prueba: asientos, saldos, movimientos, lotes, transferencias y ordenes de las corridas permanecen en BD (append-only, sin DELETE FROM); usuarios ctl_* y vfy_cp8_* creados para los tests; permiso control.manage (id 9) creado."
+            ],
+            "pending": [
+                "Endpoints /api/v1/control/* no estan en docs/openapi.yaml (pendiente recurrente fuera de CP: /auth/*, /ops/*, /catalog/*, /purchases/*, /inventory/*, /rx/*, /sales/*)",
+                "RF-054 verificacion del quimico farmaceutico al dispensar receta/controlado: sin decidir el metodo con el cliente.",
+                "Supuestos del CP a reportar/validar con el cliente en el ADR (mapeo compensatorio->devolucion, ref_tipo incidente/manual->ajuste, conciliacion por saldo_resultante, RBAC control.manage, sin idempotencia en ajustes)"
+            ],
+            "human_status": "APPROVED",
+            "human_validation": {
+                "date": "2026-10-05",
+                "by": "Cliente (mensaje \"aceptar y continuar\")",
+                "decision": "APROBADO el Libro Oficial de Controlados y Saldos (97/97). Autoriza continuar con CP-BACK-10."
+            }
+        },
+        {
+            "checkpoint": "CP-BACK-10",
+            "date": "2026-10-05",
+            "result": "PASS",
+            "summary": "Auditoria de Operaciones, Accesos PII y Eventos del Sistema (RF-090/091, RN-13, RNF-046/050, decision 16): modulo Audit (Support/Repository/Validator/Service/Controller) sobre audit_operations, audit_pii_access y outbox_events. 9 endpoints /api/v1/audit/* con permisos nuevos audit.read (consultas) y audit.manage (ciclo del outbox). RF-090: hook en Router::dispatch que registra toda mutacion (POST/PUT/DELETE) con usuario, accion, entidad, entidad_id, motivo y valores_despues redactados; si la auditoria no puede escribirse, la operacion no se ejecuta. RF-091 + RN-13: una fila por cada paciente o receta consultado/modificado, con hooks en PacienteController y RecetaController. RNF-050: redaccion de credenciales siempre y de PII (nombre, identificacion, contacto, fecha_nacimiento) cuando la ruta es de pacientes/recetas. Decision 16: outbox_events se publica en la misma transaccion del cambio (nuevo evento venta.registrada en VentaService, ademas de recepcion.confirmada) y el consumidor gobierna el ciclo pendiente -> procesado|fallido -> pendiente. Verificacion E2E independiente con checks directos de BD: 89/89 PASS.",
+            "correcciones_durante_el_cp": [
+                "RecetaController leia paciente_id de la respuesta, pero rx_prescriptions expone patient_id: los accesos a recetas no registraban el paciente asociado (RF-091 incompleto). Corregido el mapeo.",
+                "La transicion del outbox devolvia 409 EVENT_NOT_PENDING tambien para eventos inexistentes; ahora distingue 404 EVENT_NOT_FOUND de 409 por estado."
+            ],
+            "evidence": [
+                "php -l OK en src/, public/ y tools/ (0 archivos con error)",
+                "tools/init_admin.php: permisos audit.read (id 10) y audit.manage (id 11) creados y vinculados al rol admin (id 6)",
+                "tools/verify_cp_back10.php: RESULTADO: PASS (89/89 checks, EXIT=0)",
+                "Checks clave: 401 en las 4 rutas, RBAC 403 FORBIDDEN sin audit.read/audit.manage (acceso por rol RN-13), 400 en filtros invalidos (accion/estado/desde/hasta), 404 AUDIT_ENTRY_NOT_FOUND/EVENT_NOT_FOUND, 409 EVENT_NOT_PENDING/EVENT_NOT_FAILED, paginacion limit=1",
+                "RF-091: filas audit_pii_access por creacion/consulta/modificacion del paciente y por creacion/consulta/listado de recetas (chk_apii_objetivo cubierto)",
+                "RF-090 + RNF-050: audit_operations registra la mutacion con entidad y entidad_id; el contacto, la identificacion y el nombre del paciente NO se persisten ([REDACTADO]); la password nunca aparece; el nombre de un producto si se conserva (recurso no PII)",
+                "Decision 16: evento venta.registrada en outbox_events en la misma transaccion de la venta; ciclo fallar (intentos=1) -> reintentar -> procesar (procesado_at) verificado, con 409 al repetir transiciones",
+                "Regresion tras el hook transversal de Router: verify_cp_back09 PASS, verify_cp_back08 PASS, verify_cp_back07 PASS, verify_cp_back06 PASS, verify_cp08 (piloto) PASS",
+                "Servidor de prueba 127.0.0.1:8000 detenido al finalizar la corrida"
+            ],
+            "files": [
+                "proyecto/06_codigo/src/Support/Audit.php",
+                "proyecto/06_codigo/src/Repositories/AuditRepository.php",
+                "proyecto/06_codigo/src/Validators/AuditValidator.php",
+                "proyecto/06_codigo/src/Services/AuditService.php",
+                "proyecto/06_codigo/src/Controllers/AuditController.php",
+                "proyecto/06_codigo/src/Http/Router.php",
+                "proyecto/06_codigo/src/Http/Request.php",
+                "proyecto/06_codigo/src/Controllers/PacienteController.php",
+                "proyecto/06_codigo/src/Controllers/RecetaController.php",
+                "proyecto/06_codigo/src/Services/VentaService.php",
+                "proyecto/06_codigo/public/index.php",
+                "proyecto/06_codigo/tools/init_admin.php",
+                "proyecto/06_codigo/tools/verify_cp_back10.php"
+            ],
+            "assumptions": [
+                "RF-090: el hook vive en Router::dispatch y corre ANTES de la operacion, para POST/PUT/DELETE. Si la auditoria no puede escribirse, la operacion no se ejecuta (no hay acciones criticas sin registro). Tambien quedan registradas las operaciones que luego responden 400/404/409: son intentos de operacion critica. A validar con el cliente.",
+                "valores_antes queda siempre NULL: el router no conoce el estado previo de la entidad. Limitacion conocida; la captura de antes/despues por capa de servicio queda como pendiente de diseno.",
+                "valores_despues guarda el cuerpo de la peticion redactado: credenciales siempre (password/token/secret) y PII (nombre, identificacion, contacto, fecha_nacimiento) solo cuando la ruta es de pacientes o recetas. En otros recursos el nombre se conserva (RNF-050: no duplicar PII de pacientes).",
+                "RF-091 se interpreta como una fila por cada REGISTRO consultado (no por peticion): un listado de N pacientes o recetas genera N filas, que es lo que exige chk_apii_objetivo (paciente_id o prescription_id NOT NULL). A validar.",
+                "RBAC: las lecturas de auditoria exigen audit.read (no solo token) por RN-13 acceso por rol; el ciclo del outbox usa audit.manage. Difiere del patron lecturas con token de los modulos operativos. A validar con el cliente.",
+                "Outbox: se publica venta.registrada al crear una venta POS, ademas del recepcion.confirmada de CP-BACK-05. El consumidor externo esta fuera de alcance: el ciclo lo gobierna la API (procesar/fallar/reintentar).",
+                "audit_operations y audit_pii_access son append-only por convencion (ningun endpoint expone UPDATE/DELETE). La proteccion contra modificacion por usuarios operativos (RNF-046) depende de los permisos de BD: V1.2.0__grants.sql sigue sin aplicar (OPEN-API-07).",
+                "Residuos de prueba: filas de auditoria, accesos PII y eventos de las corridas permanecen (append-only); usuarios aud_*; fixtures de pacientes, prescriptores, productos, lotes y ordenes; permisos audit.read y audit.manage."
+            ],
+            "pending": [
+                "Endpoints /api/v1/audit/* no estan en docs/openapi.yaml (pendiente recurrente fuera de CP)",
+                "RF-090 valores_antes: falta el diseno de captura antes/despues por capa de servicio.",
+                "RNF-030 (MFA para administrador/auditor/quimico y reautenticacion del quimico al dispensar) y RF-054 siguen pendientes de definicion con el cliente.",
+                "Supuestos del CP a reportar/validar con el cliente en el ADR (hook antes de la operacion, una fila por registro, RBAC audit.read, venta.registrada en el outbox)"
+            ],
+            "human_status": "PENDING"
+        }
+    ]
 }
