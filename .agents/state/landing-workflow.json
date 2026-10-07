@@ -1,0 +1,153 @@
+{
+  "workflow": "07_landing_workflow",
+  "phase": "landing",
+  "scope": [
+    "landing publica comercial (proyecto/07_landing)",
+    "mercado Bolivia, moneda Bs.",
+    "7 categorias x 10 productos (70 productos demostrativos)",
+    "imagenes externas con licencia verificable (sin IA)",
+    "CTA configurable + WhatsApp placeholder"
+  ],
+  "current_checkpoint": "CP-LANDING-04",
+  "technical_status": "PASSED",
+  "human_status": "APPROVED",
+  "blocked": false,
+  "can_continue": false,
+  "blocked_by": null,
+  "next": "LANDING COMERCIAL ENTREGADA Y APROBADA (2026-10-07). Workflow 07 COMPLETO. Antes de publicar: reemplazar el numero de WhatsApp placeholder en data/config.json.",
+  "checkpoint_results": [
+    {
+      "checkpoint": "CP-LANDING-01",
+      "date": "2026-10-07",
+      "result": "PASSED",
+      "summary": "Configuracion base y arquitectura de proyecto/07_landing: estructura (index.html, assets/css, assets/js, components/, data/, tests/ + tests/results/), configuracion global data/config.json (mercado Bolivia, moneda Bs., CTA 'Solicitar Demo' configurable, WhatsApp con PLACEHOLDER marcado is_placeholder=true sin numero real, contacto placeholder, declaracion del catalogo 7 x 10 = 70), shell HTML semantico (lang=es, DOCTYPE, header/hero/footer minimos) sin alcance administrativo y sin dependencias externas, y JS vanilla que carga la configuracion (window.LANDING_CONFIG). Stack decidido: HTML + CSS + JS vanilla (registrado en decisiones_landing.md, pendiente de aprobacion) porque el workflow exige 'decisiones acordadas' y ese archivo no existia.",
+      "evidence": [
+        "node tests/validate_cp_landing_01.mjs => RESULTADO: PASSED (23/23)",
+        "Evidencia JSON: proyecto/07_landing/tests/results/cp-landing-01.json",
+        "Verificacion fisica: index.html, assets/css/main.css, assets/js/main.js, data/config.json, components/.gitkeep, tests/results/ presentes; node parsea config.json sin errores"
+      ],
+      "files": [
+        "proyecto/07_landing/index.html",
+        "proyecto/07_landing/assets/css/main.css",
+        "proyecto/07_landing/assets/js/main.js",
+        "proyecto/07_landing/data/config.json",
+        "proyecto/07_landing/tests/validate_cp_landing_01.mjs",
+        "proyecto/07_landing/tests/results/cp-landing-01.json",
+        "proyecto/04_decisiones/decisiones_landing.md"
+      ],
+      "assumptions": [
+        "Stack: HTML + CSS + JS vanilla sin build (el workflow permite varias opciones 'según decisiones acordadas' y decisiones_landing.md no existia; registrado como PROPUESTO para aprobacion del cliente).",
+        "documentos de contexto inexistentes al iniciar: decisiones_landing.md (creado como registro de decisiones), .agents/guides/{estructura,reglas,politica_imagenes}_landing.md y .agents/skills-landing-manifest.json (no creados; si aparecen, se reconcilian en el siguiente checkpoint).",
+        "Contacto y WhatsApp son placeholders configurables en data/config.json; no se inventaron datos reales."
+      ],
+      "pending": [
+        "Aprobacion del stack (HTML/CSS/JS vanilla) registrado en decisiones_landing.md",
+        "Guías de estructura/reglas/politica de imagenes y skills-landing-manifest.json ausentes: reconciliar si el cliente los aporta"
+      ],
+      "human_status": "APPROVED",
+      "human_validation": {
+        "date": "2026-10-07",
+        "by": "Cliente (mensaje 'continuar')",
+        "decision": "APROBADO CP-LANDING-01 (configuracion base y arquitectura). Autoriza continuar con CP-LANDING-02."
+      }
+    },
+    {
+      "checkpoint": "CP-LANDING-02",
+      "date": "2026-10-07",
+      "result": "PASSED",
+      "summary": "Datos del catalogo demostrativo data/catalog.json: exactamente 7 categorias del rubro farmaceutico x 10 productos = 70, con precios expresados en Bs. (coherentes con el mercado boliviano) e imagenes EXTERNAS de Wikimedia Commons con licencia verificable por archivo (CC BY, CC BY-SA, CC0, dominio publico, etc.) y pagina de origen (commons.wikimedia.org/wiki/File:...) para cada imagen, mas texto alternativo. Imagenes sin generacion por IA. Sourcing reproducible en tests/source_catalog_images.mjs (API abierta de Commons, reanudable, sin inventar URLs) y trazabilidad completa en tests/results/cp-landing-02-sources.json. Nota tecnica: Wikimedia aplica rate-limit a los originales; las imagenes usan thumbs de tamano estandar (thumb.wikimedia.org/.../330px-...) que es la practica recomendada por su politica de uso; 3 archivos menores al tamano de thumb se sirven como original y responden 200.",
+      "evidence": [
+        "node tests/validate_cp_landing_02.mjs => RESULTADO: PASSED (14/14)",
+        "70/70 URLs de imagen responden HTTP 200 (verificacion en vivo con barridos y enfriamiento ante 429)",
+        "Evidencia JSON: proyecto/07_landing/tests/results/cp-landing-02.json (incluye estado HTTP por URL) y cp-landing-02-sources.json (URL, licencia y fuente por producto)",
+        "Verificacion fisica: data/catalog.json, tests/source_catalog_images.mjs, tests/validate_cp_landing_02.mjs, tests/results/cp-landing-02*.json presentes"
+      ],
+      "files": [
+        "proyecto/07_landing/data/catalog.json",
+        "proyecto/07_landing/tests/source_catalog_images.mjs",
+        "proyecto/07_landing/tests/validate_cp_landing_02.mjs",
+        "proyecto/07_landing/tests/results/cp-landing-02.json",
+        "proyecto/07_landing/tests/results/cp-landing-02-sources.json"
+      ],
+      "assumptions": [
+        "Procedencia de imagenes: Wikimedia Commons (API abierta) elegido tras comprobar que Unsplash y Pexels bloquean la descarga programatica ('Authorization required'); cumple 'gratuitas, externas y con fuente/licencia verificable (Unsplash, Pexels, etc.)'. Si el cliente prefiere Unsplash/Pexels, se cambia el mapeo manteniendo la estructura.",
+        "Unsplash/Pexels quedan descartados para automatizacion sin API key; el cliente puede aportar un set de imagenes propias y se re-mapea.",
+        "Precios demostrativos en Bs. (rango coherente con farmacia boliviana); el cliente puede sustituirlos por su lista real."
+      ],
+      "pending": [
+        "Preferencia de proveedor de imagenes (Commons vs set propio del cliente) si difiere del usado"
+      ],
+      "human_status": "APPROVED",
+      "human_validation": {
+        "date": "2026-10-07",
+        "by": "Cliente (mensaje 'CONTINUAR')",
+        "decision": "APROBADO CP-LANDING-02 (datos del catalogo). Autoriza continuar con CP-LANDING-03."
+      }
+    },
+    {
+      "checkpoint": "CP-LANDING-03",
+      "date": "2026-10-07",
+      "result": "PASSED",
+      "summary": "Componentes UI y secciones comerciales completas en index.html + assets: Header/Navbar (logo, navegacion suave por anclas con scroll-behavior:smooth, boton CTA, badge Bolivia·Bs.), Hero con propuesta de valor (Gestion de stock FEFO, Ventas rapidas POS, Medicamentos controlados) orientada a Bolivia, Seccion de Beneficios (4 tarjetas: perdidas por vencimiento, cumplimiento normativo, ventas rapidas, trazabilidad por lote), Showroom/Catalogo demostrativo con filtro interactivo por las 7 categorias (chips con aria-pressed) que re-renderiza la grilla de 70 productos SIN recarga (render en cliente desde data/catalog.json, imagenes lazy con atribucion de licencia), CTA flotante + seccion Contacto con WhatsApp CONFIGURABLE (mientras is_placeholder=true el enlace va a #contacto - no se inventan numeros) y Footer con propiedad intelectual, enlaces legales placeholder y datos de contacto desde config.json. Diseno 100% responsivo (media queries + grillas auto-fit/auto-fill; verificado en capturas 1280px y 375px).",
+      "evidence": [
+        "node tests/validate_cp_landing_03.mjs => RESULTADO: PASSED (26/26)",
+        "Funcional verificado con stub: filtrarPorCategoria selecciona/totaliza correctamente, re-render sin recarga (sin location.reload/href), enlaceWhatsApp(#contacto con placeholder / wa.me con numero autorizado)",
+        "Capturas Edge headless con virtual-time-budget (el showroom renderiza 8 chips + 70 tarjetas con imagenes reales): tests/results/cp-landing-03-desktop.png (1280px) y cp-landing-03-mobile.png (375px)",
+        "Verificacion fisica: index.html, assets/css/main.css, assets/js/main.js, tests/validate_cp_landing_03.mjs, tests/results/cp-landing-03* presentes"
+      ],
+      "files": [
+        "proyecto/07_landing/index.html",
+        "proyecto/07_landing/assets/css/main.css",
+        "proyecto/07_landing/assets/js/main.js",
+        "proyecto/07_landing/tests/validate_cp_landing_03.mjs",
+        "proyecto/07_landing/tests/results/cp-landing-03.json",
+        "proyecto/07_landing/tests/results/cp-landing-03-desktop.png",
+        "proyecto/07_landing/tests/results/cp-landing-03-mobile.png"
+      ],
+      "assumptions": [
+        "CTA WhatsApp: con is_placeholder=true los botones apuntan a #contacto (la logica wa.me solo se activa con numero autorado); listo para el numero real en data/config.json.",
+        "Los chips de filtro son botones con aria-pressed y el grid usa aria-live=polite; el detalle de accesibilidad profunda se audita en CP-LANDING-04.",
+        "Las imagenes de Commons son semanticamente aproximadas en algunos productos (ej. 'Antigripal' con foto no literal); si el cliente quiere imagenes especificas, se re-mapean en data/catalog.json sin tocar la UI.",
+        "El showroom renderiza en cliente desde data/catalog.json; el filtrado no recarga la pagina."
+      ],
+      "pending": [
+        "Reemplazar numero de WhatsApp placeholder por el autorizado (config.json) antes de publicar"
+      ],
+      "human_status": "APPROVED",
+      "human_validation": {
+        "date": "2026-10-07",
+        "by": "Cliente (mensaje 'CONTINUAR')",
+        "decision": "APROBADO CP-LANDING-03 (componentes UI y secciones comerciales). Autoriza continuar con CP-LANDING-04."
+      }
+    },
+    {
+      "checkpoint": "CP-LANDING-04",
+      "date": "2026-10-07",
+      "result": "PASSED",
+      "summary": "Auditoria de politicas, accesibilidad y rendimiento (ultimo CP del workflow 07). POLITICAS: sin enlaces ni referencias a rutas administrativas (/login, /dashboard, /carrito, /checkout...), sin prompts de login/registro/panel, sin formularios, la landing no consume la API administrativa y la logica wa.me solo se activa tras validar is_placeholder (sin numeros inventados). IMAGENES: 70/70 URLs publicas funcionales (HTTP 200 en vivo, verificacion por barridos), alt no vacio en las 70 renderizadas, licencia y fuente verificable por archivo, lazy loading, sin IA. ACCESIBILIDAD ESTRUCTURAL: viewport, lang=es, ARIA (labels, live region, aria-pressed), landmark principal, foco visible. RENDIMIENTO: recursos nucleo 65.9 KB totales (< 1 MB), cada recurso < 500 KB, cargas locales 3-22 ms (< 500 ms) para /, main.css, main.js, catalog.json y config.json. Integracion visual: capturas renderizadas desktop/movil presentes y grilla completa de 70 productos verificada en render.",
+      "evidence": [
+        "node tests/validate_cp_landing_04.mjs http://127.0.0.1:8010 => RESULTADO: PASSED (29/29)",
+        "Evidencia JSON: proyecto/07_landing/tests/results/cp-landing-04.json (incluye metricas: bytes por recurso y tiempos de carga)",
+        "Verificacion en vivo de las 70 URLs de imagen dentro de la auditoria (HTTP 200)"
+      ],
+      "files": [
+        "proyecto/07_landing/tests/validate_cp_landing_04.mjs",
+        "proyecto/07_landing/tests/results/cp-landing-04.json"
+      ],
+      "assumptions": [
+        "Los tiempos de carga son contra el servidor local (php -S); sirven como referencia: el SLA de produccion depende del host elegido.",
+        "La auditoria de accesibilidad es estructural (sin lector de pantalla fisico); complementa las pruebas de integracion visual con capturas."
+      ],
+      "pending": [
+        "Aprobacion final de la landing (workflow 07 completo)",
+        "Reemplazar el numero de WhatsApp placeholder en data/config.json antes de publicar"
+      ],
+      "human_status": "APPROVED",
+      "human_validation": {
+        "date": "2026-10-07",
+        "by": "Cliente",
+        "decision": "APROBACION FINAL: la landing comercial publica esta validada y aprobada. PROYECTO COMPLETADO (workflow 07)."
+      }
+    }
+  ]
+}

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Sistema Farmacia: gestión integral para farmacias en Bolivia. Control de lotes, vencimientos FEFO, catálogo y punto de venta.">
+    <title>Sistema Farmacia — Gestión integral para farmacias en Bolivia</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+    <!-- CP-LANDING-03: secciones comerciales. Sin alcance administrativo. -->
+    <header class="site-header">
+        <a class="brand" href="#inicio">Sistema Farmacia</a>
+        <nav class="site-nav" aria-label="Navegación principal">
+            <a href="#beneficios">Beneficios</a>
+            <a href="#catalogo">Catálogo</a>
+            <a href="#contacto">Contacto</a>
+        </nav>
+        <a class="btn btn-primary btn-cta-header" id="cta-header" href="#contacto">Solicitar Demo</a>
+        <span class="market-badge" id="market-badge">Bolivia · Bs.</span>
+    </header>
+
+    <main id="contenido">
+        <section id="inicio" class="hero" aria-labelledby="hero-title">
+            <h1 id="hero-title">La gestión que tu farmacia en Bolivia necesita</h1>
+            <p class="hero-sub">
+                Control de medicamentos por lote, vencimientos FEFO, catálogo y punto de venta —
+                pensado para el mostrador boliviano.
+            </p>
+            <div class="hero-actions">
+                <a class="btn btn-primary" id="cta-hero" href="#contacto">Solicitar Demo</a>
+                <a class="btn btn-secondary" href="#catalogo">Ver catálogo demostrativo</a>
+            </div>
+            <ul class="hero-pills" aria-label="Capacidades principales">
+                <li>Gestión de stock FEFO</li>
+                <li>Ventas rápidas POS</li>
+                <li>Medicamentos controlados</li>
+            </ul>
+        </section>
+
+        <section id="beneficios" class="benefits" aria-labelledby="beneficios-title">
+            <h2 id="beneficios-title">Diseñado para la operación real de la farmacia</h2>
+            <div class="benefits-grid">
+                <article class="benefit-card">
+                    <h3>Cero pérdidas por vencimiento</h3>
+                    <p>Política FEFO automática: se vende siempre el lote más próximo a vencer y se alerta antes de que se venza.</p>
+                </article>
+                <article class="benefit-card">
+                    <h3>Cumplimiento normativo</h3>
+                    <p>Libro Oficial de Controlados con saldos permanentes, doble autorización y trazabilidad inalterable.</p>
+                </article>
+                <article class="benefit-card">
+                    <h3>Ventas rápidas en mostrador</h3>
+                    <p>Punto de venta táctil con búsqueda por código de barras, múltiples medios de pago y comprobante al instante.</p>
+                </article>
+                <article class="benefit-card">
+                    <h3>Trazabilidad por lote</h3>
+                    <p>Del ingreso a la venta: cada movimiento queda registrado, con retiro de lotes y conciliación de inventario.</p>
+                </article>
+            </div>
+        </section>
+
+        <section id="catalogo" class="showroom" aria-labelledby="catalogo-title">
+            <h2 id="catalogo-title">Catálogo demostrativo</h2>
+            <p class="section-sub">Una muestra de los <span id="catalogo-total">70</span> productos que el sistema ayuda a gestionar.</p>
+
+            <div class="filter-bar" id="filter-bar" role="group" aria-label="Filtrar por categoría"></div>
+
+            <div class="product-grid" id="product-grid" aria-live="polite"></div>
+            <p class="empty-state" id="catalogo-vacio" hidden>No hay productos en esta categoría.</p>
+        </section>
+
+        <section id="contacto" class="cta-section" aria-labelledby="contacto-title">
+            <h2 id="contacto-title">¿Listo para modernizar tu farmacia?</h2>
+            <p class="section-sub">
+                Solicita una demostración sin compromiso y conoce cómo adaptamos
+                Sistema Farmacia a tu operación.
+            </p>
+            <div class="cta-actions">
+                <a class="btn btn-primary" id="cta-contacto-demo" href="#contacto">Solicitar Demo</a>
+                <a class="btn btn-whatsapp" id="cta-whatsapp" href="#contacto">Contactar por WhatsApp</a>
+            </div>
+            <ul class="contact-list" id="contact-list">
+                <li id="contact-email">contacto@ejemplo.bo</li>
+                <li id="contact-address">La Paz, Bolivia</li>
+                <li id="contact-hours">Lunes a sábado 9:00 - 20:00</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <p id="footer-legal">Sistema Farmacia</p>
+        <nav class="footer-links" id="footer-links" aria-label="Enlaces legales"></nav>
+    </footer>
+
+    <!-- CTA flotante configurable (WhatsApp placeholder hasta que el cliente entregue el número) -->
+    <a class="float-cta" id="cta-whatsapp-float" href="#contacto" aria-label="Contactar por WhatsApp">WhatsApp</a>
+
+    <script src="assets/js/main.js"></script>
+</body>
+</html>

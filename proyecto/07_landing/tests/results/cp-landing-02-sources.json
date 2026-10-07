@@ -1,0 +1,498 @@
+{
+  "generated_at": "2026-10-07T21:14:59.290Z",
+  "provider": "Wikimedia Commons API",
+  "license_note": "Licencias verificables por archivo en image_source (página del archivo en Commons).",
+  "missing_images": [],
+  "products": [
+    {
+      "category": "medicamentos-receta",
+      "name": "Amoxicilina 500 mg — caja x 21 cápsulas",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1e/Amoxicillin.JPG/330px-Amoxicillin.JPG",
+      "image_license": "CC BY 3.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Amoxicillin.JPG"
+    },
+    {
+      "category": "medicamentos-receta",
+      "name": "Losartán 50 mg — caja x 30 comprimidos",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cd/000771lg_Cozaar_100_MG_Oral_Tablet.jpg/330px-000771lg_Cozaar_100_MG_Oral_Tablet.jpg",
+      "image_license": "Public domain",
+      "image_source": "https://commons.wikimedia.org/wiki/File:000771lg_Cozaar_100_MG_Oral_Tablet.jpg"
+    },
+    {
+      "category": "medicamentos-receta",
+      "name": "Metformina 850 mg — caja x 30 comprimidos",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/34/Metformin-from-xtal-3D-balls.png/330px-Metformin-from-xtal-3D-balls.png",
+      "image_license": "Public domain",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Metformin-from-xtal-3D-balls.png"
+    },
+    {
+      "category": "medicamentos-receta",
+      "name": "Omeprazol 20 mg — caja x 14 cápsulas",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/51/Omeprazol_2012-10-14-0779.jpg/330px-Omeprazol_2012-10-14-0779.jpg",
+      "image_license": "CC0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Omeprazol_2012-10-14-0779.jpg"
+    },
+    {
+      "category": "medicamentos-receta",
+      "name": "Cefalexina 500 mg — caja x 21 cápsulas",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1a/A_course_of_green_cefalexin_pills.jpg/330px-A_course_of_green_cefalexin_pills.jpg",
+      "image_license": "CC BY-SA 3.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:A_course_of_green_cefalexin_pills.jpg"
+    },
+    {
+      "category": "medicamentos-receta",
+      "name": "Azitromicina 500 mg — caja x 3 comprimidos",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/82/Sumamed_tablete_091208.jpg/330px-Sumamed_tablete_091208.jpg",
+      "image_license": "CC BY-SA 3.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Sumamed_tablete_091208.jpg"
+    },
+    {
+      "category": "medicamentos-receta",
+      "name": "Insulina NPH 100 UI/mL — vial 10 mL",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/54/Human_insulin_100IU-ml_vial_yellow_background.jpg/330px-Human_insulin_100IU-ml_vial_yellow_background.jpg",
+      "image_license": "CC BY 4.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Human_insulin_100IU-ml_vial_yellow_background.jpg"
+    },
+    {
+      "category": "medicamentos-receta",
+      "name": "Salbutamol inhalador 100 mcg — 200 dosis",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e4/Metered-dose_Inhaler.JPG/330px-Metered-dose_Inhaler.JPG",
+      "image_license": "CC BY-SA 3.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Metered-dose_Inhaler.JPG"
+    },
+    {
+      "category": "medicamentos-receta",
+      "name": "Warfarina 5 mg — caja x 30 comprimidos",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/59/Warfarintablets5-3-1.jpg/330px-Warfarintablets5-3-1.jpg",
+      "image_license": "CC BY-SA 3.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Warfarintablets5-3-1.jpg"
+    },
+    {
+      "category": "medicamentos-receta",
+      "name": "Prednisolona 5 mg — caja x 20 comprimidos",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/92/Sandoz.Methylprednisolone.4mg.jpg/330px-Sandoz.Methylprednisolone.4mg.jpg",
+      "image_license": "Public domain",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Sandoz.Methylprednisolone.4mg.jpg"
+    },
+    {
+      "category": "medicamentos-venta-libre",
+      "name": "Paracetamol 500 mg — caja x 20 comprimidos",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bf/Hydrocodone-paracetamol-5-500.jpg/330px-Hydrocodone-paracetamol-5-500.jpg",
+      "image_license": "Public domain",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Hydrocodone-paracetamol-5-500.jpg"
+    },
+    {
+      "category": "medicamentos-venta-libre",
+      "name": "Ibuprofeno 400 mg — caja x 20 comprimidos",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b0/200mg_ibuprofen_tablets.jpg/330px-200mg_ibuprofen_tablets.jpg",
+      "image_license": "CC BY-SA 3.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:200mg_ibuprofen_tablets.jpg"
+    },
+    {
+      "category": "medicamentos-venta-libre",
+      "name": "Loratadina 10 mg — caja x 10 comprimidos",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2d/Fortune_NT-Alergi_tablet_%28contains_Loratadine_10mg%29.jpg/330px-Fortune_NT-Alergi_tablet_%28contains_Loratadine_10mg%29.jpg",
+      "image_license": "CC BY-SA 4.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Fortune_NT-Alergi_tablet_(contains_Loratadine_10mg).jpg"
+    },
+    {
+      "category": "medicamentos-venta-libre",
+      "name": "Antigripal compuesto — caja x 10 sobres",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/28/Generation_III_Extended_Cold_Weather_Clothing_System.jpg/330px-Generation_III_Extended_Cold_Weather_Clothing_System.jpg",
+      "image_license": "Public domain",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Generation_III_Extended_Cold_Weather_Clothing_System.jpg"
+    },
+    {
+      "category": "medicamentos-venta-libre",
+      "name": "Ácido acetilsalicílico 100 mg — caja x 30",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/42/Regular_strength_enteric_coated_aspirin_tablets.jpg/330px-Regular_strength_enteric_coated_aspirin_tablets.jpg",
+      "image_license": "CC BY-SA 4.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Regular_strength_enteric_coated_aspirin_tablets.jpg"
+    },
+    {
+      "category": "medicamentos-venta-libre",
+      "name": "Sales de rehidratación oral — x 10 sobres",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ad/Cholera_rehydration_nurses.jpg/330px-Cholera_rehydration_nurses.jpg",
+      "image_license": "Public domain",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Cholera_rehydration_nurses.jpg"
+    },
+    {
+      "category": "medicamentos-venta-libre",
+      "name": "Pastillas para la garganta — caja x 24",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b8/Hustenbonbon.JPG/330px-Hustenbonbon.JPG",
+      "image_license": "CC BY-SA 3.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Hustenbonbon.JPG"
+    },
+    {
+      "category": "medicamentos-venta-libre",
+      "name": "Clotrimazol crema 1% — tubo 20 g",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1b/Europharm_Lab_Clotrimazole_Cream_Antimycotic_Drug.jpg/330px-Europharm_Lab_Clotrimazole_Cream_Antimycotic_Drug.jpg",
+      "image_license": "CC BY-SA 3.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Europharm_Lab_Clotrimazole_Cream_Antimycotic_Drug.jpg"
+    },
+    {
+      "category": "medicamentos-venta-libre",
+      "name": "Solución salina nasal spray — 50 mL",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/27/Nasal_spray.jpg/330px-Nasal_spray.jpg",
+      "image_license": "CC BY 3.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Nasal_spray.jpg"
+    },
+    {
+      "category": "medicamentos-venta-libre",
+      "name": "Glicerina boricada gotas óticas — 15 mL",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/The_American_Museum_journal_%28c1900-%281918%29%29_%2818161385511%29.jpg/330px-The_American_Museum_journal_%28c1900-%281918%29%29_%2818161385511%29.jpg",
+      "image_license": "No restrictions",
+      "image_source": "https://commons.wikimedia.org/wiki/File:The_American_Museum_journal_(c1900-(1918))_(18161385511).jpg"
+    },
+    {
+      "category": "dermocosmetica-cuidado-personal",
+      "name": "Protector solar FPS 50 — 120 mL",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/eb/Japanese_sunscreen.jpg/330px-Japanese_sunscreen.jpg",
+      "image_license": "CC BY-SA 4.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Japanese_sunscreen.jpg"
+    },
+    {
+      "category": "dermocosmetica-cuidado-personal",
+      "name": "Crema hidratante facial — 50 mL",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1b/Face_Effigy_Jar%2C_view_1%2C_300_BC_-_300_AD%2C_Colima_or_Jalisco%2C_Mexico%2C_earthenware_with_red_and_cream_slips_-_Gardiner_Museum%2C_Toronto_-_DSC01293.JPG/330px-Face_Effigy_Jar%2C_view_1%2C_300_BC_-_300_AD%2C_Colima_or_Jalisco%2C_Mexico%2C_earthenware_with_red_and_cream_slips_-_Gardiner_Museum%2C_Toronto_-_DSC01293.JPG",
+      "image_license": "CC0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Face_Effigy_Jar,_view_1,_300_BC_-_300_AD,_Colima_or_Jalisco,_Mexico,_earthenware_with_red_and_cream_slips_-_Gardiner_Museum,_Toronto_-_DSC01293.JPG"
+    },
+    {
+      "category": "dermocosmetica-cuidado-personal",
+      "name": "Limpiador facial suave — 200 mL",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d4/Old_Dutch_Cleanser%2C_1921.jpg/330px-Old_Dutch_Cleanser%2C_1921.jpg",
+      "image_license": "No restrictions",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Old_Dutch_Cleanser,_1921.jpg"
+    },
+    {
+      "category": "dermocosmetica-cuidado-personal",
+      "name": "Sérum de vitamina C — 30 mL",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e3/Cosmetic_flask_from_Kavran.jpg/330px-Cosmetic_flask_from_Kavran.jpg",
+      "image_license": "Public domain",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Cosmetic_flask_from_Kavran.jpg"
+    },
+    {
+      "category": "dermocosmetica-cuidado-personal",
+      "name": "Champú anticaspa — 250 mL",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c4/Shampoo_Bottle_made_of_PLA-Blend_Bio-Flex.jpg/330px-Shampoo_Bottle_made_of_PLA-Blend_Bio-Flex.jpg",
+      "image_license": "CC BY-SA 3.0 de",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Shampoo_Bottle_made_of_PLA-Blend_Bio-Flex.jpg"
+    },
+    {
+      "category": "dermocosmetica-cuidado-personal",
+      "name": "Jabón dermatológico — barra 100 g",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/53/A_bar_of_soap.jpg/330px-A_bar_of_soap.jpg",
+      "image_license": "Public domain",
+      "image_source": "https://commons.wikimedia.org/wiki/File:A_bar_of_soap.jpg"
+    },
+    {
+      "category": "dermocosmetica-cuidado-personal",
+      "name": "Bálsamo labial con FPS 30 — 4.8 g",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c7/Aloe_lip_balm.jpg/330px-Aloe_lip_balm.jpg",
+      "image_license": "CC BY 2.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Aloe_lip_balm.jpg"
+    },
+    {
+      "category": "dermocosmetica-cuidado-personal",
+      "name": "Crema de manos reparadora — 75 mL",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b6/NSRW_Dairy_Industry_8.jpg/330px-NSRW_Dairy_Industry_8.jpg",
+      "image_license": "Public domain",
+      "image_source": "https://commons.wikimedia.org/wiki/File:NSRW_Dairy_Industry_8.jpg"
+    },
+    {
+      "category": "dermocosmetica-cuidado-personal",
+      "name": "Tónico facial calmante — 150 mL",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e4/Dirty_old_beer_bottles_%286811030857%29.jpg/330px-Dirty_old_beer_bottles_%286811030857%29.jpg",
+      "image_license": "CC BY-SA 2.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Dirty_old_beer_bottles_(6811030857).jpg"
+    },
+    {
+      "category": "dermocosmetica-cuidado-personal",
+      "name": "Gel de aloe vera — 200 mL",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/60/Aloe_vera_gel.jpg/330px-Aloe_vera_gel.jpg",
+      "image_license": "CC BY-SA 2.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Aloe_vera_gel.jpg"
+    },
+    {
+      "category": "bebe-maternidad",
+      "name": "Fórmula infantil etapa 1 — lata 400 g",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/58/Glaxo_builds_bonnie_babies_Wellcome_L0035137.jpg/330px-Glaxo_builds_bonnie_babies_Wellcome_L0035137.jpg",
+      "image_license": "CC BY 4.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Glaxo_builds_bonnie_babies_Wellcome_L0035137.jpg"
+    },
+    {
+      "category": "bebe-maternidad",
+      "name": "Pañales desechables talla M — x 40",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3a/Swim_diaper_%281335216873%29.jpg/330px-Swim_diaper_%281335216873%29.jpg",
+      "image_license": "CC BY 2.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Swim_diaper_(1335216873).jpg"
+    },
+    {
+      "category": "bebe-maternidad",
+      "name": "Toallitas húmedas para bebé — x 80",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/03/Baby_Wipes_at_Kroger.JPG/330px-Baby_Wipes_at_Kroger.JPG",
+      "image_license": "CC BY-SA 3.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Baby_Wipes_at_Kroger.JPG"
+    },
+    {
+      "category": "bebe-maternidad",
+      "name": "Shampoo para bebé — 200 mL",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f3/A_bottle_of_Aveeno_Baby_Wash_%26_Shampoo_02.jpg/330px-A_bottle_of_Aveeno_Baby_Wash_%26_Shampoo_02.jpg",
+      "image_license": "CC BY-SA 4.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:A_bottle_of_Aveeno_Baby_Wash_%26_Shampoo_02.jpg"
+    },
+    {
+      "category": "bebe-maternidad",
+      "name": "Crema para dermatitis de pañal — 100 g",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1b/Gerber%27s_Baby_Box_Food.jpg/330px-Gerber%27s_Baby_Box_Food.jpg",
+      "image_license": "CC BY-SA 2.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Gerber%27s_Baby_Box_Food.jpg"
+    },
+    {
+      "category": "bebe-maternidad",
+      "name": "Biberón anticólico — 250 mL",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/72/Burr%27s_Improved_Nursing_Bottle_1868_Advertisement.jpg/330px-Burr%27s_Improved_Nursing_Bottle_1868_Advertisement.jpg",
+      "image_license": "Public domain",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Burr%27s_Improved_Nursing_Bottle_1868_Advertisement.jpg"
+    },
+    {
+      "category": "bebe-maternidad",
+      "name": "Termómetro digital para bebé",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/da/Ms._Anna_I._Grosser_with_famous_%22Baby_Thermometer%22_of_the_U.S._Childrens_Bureau_LCCN00652111.jpg/330px-Ms._Anna_I._Grosser_with_famous_%22Baby_Thermometer%22_of_the_U.S._Childrens_Bureau_LCCN00652111.jpg",
+      "image_license": "Public domain",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Ms._Anna_I._Grosser_with_famous_%22Baby_Thermometer%22_of_the_U.S._Childrens_Bureau_LCCN00652111.jpg"
+    },
+    {
+      "category": "bebe-maternidad",
+      "name": "Extractor de leche manual",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/67/Breast_Pump_Parts_2.JPG/330px-Breast_Pump_Parts_2.JPG",
+      "image_license": "CC BY-SA 3.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Breast_Pump_Parts_2.JPG"
+    },
+    {
+      "category": "bebe-maternidad",
+      "name": "Suero fisiológico monodosis — x 30",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1b/Gerber%27s_Baby_Box_Food.jpg/330px-Gerber%27s_Baby_Box_Food.jpg",
+      "image_license": "CC BY-SA 2.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Gerber%27s_Baby_Box_Food.jpg"
+    },
+    {
+      "category": "bebe-maternidad",
+      "name": "Protector solar infantil FPS 50 — 90 mL",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/55/Pack_Gong_%283144438149%29.jpg/330px-Pack_Gong_%283144438149%29.jpg",
+      "image_license": "CC BY 2.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Pack_Gong_(3144438149).jpg"
+    },
+    {
+      "category": "nutricion-suplementos",
+      "name": "Multivitamínico adulto — x 30 comprimidos",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/66/B_vitamin_supplement_tablets.jpg/330px-B_vitamin_supplement_tablets.jpg",
+      "image_license": "CC BY-SA 3.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:B_vitamin_supplement_tablets.jpg"
+    },
+    {
+      "category": "nutricion-suplementos",
+      "name": "Vitamina C 1000 mg efervescente — x 20",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/18/Vitamin_C_tablets_and_paprikas.png/330px-Vitamin_C_tablets_and_paprikas.png",
+      "image_license": "CC BY 4.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Vitamin_C_tablets_and_paprikas.png"
+    },
+    {
+      "category": "nutricion-suplementos",
+      "name": "Complejo vitamínico B — x 30 cápsulas",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b5/Assorted_pharmaceuticals_by_LadyofProcrastination.jpg/330px-Assorted_pharmaceuticals_by_LadyofProcrastination.jpg",
+      "image_license": "CC BY-SA 2.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Assorted_pharmaceuticals_by_LadyofProcrastination.jpg"
+    },
+    {
+      "category": "nutricion-suplementos",
+      "name": "Calcio + Vitamina D3 — x 60 comprimidos",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/57/Antacid-L478.jpg/330px-Antacid-L478.jpg",
+      "image_license": "CC BY 2.5",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Antacid-L478.jpg"
+    },
+    {
+      "category": "nutricion-suplementos",
+      "name": "Omega 3 1000 mg — x 60 cápsulas",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a3/Kala%C3%B6ljy_FishOil.jpg/330px-Kala%C3%B6ljy_FishOil.jpg",
+      "image_license": "Public domain",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Kala%C3%B6ljy_FishOil.jpg"
+    },
+    {
+      "category": "nutricion-suplementos",
+      "name": "Hierro + ácido fólico — x 30 comprimidos",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d9/Dr_Williams%27_%27Pink_Pills%27%2C_London%2C_England%2C_1850-1920_Wellcome_A627306.jpg/330px-Dr_Williams%27_%27Pink_Pills%27%2C_London%2C_England%2C_1850-1920_Wellcome_A627306.jpg",
+      "image_license": "CC BY 4.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Dr_Williams%27_%27Pink_Pills%27,_London,_England,_1850-1920_Wellcome_A627306.jpg"
+    },
+    {
+      "category": "nutricion-suplementos",
+      "name": "Colágeno hidrolizado — envase 300 g",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/20/COLLAGEN_PROTIEN.png/330px-COLLAGEN_PROTIEN.png",
+      "image_license": "CC0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:COLLAGEN_PROTIEN.png"
+    },
+    {
+      "category": "nutricion-suplementos",
+      "name": "Proteína whey — envase 500 g",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7b/Bodybuilding_supplement_high_protein_drink_mix_700g.jpg/330px-Bodybuilding_supplement_high_protein_drink_mix_700g.jpg",
+      "image_license": "Public domain",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Bodybuilding_supplement_high_protein_drink_mix_700g.jpg"
+    },
+    {
+      "category": "nutricion-suplementos",
+      "name": "Probiótico 30 cápsulas",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d5/Probiotic_with_FOS.jpg/330px-Probiotic_with_FOS.jpg",
+      "image_license": "CC BY 4.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Probiotic_with_FOS.jpg"
+    },
+    {
+      "category": "nutricion-suplementos",
+      "name": "Magnesio 400 mg — x 30 comprimidos",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/66/B_vitamin_supplement_tablets.jpg/330px-B_vitamin_supplement_tablets.jpg",
+      "image_license": "CC BY-SA 3.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:B_vitamin_supplement_tablets.jpg"
+    },
+    {
+      "category": "primeros-auxilios",
+      "name": "Venda elástica 10 cm x 4 m",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/72/US_Elastic_Bandage.JPG/330px-US_Elastic_Bandage.JPG",
+      "image_license": "CC BY-SA 3.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:US_Elastic_Bandage.JPG"
+    },
+    {
+      "category": "primeros-auxilios",
+      "name": "Gasas estériles 10x10 cm — x 10",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/40/Adhesive_dressing-20100202.jpg/330px-Adhesive_dressing-20100202.jpg",
+      "image_license": "Public domain",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Adhesive_dressing-20100202.jpg"
+    },
+    {
+      "category": "primeros-auxilios",
+      "name": "Tela adhesiva hipoalergénica — 10 m",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f2/Albupore_surgical_tape.jpg/330px-Albupore_surgical_tape.jpg",
+      "image_license": "CC BY-SA 3.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Albupore_surgical_tape.jpg"
+    },
+    {
+      "category": "primeros-auxilios",
+      "name": "Apósitos transparentes — x 20",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/46/Sparadrap_4.jpg/330px-Sparadrap_4.jpg",
+      "image_license": "CeCILL",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Sparadrap_4.jpg"
+    },
+    {
+      "category": "primeros-auxilios",
+      "name": "Antiséptico de povidona — 250 mL",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3b/First_Aid_Kit_%28Frankfurt_am_Main%2C_18.02.2012%29.jpg/330px-First_Aid_Kit_%28Frankfurt_am_Main%2C_18.02.2012%29.jpg",
+      "image_license": "CC BY-SA 3.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:First_Aid_Kit_(Frankfurt_am_Main,_18.02.2012).jpg"
+    },
+    {
+      "category": "primeros-auxilios",
+      "name": "Alcohol antiséptico 70% — 250 mL",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/a/a3/Drug_bottle_containing_cannabis.jpg",
+      "image_license": "Public domain",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Drug_bottle_containing_cannabis.jpg"
+    },
+    {
+      "category": "primeros-auxilios",
+      "name": "Tijeras quirúrgicas puntas romas",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/a/ab/Surgical_scissors_Orem.jpg",
+      "image_license": "CC BY-SA 2.5",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Surgical_scissors_Orem.jpg"
+    },
+    {
+      "category": "primeros-auxilios",
+      "name": "Termómetro clínico digital",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bf/Medical_mercury_thermometer_with_velvet-lined_cardboard_box_-_focus_stack_%282020-05-25%29.jpg/330px-Medical_mercury_thermometer_with_velvet-lined_cardboard_box_-_focus_stack_%282020-05-25%29.jpg",
+      "image_license": "CC BY-SA 4.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Medical_mercury_thermometer_with_velvet-lined_cardboard_box_-_focus_stack_(2020-05-25).jpg"
+    },
+    {
+      "category": "primeros-auxilios",
+      "name": "Botiquín portátil — 40 piezas",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3b/First_Aid_Kit_%28Frankfurt_am_Main%2C_18.02.2012%29.jpg/330px-First_Aid_Kit_%28Frankfurt_am_Main%2C_18.02.2012%29.jpg",
+      "image_license": "CC BY-SA 3.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:First_Aid_Kit_(Frankfurt_am_Main,_18.02.2012).jpg"
+    },
+    {
+      "category": "primeros-auxilios",
+      "name": "Guantes de nitrilo — caja x 100",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8d/Disposable_nitrile_glove.jpg/330px-Disposable_nitrile_glove.jpg",
+      "image_license": "Public domain",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Disposable_nitrile_glove.jpg"
+    },
+    {
+      "category": "equipos-medicion-hogar",
+      "name": "Oxímetro de pulso digital",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7d/Wrist-oximeter.jpg/330px-Wrist-oximeter.jpg",
+      "image_license": "CC0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Wrist-oximeter.jpg"
+    },
+    {
+      "category": "equipos-medicion-hogar",
+      "name": "Tensiómetro digital de brazo",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/e/e1/Wrist-style-blood-pressure-monitor.png",
+      "image_license": "CC0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Wrist-style-blood-pressure-monitor.png"
+    },
+    {
+      "category": "equipos-medicion-hogar",
+      "name": "Glucómetro con tiras reactivas x 50",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/37/Capteur_de_glyc%C3%A9mie_pour_personnes_diab%C3%A9tiques.jpg/330px-Capteur_de_glyc%C3%A9mie_pour_personnes_diab%C3%A9tiques.jpg",
+      "image_license": "CC BY-SA 4.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Capteur_de_glyc%C3%A9mie_pour_personnes_diab%C3%A9tiques.jpg"
+    },
+    {
+      "category": "equipos-medicion-hogar",
+      "name": "Nebulizador de compresor",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0a/CFnebulizer.jpg/330px-CFnebulizer.jpg",
+      "image_license": "CC BY-SA 3.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:CFnebulizer.jpg"
+    },
+    {
+      "category": "equipos-medicion-hogar",
+      "name": "Báscula de cocina digital",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4f/Escali_digital_kitchen_scale.jpg/330px-Escali_digital_kitchen_scale.jpg",
+      "image_license": "CC BY-SA 4.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Escali_digital_kitchen_scale.jpg"
+    },
+    {
+      "category": "equipos-medicion-hogar",
+      "name": "Termómetro infrarrojo sin contacto",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8f/Infrared_thermometer_training.jpg/330px-Infrared_thermometer_training.jpg",
+      "image_license": "CC BY 2.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Infrared_thermometer_training.jpg"
+    },
+    {
+      "category": "equipos-medicion-hogar",
+      "name": "Humidificador ultrasónico 2 L",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e8/Ultrasonic_humidifier.jpg/330px-Ultrasonic_humidifier.jpg",
+      "image_license": "Public domain",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Ultrasonic_humidifier.jpg"
+    },
+    {
+      "category": "equipos-medicion-hogar",
+      "name": "Silla de ruedas plegable",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/79/WheelchairSeatingNTSB.jpg/330px-WheelchairSeatingNTSB.jpg",
+      "image_license": "Public domain",
+      "image_source": "https://commons.wikimedia.org/wiki/File:WheelchairSeatingNTSB.jpg"
+    },
+    {
+      "category": "equipos-medicion-hogar",
+      "name": "Muletas de aluminio — par",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/de/M0354_1951-45-061_2.jpg/330px-M0354_1951-45-061_2.jpg",
+      "image_license": "CC BY-SA 3.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:M0354_1951-45-061_2.jpg"
+    },
+    {
+      "category": "equipos-medicion-hogar",
+      "name": "Colchón antiescaras",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2e/Popular_electricity_magazine_in_plain_English_%281913%29_%2814762426864%29.jpg/330px-Popular_electricity_magazine_in_plain_English_%281913%29_%2814762426864%29.jpg",
+      "image_license": "No restrictions",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Popular_electricity_magazine_in_plain_English_(1913)_(14762426864).jpg"
+    }
+  ]
+}

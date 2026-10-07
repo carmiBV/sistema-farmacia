@@ -1,0 +1,102 @@
+{
+  "checkpoint": "CP-LANDING-01",
+  "date": "2026-10-07",
+  "result": "PASSED",
+  "summary": "Configuración base y arquitectura de proyecto/07_landing (estructura, config.json con Bs./Bolivia/CTA/WhatsApp placeholder, shell HTML sin alcance administrativo, sin dependencias externas).",
+  "checks": [
+    {
+      "label": "estructura: index.html",
+      "status": "PASS"
+    },
+    {
+      "label": "estructura: assets/css/main.css",
+      "status": "PASS"
+    },
+    {
+      "label": "estructura: assets/js/main.js",
+      "status": "PASS"
+    },
+    {
+      "label": "estructura: data/config.json",
+      "status": "PASS"
+    },
+    {
+      "label": "estructura: components",
+      "status": "PASS"
+    },
+    {
+      "label": "estructura: tests/results",
+      "status": "PASS"
+    },
+    {
+      "label": "config.json: JSON válido",
+      "status": "PASS"
+    },
+    {
+      "label": "mercado objetivo: Bolivia",
+      "status": "PASS"
+    },
+    {
+      "label": "moneda visible: Bs.",
+      "status": "PASS"
+    },
+    {
+      "label": "CTA comercial configurable (label presente)",
+      "status": "PASS"
+    },
+    {
+      "label": "WhatsApp: placeholder configurable (sin número real)",
+      "status": "PASS"
+    },
+    {
+      "label": "WhatsApp: placeholder con formato de número",
+      "status": "PASS"
+    },
+    {
+      "label": "catálogo declarado: 7 categorías x 10 productos = 70",
+      "status": "PASS"
+    },
+    {
+      "label": "contacto configurable presente",
+      "status": "PASS"
+    },
+    {
+      "label": "index.html: DOCTYPE presente",
+      "status": "PASS"
+    },
+    {
+      "label": "index.html: lang=\"es\"",
+      "status": "PASS"
+    },
+    {
+      "label": "index.html: referencia CSS y JS propios",
+      "status": "PASS"
+    },
+    {
+      "label": "index.html: estructura semántica básica",
+      "status": "PASS"
+    },
+    {
+      "label": "sin rutas ni enlaces administrativos",
+      "status": "PASS"
+    },
+    {
+      "label": "sin formularios de pago/checkout",
+      "status": "PASS"
+    },
+    {
+      "label": "sin prompt de login",
+      "status": "PASS"
+    },
+    {
+      "label": "sin scripts externos",
+      "status": "PASS"
+    },
+    {
+      "label": "sin CSS externo",
+      "status": "PASS"
+    }
+  ],
+  "total": 23,
+  "failed": 0
+}

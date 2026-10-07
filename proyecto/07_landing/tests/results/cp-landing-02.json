@@ -1,0 +1,349 @@
+{
+  "checkpoint": "CP-LANDING-02",
+  "date": "2026-10-07",
+  "result": "PASSED",
+  "summary": "Catálogo demostrativo data/catalog.json: 7 categorías x 10 productos = 70, precios en Bs., imágenes de Wikimedia Commons con licencia y fuente verificable por archivo, URLs operativas.",
+  "checks": [
+    {
+      "label": "catalog.json: JSON válido",
+      "status": "PASS"
+    },
+    {
+      "label": "exactamente 7 categorías (hay 7)",
+      "status": "PASS"
+    },
+    {
+      "label": "moneda del catálogo: Bs.",
+      "status": "PASS"
+    },
+    {
+      "label": "exactamente 70 productos (hay 70)",
+      "status": "PASS"
+    },
+    {
+      "label": "cada categoría tiene 10 productos",
+      "status": "PASS"
+    },
+    {
+      "label": "todos los precios son numéricos > 0",
+      "status": "PASS"
+    },
+    {
+      "label": "todos los precios se muestran en Bs.",
+      "status": "PASS"
+    },
+    {
+      "label": "identificadores de producto únicos",
+      "status": "PASS"
+    },
+    {
+      "label": "todas las imágenes son URLs externas https",
+      "status": "PASS"
+    },
+    {
+      "label": "proveedor de imágenes declarado (Wikimedia Commons)",
+      "status": "PASS"
+    },
+    {
+      "label": "cada imagen tiene licencia declarada",
+      "status": "PASS"
+    },
+    {
+      "label": "cada imagen tiene fuente verificable (página del archivo en Commons)",
+      "status": "PASS"
+    },
+    {
+      "label": "cada imagen tiene texto alternativo",
+      "status": "PASS"
+    },
+    {
+      "label": "las 70 URLs de imagen responden HTTP 200 (70/70)",
+      "status": "PASS"
+    }
+  ],
+  "total": 14,
+  "failed": 0,
+  "image_urls": [
+    {
+      "id": "medicamentos-receta-1",
+      "status": 200
+    },
+    {
+      "id": "medicamentos-receta-2",
+      "status": 200
+    },
+    {
+      "id": "medicamentos-receta-3",
+      "status": 200
+    },
+    {
+      "id": "medicamentos-receta-4",
+      "status": 200
+    },
+    {
+      "id": "medicamentos-receta-5",
+      "status": 200
+    },
+    {
+      "id": "medicamentos-receta-6",
+      "status": 200
+    },
+    {
+      "id": "medicamentos-receta-7",
+      "status": 200
+    },
+    {
+      "id": "medicamentos-receta-8",
+      "status": 200
+    },
+    {
+      "id": "medicamentos-receta-9",
+      "status": 200
+    },
+    {
+      "id": "medicamentos-receta-10",
+      "status": 200
+    },
+    {
+      "id": "medicamentos-venta-libre-1",
+      "status": 200
+    },
+    {
+      "id": "medicamentos-venta-libre-2",
+      "status": 200
+    },
+    {
+      "id": "medicamentos-venta-libre-3",
+      "status": 200
+    },
+    {
+      "id": "medicamentos-venta-libre-4",
+      "status": 200
+    },
+    {
+      "id": "medicamentos-venta-libre-5",
+      "status": 200
+    },
+    {
+      "id": "medicamentos-venta-libre-6",
+      "status": 200
+    },
+    {
+      "id": "medicamentos-venta-libre-7",
+      "status": 200
+    },
+    {
+      "id": "medicamentos-venta-libre-8",
+      "status": 200
+    },
+    {
+      "id": "medicamentos-venta-libre-9",
+      "status": 200
+    },
+    {
+      "id": "medicamentos-venta-libre-10",
+      "status": 200
+    },
+    {
+      "id": "dermocosmetica-cuidado-personal-1",
+      "status": 200
+    },
+    {
+      "id": "dermocosmetica-cuidado-personal-2",
+      "status": 200
+    },
+    {
+      "id": "dermocosmetica-cuidado-personal-3",
+      "status": 200
+    },
+    {
+      "id": "dermocosmetica-cuidado-personal-4",
+      "status": 200
+    },
+    {
+      "id": "dermocosmetica-cuidado-personal-5",
+      "status": 200
+    },
+    {
+      "id": "dermocosmetica-cuidado-personal-6",
+      "status": 200
+    },
+    {
+      "id": "dermocosmetica-cuidado-personal-7",
+      "status": 200
+    },
+    {
+      "id": "dermocosmetica-cuidado-personal-8",
+      "status": 200
+    },
+    {
+      "id": "dermocosmetica-cuidado-personal-9",
+      "status": 200
+    },
+    {
+      "id": "dermocosmetica-cuidado-personal-10",
+      "status": 200
+    },
+    {
+      "id": "bebe-maternidad-1",
+      "status": 200
+    },
+    {
+      "id": "bebe-maternidad-2",
+      "status": 200
+    },
+    {
+      "id": "bebe-maternidad-3",
+      "status": 200
+    },
+    {
+      "id": "bebe-maternidad-4",
+      "status": 200
+    },
+    {
+      "id": "bebe-maternidad-5",
+      "status": 200
+    },
+    {
+      "id": "bebe-maternidad-6",
+      "status": 200
+    },
+    {
+      "id": "bebe-maternidad-7",
+      "status": 200
+    },
+    {
+      "id": "bebe-maternidad-8",
+      "status": 200
+    },
+    {
+      "id": "bebe-maternidad-9",
+      "status": 200
+    },
+    {
+      "id": "bebe-maternidad-10",
+      "status": 200
+    },
+    {
+      "id": "nutricion-suplementos-1",
+      "status": 200
+    },
+    {
+      "id": "nutricion-suplementos-2",
+      "status": 200
+    },
+    {
+      "id": "nutricion-suplementos-3",
+      "status": 200
+    },
+    {
+      "id": "nutricion-suplementos-4",
+      "status": 200
+    },
+    {
+      "id": "nutricion-suplementos-5",
+      "status": 200
+    },
+    {
+      "id": "nutricion-suplementos-6",
+      "status": 200
+    },
+    {
+      "id": "nutricion-suplementos-7",
+      "status": 200
+    },
+    {
+      "id": "nutricion-suplementos-8",
+      "status": 200
+    },
+    {
+      "id": "nutricion-suplementos-9",
+      "status": 200
+    },
+    {
+      "id": "nutricion-suplementos-10",
+      "status": 200
+    },
+    {
+      "id": "primeros-auxilios-1",
+      "status": 200
+    },
+    {
+      "id": "primeros-auxilios-2",
+      "status": 200
+    },
+    {
+      "id": "primeros-auxilios-3",
+      "status": 200
+    },
+    {
+      "id": "primeros-auxilios-4",
+      "status": 200
+    },
+    {
+      "id": "primeros-auxilios-5",
+      "status": 200
+    },
+    {
+      "id": "primeros-auxilios-6",
+      "status": 200
+    },
+    {
+      "id": "primeros-auxilios-7",
+      "status": 200
+    },
+    {
+      "id": "primeros-auxilios-8",
+      "status": 200
+    },
+    {
+      "id": "primeros-auxilios-9",
+      "status": 200
+    },
+    {
+      "id": "primeros-auxilios-10",
+      "status": 200
+    },
+    {
+      "id": "equipos-medicion-hogar-1",
+      "status": 200
+    },
+    {
+      "id": "equipos-medicion-hogar-2",
+      "status": 200
+    },
+    {
+      "id": "equipos-medicion-hogar-3",
+      "status": 200
+    },
+    {
+      "id": "equipos-medicion-hogar-4",
+      "status": 200
+    },
+    {
+      "id": "equipos-medicion-hogar-5",
+      "status": 200
+    },
+    {
+      "id": "equipos-medicion-hogar-6",
+      "status": 200
+    },
+    {
+      "id": "equipos-medicion-hogar-7",
+      "status": 200
+    },
+    {
+      "id": "equipos-medicion-hogar-8",
+      "status": 200
+    },
+    {
+      "id": "equipos-medicion-hogar-9",
+      "status": 200
+    },
+    {
+      "id": "equipos-medicion-hogar-10",
+      "status": 200
+    }
+  ],
+  "sources_file": "tests/results/cp-landing-02-sources.json"
+}

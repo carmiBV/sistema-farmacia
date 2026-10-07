@@ -1,0 +1,156 @@
+{
+  "checkpoint": "CP-LANDING-04",
+  "date": "2026-10-07",
+  "result": "PASSED",
+  "summary": "Auditoría de políticas (sin alcance administrativo), política de imágenes (70/70 URLs https funcionales con alt/licencia/fuente, sin IA), accesibilidad estructural y rendimiento de la landing.",
+  "checks": [
+    {
+      "label": "sin enlaces/referencias a rutas administrativas",
+      "status": "PASS"
+    },
+    {
+      "label": "sin prompts de login/registro/carrito/checkout",
+      "status": "PASS"
+    },
+    {
+      "label": "sin formularios (ni de pago ni de datos)",
+      "status": "PASS"
+    },
+    {
+      "label": "la landing no consume la API administrativa (sin /api/v1 ni login)",
+      "status": "PASS"
+    },
+    {
+      "label": "WhatsApp: placeholder o número configurado (nunca inventado)",
+      "status": "PASS"
+    },
+    {
+      "label": "wa.me solo se construye tras validar is_placeholder (guard presente)",
+      "status": "PASS"
+    },
+    {
+      "label": "todas las imágenes son URLs https externas",
+      "status": "PASS"
+    },
+    {
+      "label": "todas las imágenes tienen texto alternativo",
+      "status": "PASS"
+    },
+    {
+      "label": "todas las imágenes tienen licencia declarada",
+      "status": "PASS"
+    },
+    {
+      "label": "todas las imágenes tienen fuente/licencia verificable",
+      "status": "PASS"
+    },
+    {
+      "label": "el render asigna src y alt a cada imagen",
+      "status": "PASS"
+    },
+    {
+      "label": "imágenes con carga diferida (lazy)",
+      "status": "PASS"
+    },
+    {
+      "label": "sin imágenes generadas por IA (declarado en fuentes)",
+      "status": "PASS"
+    },
+    {
+      "label": "las 70 URLs de imagen son públicas y funcionales (HTTP 200): 70/70",
+      "status": "PASS"
+    },
+    {
+      "label": "el render inyecta 70 imágenes (hay 70)",
+      "status": "PASS"
+    },
+    {
+      "label": "cada imagen renderizada tiene alt no vacío",
+      "status": "PASS"
+    },
+    {
+      "label": "cada imagen renderizada usa URL https",
+      "status": "PASS"
+    },
+    {
+      "label": "la grilla renderiza los 70 productos",
+      "status": "PASS"
+    },
+    {
+      "label": "meta viewport",
+      "status": "PASS"
+    },
+    {
+      "label": "idioma declarado (lang=es)",
+      "status": "PASS"
+    },
+    {
+      "label": "ARIA: etiquetas, live region y estados de filtro",
+      "status": "PASS"
+    },
+    {
+      "label": "landmark principal identificado",
+      "status": "PASS"
+    },
+    {
+      "label": "indicador de foco visible",
+      "status": "PASS"
+    },
+    {
+      "label": "imágenes con alt (política + accesibilidad)",
+      "status": "PASS"
+    },
+    {
+      "label": "cada recurso < 500 KB (catálogo incluido)",
+      "status": "PASS"
+    },
+    {
+      "label": "recursos núcleo < 1 MB (total 65.9 KB)",
+      "status": "PASS"
+    },
+    {
+      "label": "carga diferida de imágenes activa",
+      "status": "PASS"
+    },
+    {
+      "label": "recursos núcleo cargan en < 500 ms (local): /=22ms /assets/css/main.css=4ms /assets/js/main.js=3ms /data/catalog.json=4ms /data/config.json=4ms",
+      "status": "PASS"
+    },
+    {
+      "label": "integración visual: capturas renderizadas desktop/móvil presentes",
+      "status": "PASS"
+    }
+  ],
+  "total": 29,
+  "failed": 0,
+  "metrics": {
+    "bytes_index.html": 5233,
+    "bytes_assets/css/main.css": 5904,
+    "bytes_assets/js/main.js": 7729,
+    "bytes_data/config.json": 1214,
+    "bytes_data/catalog.json": 47439,
+    "bytes_total_core": 67519,
+    "tiempos_carga": {
+      "/": {
+        "avg_ms": 22,
+        "ok": 5
+      },
+      "/assets/css/main.css": {
+        "avg_ms": 4,
+        "ok": 5
+      },
+      "/assets/js/main.js": {
+        "avg_ms": 3,
+        "ok": 5
+      },
+      "/data/catalog.json": {
+        "avg_ms": 4,
+        "ok": 5
+      },
+      "/data/config.json": {
+        "avg_ms": 4,
+        "ok": 5
+      }
+    }
+  }
+}

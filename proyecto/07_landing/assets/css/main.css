@@ -1,0 +1,264 @@
+/* CP-LANDING-01: estilos base de la landing (sin frameworks). */
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color: #1c2b36;
+    background: #ffffff;
+    line-height: 1.55;
+}
+
+.site-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 16px 24px;
+    border-bottom: 1px solid #e2e9ee;
+}
+
+.brand {
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: #0b5394;
+    text-decoration: none;
+}
+
+.market-badge {
+    font-size: .85rem;
+    color: #5a6b78;
+    background: #f2f6f9;
+    padding: 6px 12px;
+    border-radius: 999px;
+}
+
+.hero {
+    padding: 72px 24px;
+    max-width: 960px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.hero h1 {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    margin: 0 0 12px;
+}
+
+.hero-sub {
+    color: #5a6b78;
+    font-size: 1.15rem;
+    margin: 0;
+}
+
+.site-footer {
+    border-top: 1px solid #e2e9ee;
+    padding: 24px;
+    text-align: center;
+    color: #5a6b78;
+    font-size: .9rem;
+}
+
+/* --- CP-LANDING-03: secciones comerciales --- */
+.site-nav {
+    display: flex;
+    gap: 18px;
+    margin-left: auto;
+}
+.site-nav a {
+    color: #1c2b36;
+    text-decoration: none;
+    font-size: .95rem;
+}
+.site-nav a:hover { color: #0b5394; }
+
+.btn {
+    display: inline-block;
+    padding: 12px 22px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 10px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+}
+.btn-primary { background: #0b5394; color: #fff; }
+.btn-primary:hover { background: #093f72; }
+.btn-secondary { background: #e7eef5; color: #24425a; }
+.btn-whatsapp { background: #16a34a; color: #fff; }
+.btn-whatsapp:hover { background: #12813b; }
+.btn-cta-header { padding: 10px 18px; font-size: .92rem; }
+
+.hero-actions {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 28px 0 20px;
+}
+.hero-pills {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.hero-pills li {
+    background: #f2f6f9;
+    border: 1px solid #d7e0e7;
+    color: #24425a;
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: .9rem;
+    font-weight: 600;
+}
+
+.benefits {
+    padding: 56px 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+.benefits h2, .showroom h2, .cta-section h2 {
+    text-align: center;
+    font-size: clamp(1.5rem, 3vw, 2.1rem);
+    margin: 0 0 8px;
+}
+.section-sub {
+    text-align: center;
+    color: #5a6b78;
+    margin: 0 0 32px;
+}
+.benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 18px;
+}
+.benefit-card {
+    background: #fff;
+    border: 1px solid #e2e9ee;
+    border-radius: 12px;
+    padding: 22px;
+}
+.benefit-card h3 { margin: 0 0 8px; font-size: 1.05rem; }
+.benefit-card p { margin: 0; color: #5a6b78; font-size: .93rem; }
+
+.showroom {
+    padding: 56px 24px;
+    max-width: 1180px;
+    margin: 0 auto;
+}
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 28px;
+}
+.filter-chip {
+    padding: 10px 18px;
+    border-radius: 999px;
+    border: 1px solid #b9c6d0;
+    background: #fff;
+    color: #24425a;
+    font-size: .9rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+.filter-chip:hover { border-color: #0b5394; color: #0b5394; }
+.filter-chip-active, .filter-chip-active:hover {
+    background: #0b5394;
+    border-color: #0b5394;
+    color: #fff;
+}
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 18px;
+}
+.product-card {
+    background: #fff;
+    border: 1px solid #e2e9ee;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+.product-card img {
+    width: 100%;
+    height: 170px;
+    object-fit: cover;
+    background: #f2f6f9;
+}
+.product-body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 6px; }
+.product-category {
+    font-size: .72rem;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: #0b5394;
+    font-weight: 700;
+}
+.product-body h3 { margin: 0; font-size: .98rem; line-height: 1.35; }
+.product-price { margin: 4px 0 0; font-size: 1.15rem; font-weight: 700; color: #12813b; }
+.product-license { font-size: .72rem; color: #8395a2; text-decoration: none; }
+.product-license:hover { text-decoration: underline; }
+.empty-state { text-align: center; color: #5a6b78; padding: 32px 0; }
+
+.cta-section {
+    padding: 64px 24px;
+    background: #f2f6f9;
+    text-align: center;
+}
+.cta-actions {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+}
+.contact-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 22px;
+    justify-content: center;
+    flex-wrap: wrap;
+    color: #5a6b78;
+    font-size: .95rem;
+}
+
+.footer-links { display: flex; gap: 18px; justify-content: center; margin-top: 10px; flex-wrap: wrap; }
+.footer-links a { color: #5a6b78; text-decoration: none; font-size: .85rem; }
+.footer-links a:hover { text-decoration: underline; }
+
+.float-cta {
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    background: #16a34a;
+    color: #fff;
+    padding: 14px 20px;
+    border-radius: 999px;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 8px 22px rgba(18, 129, 59, .35);
+}
+.float-cta:hover { background: #12813b; }
+
+a:focus-visible, button:focus-visible {
+    outline: 3px solid #0b5394;
+    outline-offset: 2px;
+}
+
+@media (max-width: 720px) {
+    .site-header { flex-wrap: wrap; }
+    .site-nav { order: 3; width: 100%; justify-content: center; margin-left: 0; }
+    .hero { padding: 48px 18px; }
+    .product-card img { height: 150px; }
+}
+
+/* navegacion suave por anclas (CP-LANDING-03) */
+html { scroll-behavior: smooth; }

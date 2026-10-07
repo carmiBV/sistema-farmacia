@@ -1,0 +1,114 @@
+{
+  "checkpoint": "CP-LANDING-03",
+  "date": "2026-10-07",
+  "result": "PASSED",
+  "summary": "Secciones comerciales completas (header/nav, hero, beneficios, showroom con filtro por categoría sin recarga, CTA flotante WhatsApp placeholder, footer) 100% responsivas y sin alcance administrativo.",
+  "checks": [
+    {
+      "label": "header/navbar con logo",
+      "status": "PASS"
+    },
+    {
+      "label": "navbar con navegación suave por anclas (#beneficios/#catalogo/#contacto)",
+      "status": "PASS"
+    },
+    {
+      "label": "navegación suave habilitada (scroll-behavior: smooth)",
+      "status": "PASS"
+    },
+    {
+      "label": "botón CTA en el header",
+      "status": "PASS"
+    },
+    {
+      "label": "hero section presente",
+      "status": "PASS"
+    },
+    {
+      "label": "hero con propuesta de valor (FEFO, POS, controlados)",
+      "status": "PASS"
+    },
+    {
+      "label": "hero orientado a Bolivia",
+      "status": "PASS"
+    },
+    {
+      "label": "sección de beneficios",
+      "status": "PASS"
+    },
+    {
+      "label": "beneficios destacan valor técnico (pérdidas por vencimiento, normativa)",
+      "status": "PASS"
+    },
+    {
+      "label": "showroom con filtro y grilla",
+      "status": "PASS"
+    },
+    {
+      "label": "CTA flotante presente",
+      "status": "PASS"
+    },
+    {
+      "label": "sección CTA con WhatsApp",
+      "status": "PASS"
+    },
+    {
+      "label": "footer con propiedad intelectual, enlaces legales y contacto",
+      "status": "PASS"
+    },
+    {
+      "label": "meta viewport presente",
+      "status": "PASS"
+    },
+    {
+      "label": "consultas @media (responsive)",
+      "status": "PASS"
+    },
+    {
+      "label": "grillas fluidas (auto-fit/auto-fill)",
+      "status": "PASS"
+    },
+    {
+      "label": "sin rutas ni prompts administrativos",
+      "status": "PASS"
+    },
+    {
+      "label": "sin formularios de pago/checkout",
+      "status": "PASS"
+    },
+    {
+      "label": "filtrarPorCategoria expuesta y testeable",
+      "status": "PASS"
+    },
+    {
+      "label": "filtro por categoría selecciona solo la categoría activa",
+      "status": "PASS"
+    },
+    {
+      "label": "filtro \"Todas\" muestra el catálogo completo",
+      "status": "PASS"
+    },
+    {
+      "label": "filtrado sin recarga de página (sin navegación en el JS)",
+      "status": "PASS"
+    },
+    {
+      "label": "el filtro re-renderiza la grilla en cliente",
+      "status": "PASS"
+    },
+    {
+      "label": "CTA WhatsApp con placeholder -> sin enlace wa.me inventado (#contacto)",
+      "status": "PASS"
+    },
+    {
+      "label": "CTA WhatsApp configurable: con número autorizado genera wa.me",
+      "status": "PASS"
+    },
+    {
+      "label": "imágenes con carga diferida (lazy)",
+      "status": "PASS"
+    }
+  ],
+  "total": 26,
+  "failed": 0
+}

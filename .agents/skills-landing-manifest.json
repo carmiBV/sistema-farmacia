@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "precedence": "REQUISITOS > DECISIONES > WORKFLOW > STATE > GUIDES > SKILLS > IMPLEMENTACION",
+  "skills": [
+    {
+      "name": "design-taste-frontend",
+      "source": "https://github.com/tasteskill/tasteskill",
+      "phase": "CREATE",
+      "required_at": [
+        "CP-LAND-05",
+        "CP-LAND-06",
+        "CP-LAND-07",
+        "CP-LAND-08",
+        "CP-LAND-09"
+      ]
+    },
+    {
+      "name": "impeccable",
+      "source": "https://github.com/pbakaus/impeccable",
+      "phase": "POST_CREATE",
+      "required_at": [
+        "CP-LAND-12",
+        "CP-LAND-15"
+      ]
+    },
+    {
+      "name": "animate",
+      "source": "https://github.com/emilkowalski/skills",
+      "phase": "MOTION_CREATE",
+      "required_at": [
+        "CP-LAND-11"
+      ]
+    },
+    {
+      "name": "review-animations",
+      "source": "https://github.com/emilkowalski/skills",
+      "phase": "POST_CREATE",
+      "required_at": [
+        "CP-LAND-13"
+      ]
+    },
+    {
+      "name": "improve-animations",
+      "source": "https://github.com/emilkowalski/skills",
+      "phase": "POST_CREATE_READ_ONLY",
+      "required_at": [
+        "CP-LAND-13"
+      ]
+    },
+    {
+      "name": "web-design-guidelines",
+      "source": "https://github.com/vercel-labs/agent-skills",
+      "phase": "POST_CREATE",
+      "required_at": [
+        "CP-LAND-14"
+      ]
+    }
+  ],
+  "hard_rules": [
+    "Un skill no puede cambiar el stack.",
+    "No autoaprobar resultados por haber usado un skill.",
+    "Guardar evidencia de auditoría.",
+    "BLOCKER o HIGH impide PASSED hasta resolverse o documentarse y aprobarse explícitamente."
+  ]
+}
