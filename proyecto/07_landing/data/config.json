@@ -1,0 +1,45 @@
+{
+  "brand": {
+    "name": "Sistema Farmacia",
+    "tagline": "Gestión integral para farmacias en Bolivia",
+    "description": "Control de medicamentos por lote, vencimientos FEFO, catálogo y punto de venta."
+  },
+  "market": {
+    "country": "Bolivia",
+    "currency": "Bs.",
+    "currency_name": "Boliviano",
+    "locale": "es-BO"
+  },
+  "cta": {
+    "primary": {
+      "label": "Solicitar Demo",
+      "href": "#contacto"
+    },
+    "whatsapp": {
+      "enabled": true,
+      "label": "Contactar por WhatsApp",
+      "phone_placeholder": "+591 000 000 000",
+      "is_placeholder": true,
+      "note": "PLACEHOLDER configurable: reemplazar por el número autorizado del cliente antes de publicar. No usar números no autorizados."
+    }
+  },
+  "contact": {
+    "email": "contacto@ejemplo.bo",
+    "email_placeholder": true,
+    "address": "La Paz, Bolivia",
+    "hours": "Lunes a sábado 9:00 - 20:00"
+  },
+  "legal": {
+    "owner": "Sistema Farmacia",
+    "year": 2026,
+    "links": [
+      { "label": "Aviso de privacidad", "href": "#" },
+      { "label": "Términos de uso", "href": "#" }
+    ]
+  },
+  "catalog": {
+    "categories_count": 7,
+    "products_per_category": 10,
+    "products_total": 70
+  }
+}

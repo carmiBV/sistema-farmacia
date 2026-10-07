@@ -7,3 +7,7 @@ data/
 # logs de servidor de desarrollo
 srv8000*.log
 proyecto/06_codigo/tests/results/srv8000*.log
+
+# la landing publica versiona su data/ (config + catalogo demostrativo)
+!proyecto/07_landing/data/
+!proyecto/07_landing/data/**
