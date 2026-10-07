@@ -104,13 +104,19 @@ echo "Permiso 'audit.manage' (id {$permAudit}) vinculado al rol.\n";
 
 
 // 3. Usuario admin con rol (idempotente)
+$algo = in_array('argon2id', password_algos(), true) ? PASSWORD_ARGON2ID : PASSWORD_BCRYPT;
 $existe = $usuarios->findByUsuario($user);
 if ($existe === null) {
-    $hash = password_hash($pass, in_array('argon2id', password_algos(), true) ? PASSWORD_ARGON2ID : PASSWORD_BCRYPT);
-    $nuevo = $usuarios->crear($user, $hash);
+    $nuevo = $usuarios->crear($user, password_hash($pass, $algo));
     $usuarios->asignarRoles($nuevo->id, [$roleId]);
     echo "Usuario '{$user}' creado con rol admin.\n";
 } else {
+    // ponytail: la seed fija el estado deseado; si el hash no verifica la
+    // contrasena de entorno, se resincroniza (antes solo creaba, nunca actualizaba)
+    if (!password_verify($pass, $existe->passwordHash)) {
+        $usuarios->actualizarPasswordHash($existe->id, password_hash($pass, $algo));
+        echo "Contrasena del usuario '{$user}' resincronizada desde entorno.\n";
+    }
     $stmt = \App\Support\Database::pdo()->prepare('SELECT role_id FROM auth_user_roles WHERE user_id = ?');
     $stmt->execute([$existe->id]);
     $ids = array_map('intval', array_column($stmt->fetchAll(), 'role_id'));

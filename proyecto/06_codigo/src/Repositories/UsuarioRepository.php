@@ -63,6 +63,12 @@ final class UsuarioRepository
         $stmt->execute([$id]);
     }
 
+    public function actualizarPasswordHash(int $id, string $passwordHash): void
+    {
+        $stmt = $this->pdo->prepare('UPDATE auth_users SET password_hash = ? WHERE id = ?');
+        $stmt->execute([$passwordHash, $id]);
+    }
+
     /**@return array{id:int,usuario:string,estado:string,roles:list<string>} */
     public function crear(string $usuario, string $passwordHash): Usuario
     {

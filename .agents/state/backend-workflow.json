@@ -45,13 +45,13 @@
         "idempotency_keys",
         "outbox_events"
     ],
-    "current_checkpoint": "CP-BACK-10",
+    "current_checkpoint": "CP-BACK-11",
     "technical_status": "PASS",
     "human_status": "PENDING",
     "blocked": false,
     "can_continue": false,
     "blocked_by": null,
-    "next": "CP-BACK-10 PASS (89/89). Esperar aprobacion humana. Luego: CP-BACK-11 suite completa de pruebas del backend y verificacion de borrado logico / append-only (ultimo CP del workflow 04).",
+    "next": "CP-BACK-11 PASS (suite verify_cp_back02..back10 completa + borrado logico/append-only verificado, con excepcion aprobada de purchase_order_items). Workflow 04 COMPLETO tecnicamente. Esperar aprobacion humana explicita antes de iniciar 05_frontend_workflow.md.",
     "checkpoint_results": [
         {
             "checkpoint": "CP-BACK-01",
@@ -493,6 +493,44 @@
                 "RF-090 valores_antes: falta el diseno de captura antes/despues por capa de servicio.",
                 "RNF-030 (MFA para administrador/auditor/quimico y reautenticacion del quimico al dispensar) y RF-054 siguen pendientes de definicion con el cliente.",
                 "Supuestos del CP a reportar/validar con el cliente en el ADR (hook antes de la operacion, una fila por registro, RBAC audit.read, venta.registrada en el outbox)"
+            ],
+            "human_status": "APPROVED",
+            "human_validation": {
+                "date": "2026-10-07",
+                "by": "Cliente (mensaje 'Validacion aprobada')",
+                "decision": "APROBADO CP-BACK-10 (89/89). Autoriza continuar con CP-BACK-11."
+            }
+        },
+        {
+            "checkpoint": "CP-BACK-11",
+            "date": "2026-10-07",
+            "result": "PASS",
+            "summary": "Suite completa del backend (etapas 1-2 de la reparacion). Etapa 1: primera corrida de la suite total (verify_cp02..cp08 + verify_cp_back02..back10 contra BD local MySQL 127.0.0.1:3306). El piloto paso completo (cp02..cp08 PASS) pero verify_cp_back02..back10 fallaron en bloque (18/50/66/79/121/67/113/91/76 FAIL). Causa raiz: tools/init_admin.php era idempotente para crear pero nunca resincronizaba password_hash del usuario admin existente; con un ADMIN_PASSWORD de corrida distinto al hash almacenado, login admin -> 401 y caian todos los checks dependientes de token (no era un fallo de la logica de auth: los checks de login con fixtures 401/403/400/429 pasaban). Fix: UsuarioRepository::actualizarPasswordHash + init_admin resincroniza el hash cuando password_verify no coincide (la seed fija el estado deseado). Resultado etapa 1: verify_cp_back02 => PASS (32/32, exit 0). Etapa 2: verify_cp_back03..back10 re-ejecutados -> back03, back04, back05, back06, back07, back08 y back10 => PASS; back09 => 1 FAIL ('ajuste baja que excede stock -> 409 STOCK_NOT_ENOUGH'). Causa raiz del FAIL: defecto del TEST, no del servicio — el check pasaba 'autorizador_id' => 1 a ciegas como 'autorizador valido'; en BD fresca init_admin crea admin como auth_users id 1 (proponente), el servicio valida doble autorizacion ANTES que stock (RF-046) y responde DOUBLE_AUTH_REQUIRED. El check solo pasaba en BD donde el id 1 era un usuario distinto al admin (no reproducible en despliegue limpio). Fix del test: usar el usuario ctl_ del propio fixture (ya creado como autorizador alterno) para el check de stock. Resultado etapa 2: verify_cp_back09 => PASS (97/97, exit 0). Suite verify_cp_back02..back10 completa en PASS. Etapa 3 (borrado logico e inmutabilidad append-only, RNF-046): nuevo verificador tools/verify_cp_back11.php (escaneo estatico del SQL de src/ + public/ y sondas de BD). Hallazgo: DELETE FROM sobre purchase_order_items en OrdenCompraRepository::reemplazarItems (reemplazo de items de ordenes en borrador, patron documentado en CP-BACK-05), en conflicto con la regla 'prohibido DELETE FROM'. Excepcion APROBADA por el cliente el 2026-10-07 (via question): se permite DELETE+INSERT SOLO sobre purchase_order_items de ordenes en BORRADOR sin recepciones (la orden nunca se borra; emitida/recibida responde 409 y las recepciones confirmadas no se borran, RNF-023). Registrada en la lista blanca del verificador citando la aprobacion. Resultado etapa 3: verify_cp_back11 => PASS (exit 0). CP-BACK-11 completo: suite back02..back10 en PASS + cumplimiento de borrado logico / append-only verificado.",
+            "evidence": [
+                "Suite base 2026-10-07 (log: proyecto/06_codigo/tests/results/cp-back11-suite.log): verify_cp02, cp03(datos), cp04, cp05, cp06, cp07, cp08 => PASS; verify_cp_back02..back10 => FAIL (en back02 el primer fallo era 'login admin -> 200')",
+                "php -l OK en tools/init_admin.php y src/Repositories/UsuarioRepository.php",
+                "init_admin.php re-ejecutado: 'Contrasena del usuario admin resincronizada desde entorno'",
+                "verify_cp_back02.php http://127.0.0.1:8000 => RESULTADO: PASS (exit 0), fixtures inactivadas por borrado logico (u_5b59642a, dis_5b59642a)",
+                "Etapa 2 (log: proyecto/06_codigo/tests/results/cp-back11-etapa2.log): verify_cp_back03/04/05/06/07/08/10 => PASS (exit 0); verify_cp_back09 => FAIL (1) 'ajuste baja que excede stock -> 409 STOCK_NOT_ENOUGH'",
+                "Reproduccion directa del caso: POST /control/adjustments con cantidad=999 y autorizador_id=1 devuelve 409 DOUBLE_AUTH_REQUIRED (autorizador == proponente en BD fresca), confirmado ademas por el orden de validaciones en src/Services/CtrlService.php (doble autorizacion antes del CAS de stock)",
+                "Fix del test en tools/verify_cp_back09.php (autorizador del fixture ctl_ en vez del id 1 magico): php -l OK; verify_cp_back09.php => RESULTADO: PASS (exit 0)",
+                "Etapa 3: php tools/verify_cp_back11.php => RESULTADO: PASS (exit 0) — DELETE FROM solo en lista blanca (junction/purge/roles + excepcion aprobada de purchase_order_items), sin UPDATE/DELETE sobre tablas append-only (inventory_movements, ctrl_ledger_entries, audit_operations, audit_pii_access, rx_prescriptions), sin DDL destructivo, columna estado presente en las 8 tablas de borrado logico, triggers trg_movements_sign y trg_ledger_vs_stock instalados (V1.4.0), 51 filas con estado='inactivo' persisten en BD"
+            ],
+            "files": [
+                "proyecto/06_codigo/tools/init_admin.php",
+                "proyecto/06_codigo/src/Repositories/UsuarioRepository.php",
+                "proyecto/06_codigo/tools/verify_cp_back09.php",
+                "proyecto/06_codigo/tools/verify_cp_back11.php"
+            ],
+            "assumptions": [
+                "La seed init_admin.php ahora resincroniza password_hash del admin desde entorno cuando password_verify no coincide: necesario para que la suite sea reproducible en cualquier entorno (el hash previo era de sesiones con otro ADMIN_PASSWORD). No se imprime la contrasena.",
+                "Los 18 fallos de verify_cp_back02 eran consecuencia del login admin fallido (token vacio), no de la logica de auth; el warning 'Undefined array key 2' en verify_cp_back02.php:111 desaparece con login OK.",
+                "verify_cp_back09: el check de STOCK_NOT_ENOUGH usaba 'autorizador_id' => 1 asumiendo un usuario id 1 distinto al admin (dependiente del entorno). Se cambio al usuario ctl_ del propio fixture; el comportamiento del servicio (RF-046 doble autorizacion antes de stock) no se toco. A validar con el cliente si se prefiere validar stock antes que autorizacion.",
+                "EXCEPCION APROBADA (regla 'prohibido DELETE FROM'): que cambia — se permite DELETE+INSERT sobre purchase_order_items en OrdenCompraRepository::reemplazarItems, SOLO para ordenes en borrador sin recepciones (PUT responde 409 ORDER_NOT_DRAFT en emitida/recibida). Por que — el borrador es un set no confirmado; la orden y las recepciones confirmadas nunca se borran (RNF-023). Quien lo aprueba — Cliente, 2026-10-07 (via question al validar CP-BACK-11 etapa 3). Queda en la lista blanca de tools/verify_cp_back11.php citando la aprobacion."
+            ],
+            "pending": [
+                "Endpoints no estan en docs/openapi.yaml (pendiente recurrente fuera de CP)",
+                "RNF-046 a nivel de BD depende de V1.2.0__grants.sql (OPEN-API-07, sin aplicar en local): los triggers de V1.4.0 solo validan consistencia de signos/saldos, no bloquean UPDATE/DELETE"
             ],
             "human_status": "PENDING"
         }

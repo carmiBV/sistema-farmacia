@@ -327,13 +327,16 @@ check($r['status'] === 409 && errorCode($r) === 'DOUBLE_AUTH_REQUIRED',
 $r = call('POST', "{$ctrlUrl}/adjustments", ['store_id' => $storeId, 'product_id' => $prodCtrl, 'lot_id' => $lotCtrl,
     'cantidad' => 1, 'direccion' => 'baja', 'motivo' => 'x', 'autorizador_id' => 99999999], $token);
 check($r['status'] === 404 && errorCode($r) === 'USER_NOT_FOUND', 'ajuste con autorizador inexistente -> 404');
-$r = call('POST', "{$ctrlUrl}/adjustments", ['store_id' => $storeId, 'product_id' => $prodCtrl, 'lot_id' => $lotCtrl,
-    'cantidad' => 999, 'direccion' => 'baja', 'motivo' => 'x', 'autorizador_id' => 1], $token);
-check($r['status'] === 409 && errorCode($r) === 'STOCK_NOT_ENOUGH', 'ajuste baja que excede stock -> 409 STOCK_NOT_ENOUGH');
 
 // autorizador valido: usuario ctl_* no sirve (rol vacio pero existe y esta activo)
 $authId = (int)dbVal('SELECT id FROM auth_users WHERE usuario = ?', ["ctl_{$sufijo}"]);
 check($authId > 0, 'autorizador alterno identificado');
+
+// ponytail: autorizador distinto del proponente (en BD fresca admin es id 1;
+// con autorizador == proponente el servicio responde DOUBLE_AUTH_REQUIRED antes de stock)
+$r = call('POST', "{$ctrlUrl}/adjustments", ['store_id' => $storeId, 'product_id' => $prodCtrl, 'lot_id' => $lotCtrl,
+    'cantidad' => 999, 'direccion' => 'baja', 'motivo' => 'x', 'autorizador_id' => $authId], $token);
+check($r['status'] === 409 && errorCode($r) === 'STOCK_NOT_ENOUGH', 'ajuste baja que excede stock -> 409 STOCK_NOT_ENOUGH');
 
 $r = call('POST', "{$ctrlUrl}/adjustments", ['store_id' => $storeId, 'product_id' => $prodCtrl, 'lot_id' => $lotCtrl,
     'cantidad' => 3, 'direccion' => 'baja', 'motivo' => 'Merma verificada por el quimico', 'autorizador_id' => $authId], $token);
