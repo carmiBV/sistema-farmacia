@@ -6,13 +6,284 @@
     "categorias",
     "productos"
   ],
-  "current_checkpoint": "CP-INT-01",
-  "technical_status": "BLOCKED",
-  "human_status": "PENDING",
-  "blocked": true,
+  "current_checkpoint": "CP-INT-08",
+  "technical_status": "PASS",
+  "human_status": "APPROVED",
+  "blocked": false,
   "can_continue": false,
-  "blocked_by": [
-    "04_backend_workflow",
-    "05_frontend_workflow"
+  "blocked_by": null,
+  "next": "PROYECTO ENTREGADO (2026-10-07). Los 6 workflows estan completos y aprobados. Pendientes operativos en manos del cliente: ver adr_entrega_integracion.md seccion 4 (commit git rm --cached + rotacion de credenciales, V1.2.0 grants, DROP tabla legacy usuarios, RF-054/RNF-030/RF-100, SLA, a11y final, formato fiscal).",
+  "checkpoint_results": [
+    {
+      "checkpoint": "CP-INT-01",
+      "date": "2026-10-07",
+      "result": "PASS",
+      "summary": "Validacion de Autenticacion, Sesion y RBAC (E2E sobre la pila completa, HTTP + BD). Flujo: login admin -> token JWT + perfil (roles) para la navegacion -> GET /auth/me (fuente de datos del dashboard) -> dashboard servido -> RBAC efectivo (usuario sin rol responde 403 FORBIDDEN en /auth/users; tras asignar rol admin y re-login responde 200) -> logout seguro (200 revocado=true) -> revocacion VERIFICADA en BD (token_blacklist conserva el hash sha256 del token) -> reuso del token revocado 401 UNAUTHENTICATED y logout repetido 401 -> login posterior genera sesion nueva valida (la revocacion previa no la afecta) -> cuenta inactiva 403 ACCOUNT_DISABLED. Implementado en tools/verify_int01.php (patron de los verify del backend con helpers call/dbVal y fixtures con borrado logico).",
+      "evidence": [
+        "php -l OK en tools/verify_int01.php",
+        "tools/verify_int01.php http://127.0.0.1:8000 => RESULTADO: PASS (18/18: login, token JWT, perfil para navegacion, /auth/me, dashboard 200, RBAC 403->200 tras asignar rol, logout 200, hash sha256 en token_blacklist, reuso 401, logout repetido 401, sesion nueva valida, ACCOUNT_DISABLED 403)",
+        "Verificacion directa de BD: SELECT COUNT(*) FROM token_blacklist WHERE token_hash = sha256(token) = 1 tras el logout (Jwt::hash confirmado como hash('sha256', token))",
+        "Fixture de prueba int1_<sufijo> inactivado por borrado logico al finalizar (sin DELETE FROM)"
+      ],
+      "files": [
+        "proyecto/06_codigo/tools/verify_int01.php"
+      ],
+      "assumptions": [
+        "La navegacion del dashboard se verifica como pagina servida por perfil autenticado (200 + widgets); la redireccion por rol es logica cliente ya cubierta por tests/dashboard_flow.test.mjs del workflow 05.",
+        "El permiso efectivo se valida con re-login tras asignar el rol (el JWT se emite con los permisos del momento; la estrategia de claims vs consulta por peticion queda documentada en el backend).",
+        "La renovacion de tokens no existe en el contrato (JWT con expiracion + login nuevo); 'renovacion/revocacion' se cubre como revocacion verificada en token_blacklist + emision de sesion nueva."
+      ],
+      "pending": [
+        "CP-INT-02: integracion de catalogos y sucursales",
+        "Estrategia de claims vs consulta de permisos por peticion: documentar en ADR si el cliente lo exige"
+      ],
+      "human_status": "APPROVED",
+      "human_validation": {
+        "date": "2026-10-07",
+        "by": "Cliente (mensaje 'CONTINUAR')",
+        "decision": "APROBADO CP-INT-01 (auth/sesion/RBAC E2E). Autoriza continuar con CP-INT-02."
+      }
+    },
+    {
+      "checkpoint": "CP-INT-02",
+      "date": "2026-10-07",
+      "result": "PASS",
+      "summary": "Integracion de Catalogos y Sucursales (E2E, HTTP + BD, 33 checks). Flujo de punta a punta: sucursales (crear/editar), cajas (crear/editar), categorias jerarquicas (raiz -> hija con parent_id -> mover a raiz con parent_id null -> unicidad por rama 409 DUPLICATE_NAME), productos (crear, vincular categorias por subrecurso, editar) y precios/promociones (creacion con vigencias, precio negativo 400, sin alcance 400, cierre de vigencia por PUT, DELETE de precios -> 404 porque no existe ruta: append-only). Inmutabilidad con borrado logico verificada en BD: DELETE 204 -> GET 404 y la fila PERSISTE con estado inactivo/inactiva en catalog_products, catalog_categories, ops_registers y ops_stores; la uq (nombre, parent_id_key) de categorias sigue cubriendo filas inactivas (POST del nombre borrado -> 409).",
+      "evidence": [
+        "php -l OK en tools/verify_int02.php",
+        "tools/verify_int02.php http://127.0.0.1:8000 => RESULTADO: PASS (33/33)",
+        "Verificacion directa de BD: estado inactivo/inactiva persistido en catalog_products, catalog_categories, ops_registers y ops_stores tras sus DELETE (204); DELETE /catalog/prices/{id} -> 404 (sin ruta: append-only)",
+        "Regresiones en verde tras los cambios: tests/catalog_flow.test.mjs PASS y tools/verify_cp_front04.php PASS"
+      ],
+      "bug_encontrado_y_corregido": [
+        "INTEGRACION: el subrecurso de categorias de producto usa PUT /catalog/products/{id}/categories (contrato real del router) pero public/assets/js/productos.js enviaba POST -> 404 NOT_FOUND en produccion. El harness de node lo enmascaraba porque su mock respondia 200 para cualquier metodo. Corregido a PUT en productos.js y en la expectativa de tests/catalog_flow.test.mjs; verificado con la prueba E2E.",
+        "TEST: la asercion de parent_id null usaba ($data['parent_id'] ?? 'x') === null, que falla siempre porque ?? convierte null en 'x'; corregida a array_key_exists + comparacion estricta."
+      ],
+      "files": [
+        "proyecto/06_codigo/tools/verify_int02.php",
+        "proyecto/06_codigo/public/assets/js/productos.js",
+        "proyecto/06_codigo/tests/catalog_flow.test.mjs"
+      ],
+      "assumptions": [
+        "Precios y promociones no tienen DELETE en el contrato (append-only con cierre de vigencia por PUT): la prueba E2E lo confirma con el 404 de la ruta.",
+        "La edicion de precios/promociones usa PUT de reemplazo completo (mismo patron del backend).",
+        "Fixtures con sufijo unico por corrida; el borrado logico deja filas inactivas en BD (sin DELETE FROM)."
+      ],
+      "pending": [
+        "CP-INT-03: integracion de compras, recepciones y generacion de lotes FEFO",
+        "Revision de otros mocks de harness que puedan enmascarar diferencias de metodo/contrato (leccion de CP-INT-02)"
+      ],
+      "human_status": "APPROVED",
+      "human_validation": {
+        "date": "2026-10-07",
+        "by": "Cliente (mensaje 'CONTINUAR')",
+        "decision": "APROBADO CP-INT-02 (catalogos y sucursales E2E). Autoriza continuar con CP-INT-03."
+      }
+    },
+    {
+      "checkpoint": "CP-INT-03",
+      "date": "2026-10-07",
+      "result": "PASS",
+      "summary": "Integracion de Compras, Recepciones y Generacion de Lotes FEFO (E2E, HTTP + BD, 27 checks). Ciclo completo: orden en borrador (201) -> recepcion sobre borrador rechazada (409 ORDER_NOT_ISSUED, RN-07) -> emitir (borrador -> emitida) -> recepcion parcial 4/10 con lote de fabrica (numero_lote + fecha_vencimiento, 201 idempotent_reused=false) -> RN-09 (misma idempotency_key -> 200 reused=true sin duplicar) -> stock SIN mover hasta confirmar (item con lot_id NULL) -> confirmar (T-3) que crea el lote AUTOMATICAMENTE en cuarentena con trazabilidad ESTRICTA (inventory_lots.reception_item_id NOT NULL, vinculo 1:1 con el item) + inventory_stock +4 + kardex entrada signo +1 ref recepcion (CA-10) + cantidad_recibida + outbox recepcion.confirmada pendiente (decision 16) -> doble confirmar 409 RECEPTION_NOT_PENDING -> segunda recepcion 6/10 confirmada -> cierre AUTOMATICO de la orden al 100% (estado recibida, RN-07) -> lotes FEFO consultables con su fecha de vencimiento.",
+      "evidence": [
+        "php -l OK en tools/verify_int03.php",
+        "tools/verify_int03.php http://127.0.0.1:8000 => RESULTADO: PASS (27/27)",
+        "Verificacion directa de BD: inventory_lots.reception_item_id = item de recepcion (1 fila, RF-031), estado 'cuarentena' (RF-032), numero_lote/fecha_vencimiento persistidos, inventory_stock.stock_available=4, inventory_movements (entrada, signo 1, ref_tipo recepcion), purchase_order_items.cantidad_recibida 4 -> 10, outbox_events recepcion.confirmada pendiente, purchase_orders.estado='recibida'"
+      ],
+      "nota_de_contrato": [
+        "EXCEEDS_PENDING responde 400 (no 409 como agrupaba el registro historico de CP-BACK-05, que listaba codigos sin precisar status). La prueba E2E valida el comportamiento real del modulo (400 + codigo EXCEEDS_PENDING). A validar con el cliente si se prefiere unificar en 409."
+      ],
+      "files": [
+        "proyecto/06_codigo/tools/verify_int03.php"
+      ],
+      "assumptions": [
+        "La cantidad recibida se acumula al CONFIRMAR (no al registrar la recepcion); el cierre automatico de la orden ocurre al llegar al 100% de cantidad_pedida.",
+        "La idempotencia de recepciones usa la clave enviada por el cliente (RN-09); sin clave, cada registro crea una recepcion nueva.",
+        "El lote nace en cuarentena y su liberacion es un paso posterior (CP-BACK-06 / interfaz de lotes)."
+      ],
+      "pending": [
+        "CP-INT-04: integracion de inventario, transferencias y alertas",
+        "Unificacion del status HTTP de EXCEEDS_PENDING (400 vs 409): pendiente de validacion con el cliente"
+      ],
+      "human_status": "APPROVED",
+      "human_validation": {
+        "date": "2026-10-07",
+        "by": "Cliente (mensaje 'CONTINUAR')",
+        "decision": "APROBADO CP-INT-03 (compras/recepciones/lotes FEFO E2E). Autoriza continuar con CP-INT-04."
+      }
+    },
+    {
+      "checkpoint": "CP-INT-04",
+      "date": "2026-10-07",
+      "result": "PASS",
+      "summary": "Integracion de Inventario, Transferencias y Alertas (E2E, HTTP + BD, 24 checks). Stock en tiempo real verificado paso a paso (inventory_stock A=4 -> 2 y B=0 -> 2, tambien via GET /inventory/stocks). Guard de FEFO/estados: despachar lote en cuarentena -> 409 LOT_NOT_RELEASED con rollback (RN-02, stock sin cambio); liberacion -> estado 'liberado'; transferencia con cantidad > stock -> 409 STOCK_NOT_ENOUGH con stock intacto (el guard ocurre al CREAR la transferencia). Ciclo inter-sucursal completo: crear (201) -> RN-09 (misma idempotency_key -> 200 sin duplicar) -> despachar (stock origen -2, kardex transferencia_salida signo -1) -> recibir (RN-08: stock destino +2, kardex transferencia_entrada signo +1) -> cerrar (estado 'cerrada'). Kardex append-only verificado (3 movimientos acumulados sin sobrescribir). Alertas: umbrales configurables via system_config (alerta.stock_minimo=10, alerta.dias_vencimiento=30), evaluacion genera alerta de vencimiento (lote con vencimiento en 10 dias) y de stock_minimo (3u < 10), DEDUP verificado (segunda evaluacion no duplica) y resolucion -> estado 'resuelta'. TRANSFER_SAME_STORE -> 400.",
+      "evidence": [
+        "php -l OK en tools/verify_int04.php",
+        "tools/verify_int04.php http://127.0.0.1:8000 => RESULTADO: PASS (24/24)",
+        "Verificacion directa de BD: inventory_stock por sucursal/lote en cada paso, inventory_movements (entrada + transferencia_salida(-1) + transferencia_entrada(+1) = 3 filas acumuladas), inventory_transfers.estado='cerrada', inventory_lots.estado='liberado', inventory_alertas (vencimiento y stock_minimo abiertas, dedup, luego 'resuelta')"
+      ],
+      "correccion_durante_el_cp": [
+        "TEST: la seccion de stock insuficiente tenia un bloque espurio (creaba y despachaba una transferencia extra de 2u que movia stock y envenenaba los pasos siguientes) y esperaba STOCK_NOT_ENOUGH al despachar; el guard real ocurre al CREAR la transferencia. Corregido el test al comportamiento real; sin cambios en la app."
+      ],
+      "files": [
+        "proyecto/06_codigo/tools/verify_int04.php"
+      ],
+      "assumptions": [
+        "El guard de stock de transferencias valida al crear Y de nuevo al despachar (CAS); el rollback de RN-02 se verifico en ambos flujos rechazados.",
+        "Las alertas de vencimiento son por producto (store_id NULL) y las de stock_minimo por producto+sucursal; el dedup es sobre alertas abiertas de ese par.",
+        "Umbrales fijados via system_config en la prueba (10 u / 30 dias); sus valores por defecto son los mismos del backend."
+      ],
+      "pending": [
+        "CP-INT-05: integracion de recetas medicas y libro oficial de controlados"
+      ],
+      "human_status": "APPROVED",
+      "human_validation": {
+        "date": "2026-10-07",
+        "by": "Cliente (mensaje 'continuar')",
+        "decision": "APROBADO CP-INT-04 (inventario/transferencias/alertas E2E). Autoriza continuar con CP-INT-05."
+      }
+    },
+    {
+      "checkpoint": "CP-INT-05",
+      "date": "2026-10-07",
+      "result": "PASS",
+      "summary": "Integracion de Recetas Medicas y Libro Oficial de Controlados (E2E, HTTP + BD, 22 checks). Flujo de dispensacion: receta con producto controlado y asociacion medico prescriptor/paciente verificada (prescriber_id/patient_id + nombres resueltos), dispensacion parcial 2/5 con CAS de saldo (cantidad_dispensada=2, saldo=3 en BD) y RX_SALDO_INSUFICIENTE con rollback ante exceso. AFECTACION AUTOMATICA del Libro (RF-055): la recepcion del controlado genera asiento 'entrada' (10 u, ref recepcion) en ctrl_ledger_entries y actualiza ctrl_balances; el ajuste con DOBLE AUTORIZACION (RF-046: autorizador == proponente -> 409 DOUBLE_AUTH_REQUIRED) genera asiento 'ajuste' y encadena el saldo (10 -> 9). Inmutabilidad: el libro es append-only (2 asientos acumulados, sin DELETE expuesto), consultable via API y CONCILIADO (RNF-024: desbalanceados=0, saldo = saldo_calculado = 9).",
+      "evidence": [
+        "php -l OK en tools/verify_int05.php",
+        "tools/verify_int05.php http://127.0.0.1:8000 => RESULTADO: PASS (22/22, a la primera)",
+        "Verificacion directa de BD: ctrl_ledger_entries (entrada 10 u ref recepcion + ajuste 1 u, sin borrados), ctrl_balances.saldo 10 -> 9 con saldo_calculado igual, rx_prescription_items (cantidad_dispensada=2, saldo=3 tras rollback del exceso)"
+      ],
+      "files": [
+        "proyecto/06_codigo/tools/verify_int05.php"
+      ],
+      "assumptions": [
+        "La dispensacion NO descuenta stock ni kardex (Opcion A del CP-BACK-07, vigente y confirmada en este E2E: movimientos con ref_tipo='rx' = 0); el vinculo dispensacion <-> stock queda pendiente con el cliente.",
+        "El asiento del libro se genera por el HOOK unico de movimientos de inventario de controlados (RF-055): entrada y ajuste verificados; el resto de tipos ya cubiertos por el CP-BACK-09.",
+        "La conciliacion (RNF-024) reconstruye el saldo desde la cadena de saldo_resultante (ultimo asiento)."
+      ],
+      "pending": [
+        "CP-INT-06: integracion de POS, pagos, idempotencia y devoluciones",
+        "Vinculo dispensacion -> descuento de stock (Opcion B) y RF-054 (verificacion del quimico): pendientes con el cliente"
+      ],
+      "human_status": "APPROVED",
+      "human_validation": {
+        "date": "2026-10-07",
+        "by": "Cliente (mensaje 'continuar')",
+        "decision": "APROBADO CP-INT-05 (recetas y libro de controlados E2E). Autoriza continuar con CP-INT-06."
+      }
+    },
+    {
+      "checkpoint": "CP-INT-06",
+      "date": "2026-10-07",
+      "result": "PASS",
+      "summary": "Integracion de POS, Pagos, Idempotencia y Devoluciones (E2E, HTTP + BD, 25 checks). Venta en caja con DESCUENTO POR POLITICA FEFO verificado: dos lotes del mismo producto con vencimientos distintos, la venta descuenta el de vencimiento mas proximo (5->2) dejando el otro intacto (5), con kardex salida signo -1 ref venta. RN-01: venta 999u -> 409 STOCK_NOT_ENOUGH con stock sin negativos. Idempotencia: misma idempotency_key -> 200 reused=true con la MISMA orden, una sola fila en sales_orders y sin doble descuento de stock. Multiples medios de pago: efectivo + tarjeta (2 filas aprobadas en payments_transactions) y la suma transiciona la orden a 'pagada' (CAS); pago excedido sobre orden pendiente -> 409 PAYMENT_EXCEEDS_DUE; pago sobre orden ya pagada -> 409 ORDER_NOT_PENDING. Comprobante: GET de la orden con items + pagos + total calculado (3 x 10.00 = 30.00). Devoluciones: condicion vendible reingresa stock (2->3) con kardex devolucion +1, no_vendible NO reingresa, y exceso -> 409 RETURN_EXCEEDS_SOLD.",
+      "evidence": [
+        "php -l OK en tools/verify_int06.php",
+        "tools/verify_int06.php http://127.0.0.1:8000 => RESULTADO: PASS (25/25)",
+        "Verificacion directa de BD: inventory_stock por lote en cada paso (FEFO 5->2 / 5 intacto / reingreso devolucion), inventory_movements (salida -1 ref venta, devolucion +1), sales_orders (1 fila por idempotency_key, estado pagada), payments_transactions (2 aprobadas), sales_return_items (vendible/no_vendible)"
+      ],
+      "correcciones_de_expectativa_en_el_cp": [
+        "El backend exige un producto distinto por item de recepcion ('producto repetido en items'): el fixture de dos lotes se adapto a dos recepciones del mismo producto.",
+        "POST /sales/orders/{id}/payments responde 200 (no 201) y el flag de reuso de la venta viaja en data.idempotent_reused (no meta).",
+        "PAYMENT_EXCEEDS_DUE solo aplica con la orden aun 'pendiente'; sobre una orden ya pagada el backend responde ORDER_NOT_PENDING (validacion previa)."
+      ],
+      "files": [
+        "proyecto/06_codigo/tools/verify_int06.php"
+      ],
+      "assumptions": [
+        "La politica FEFO se descuenta en el punto de venta sobre el lote indicado por el cliente (el POS elige el de vencimiento mas proximo); el backend no fuerza el orden FEFO al recibir el lot_id, valida stock/estado/vencimiento.",
+        "El comprobante se emite con la estructura orden+items+pagos del GET; sin formato fiscal (pendiente con el cliente).",
+        "Devoluciones por item con condicion; la venta no transiciona a estado 'devuelta' (RF-100 pendiente con el cliente, mismo supuesto del CP-BACK-08)."
+      ],
+      "pending": [
+        "CP-INT-07: auditoria, proteccion PII y seguridad global",
+        "RF-100 (estado devuelta) y formato fiscal del comprobante: pendientes con el cliente"
+      ],
+      "human_status": "APPROVED",
+      "human_validation": {
+        "date": "2026-10-07",
+        "by": "Cliente (mensaje 'continuar')",
+        "decision": "APROBADO CP-INT-06 (POS/pagos/idempotencia/devoluciones E2E). Autoriza continuar con CP-INT-07."
+      }
+    },
+    {
+      "checkpoint": "CP-INT-07",
+      "date": "2026-10-07",
+      "result": "PASS",
+      "summary": "Auditoria, Proteccion PII y Seguridad Global (E2E, HTTP + BD + git, 21 checks). RF-090: toda mutacion queda en audit_operations (usuario, accion, entidad=ruta, valores_despues; entidad_id se captura en rutas con {id}), sin endpoint de borrado y con crecimiento append-only. RF-091: cada creacion/consulta de paciente genera fila en audit_pii_access con paciente_id. RNF-050: valores_despues redactado ([REDACTADO] en nombre/identificacion/contacto/fecha_nacimiento; la password tambien). Seguridad global: SQLi (filtros y nombres maliciosos) responden sin fugas de SQLSTATE y sin tumbar tablas; XSS reflejado no aparece en el HTML; CSRF mitigado por diseno (login sin Set-Cookie, mutaciones exigen Bearer -> 401 sin token). RNF-034/.env: git rm --cached de .env y tools/.env ejecutado (OPEN-API-05) - ningun .env real trackeado, archivos intactos en disco, .gitignore los cubre y .env.example sin secretos.",
+      "evidence": [
+        "php -l OK en tools/verify_int07.php",
+        "tools/verify_int07.php http://127.0.0.1:8000 => RESULTADO: PASS (21/21)",
+        "Filas de audit_operations verificadas en BD (creacion/eliminacion con valores redactados) y audit_pii_access (creacion/consulta de paciente)",
+        "git ls-files: solo .env.example; git rm --cached de .env y proyecto/06_codigo/tools/.env (los archivos siguen en disco; el CAMBIO QUEDA SIN COMMITAR a la espera del cliente)"
+      ],
+      "correcciones_de_expectativa_en_el_cp": [
+        "El hook de auditoria usa la RUTA como entidad (/api/v1/catalog/categories) y solo llena entidad_id cuando la ruta lleva {id}; las aserciones se ajustaron a la semantica real.",
+        "El payload SQLi repetido entre corridas caia en la uq (nombre, parent_id_key) -> 409; se usa sufijo unico por corrida."
+      ],
+      "files": [
+        "proyecto/06_codigo/tools/verify_int07.php"
+      ],
+      "assumptions": [
+        "CSRF: mitigado por diseno (autenticacion Bearer sin cookies); no hay formulario con cookies ambientales. Si en el futuro se usan cookies httpOnly, habra que anadir token anti-CSRF.",
+        "XSS: las vistas renderizan datos via textContent (JS) y el HTML no refleja parametros; la validacion completa con DOM dinamico queda en la auditoria de accesibilidad final.",
+        "OPEN-API-05: git rm --cached ejecutado pero SIN COMMIT; pendiente del cliente: confirmar el commit y ROTAR credenciales si algun .env tuvo secretos reales (RNF-034). OPEN-API-07 (V1.2.0__grants) sigue abierto."
+      ],
+      "pending": [
+        "CP-INT-08: cierre, certificacion E2E y entregables finales (ultimo CP del workflow 06)",
+        "Commit del git rm --cached + rotacion de credenciales (cliente/security-reviewer); V1.2.0__grants.sql (OPEN-API-07)"
+      ],
+      "human_status": "APPROVED",
+      "human_validation": {
+        "date": "2026-10-07",
+        "by": "Cliente (mensaje 'CONTINUAR')",
+        "decision": "APROBADO CP-INT-07 (auditoria/PII/seguridad E2E). Autoriza continuar con CP-INT-08."
+      }
+    },
+    {
+      "checkpoint": "CP-INT-08",
+      "date": "2026-10-07",
+      "result": "PASS",
+      "summary": "Cierre, Certificacion E2E y Entregables Finales (ultimo CP del workflow 06). SUITE COMPLETA ejecutada contra BD local: Grupo 1 (piloto + backend + integracion) 23/23 PASS — verify_cp02..08, verify_cp_back02..back10 y verify_int01..07; Grupo 2 (frontend + harnesses + certificacion) 22/22 PASS en corrida limpia — verify_cp_front01..11 y 10 harnesses node. CERTIFICACION DE ESQUEMA: las 42 tablas oficiales del modelo (V1.0.0__esquema_base.sql) existen con nombres exactos; tabla legacy 'usuarios' ajena al despliegue oficial documentada (DROP pendiente de autorizacion, operacion destructiva). LINEA BASE DE RENDIMIENTO (corrida local secuencial, 20 req/endpoint): health avg 19-26ms / p95 31-36ms; catalog/categories p95 32-33ms; inventory/stocks p95 35-53ms; sales/orders p95 34-44ms; audit/operations p95 34-41ms — todos 20/20 ok bajo umbral p95 < 1000ms (linea base local, no SLA productivo).",
+      "evidence": [
+        "php tools/verify_int08.php http://127.0.0.1:8000 => RESULTADO: PASS (8/8: 42 tablas oficiales coincidentes + 5 endpoints con 20/20 y p95 < 1000ms)",
+        "SUITE COMPLETA Grupo 1 => 23/23 PASS (piloto 7 + backend 9 + integracion E2E 7)",
+        "SUITE COMPLETA Grupo 2 => 22/22 PASS en corrida limpia (verificador WCAG estructural incluido: 21 pantallas)",
+        "Nota de robustez: en la primera corrida del Grupo 2, verify_int08 tuvo 3 fallos transitorios de latencia (p95 > 1000ms puntual en un entorno dev); 3 corridas posteriores consecutivas PASS con p95 31-41ms. El umbral es linea base local; el SLA productivo se define con el cliente (RNF de latencia a validar)."
+      ],
+      "files": [
+        "proyecto/06_codigo/tools/verify_int08.php",
+        "proyecto/06_codigo/docs/openapi.yaml",
+        "proyecto/06_codigo/tools/validate_openapi.py",
+        "proyecto/04_decisiones/adr_entrega_integracion.md"
+      ],
+      "paquete_de_entrega": {
+        "date": "2026-10-07",
+        "requested_by": "Cliente (seleccion 'Paquete de entrega' via question)",
+        "items": [
+          "ADR de cierre (acta de entrega): proyecto/04_decisiones/adr_entrega_integracion.md — certificacion consolidada, supuestos tecnicos abiertos, checklist de pendientes del cliente y riesgos conocidos",
+          "Contrato OpenAPI COMPLETO: docs/openapi.yaml ampliado de 5 a 117 operaciones (81 rutas: auth, ops, catalog, purchases, inventory, rx, control, sales, audit, health) con requestBody por validador real, respuestas/parametros/securitySchemes compartidos y enum de codigos de error completo",
+          "validate_openapi.py reforzado: refs $ref resueltas, inventario minimo (>=80 rutas / >=115 ops), deteccion de claves duplicadas en components y securitySchemes bearerAuth — PASS"
+        ],
+        "note": "El resto de pendientes del checklist (commit git rm --cached + rotacion de credenciales, V1.2.0 grants, DROP tabla legacy usuarios, RF-054/RNF-030/RF-100, SLA, a11y final, formato fiscal) requiere decision/explicita del cliente; ver adr_entrega_integracion.md seccion 4."
+      },
+      "assumptions": [
+        "La linea base de rendimiento es una medicion local secuencial (sin carga concurrente); el escenario 10x / SLA productivo requiere pruebas de carga dedicadas cuando el cliente defina los RNF de latencia y concurrencia.",
+        "La tabla legacy 'usuarios' (ajena al esquema oficial, probable resto de prototipo previo) NO se elimina sin autorizacion explicita (operacion destructiva prohibida sin aprobacion)."
+      ],
+      "entregables_pendientes_para_aprobacion_final": [
+        "Commit del git rm --cached de .env y tools/.env + rotacion de credenciales si hubo secretos reales (OPEN-API-05, RNF-034)",
+        "Aplicar V1.2.0__grants.sql con credenciales reales en entornos no-locales (OPEN-API-07)",
+        "Autorizacion para DROP de la tabla legacy 'usuarios'",
+        "Decisiones abiertas con el cliente: RF-054 (verificacion del quimico), RNF-030 (MFA), RF-100 (estado devuelta), contrato OpenAPI de endpoints no-piloto, formato fiscal del comprobante, SLA de latencia/concurrencia",
+        "Auditoria de accesibilidad final (axe/lector de pantalla) y prueba tactil en POS fisico"
+      ],
+      "human_status": "APPROVED",
+      "human_validation": {
+        "date": "2026-10-07",
+        "by": "Cliente (mensaje 'CONTINUAR')",
+        "decision": "APROBACION FINAL DE ENTREGA del sistema completo (CP-INT-08 + paquete de entrega). Proyecto cerrado; los pendientes operativos del ADR quedan en manos del cliente."
+      }
+    }
   ]
 }

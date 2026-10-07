@@ -1,0 +1,252 @@
+/* CP-FRONT-01: estilos base reutilizables (PHP Views + CSS3, sin frameworks). */
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: #f2f5f7;
+    color: #1c2b36;
+}
+
+.login-body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.login-card {
+    background: #fff;
+    width: 100%;
+    max-width: 380px;
+    padding: 28px 24px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(28, 43, 54, .12);
+}
+
+.login-card h1 { margin: 0 0 4px; font-size: 1.4rem; }
+.login-sub { margin: 0 0 20px; color: #5a6b78; font-size: .95rem; }
+.muted { color: #5a6b78; font-size: .9rem; }
+
+.field { margin-bottom: 16px; }
+.field label { display: block; margin-bottom: 6px; font-weight: 600; font-size: .9rem; }
+.field input {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    border: 1px solid #b9c6d0;
+    border-radius: 8px;
+}
+.field input:focus {
+    outline: 3px solid #2563eb;
+    outline-offset: 1px;
+    border-color: #2563eb;
+}
+
+/* Botones grandes: pantallas táctiles POS (decisiones_frontend.md). */
+.btn {
+    display: inline-block;
+    width: 100%;
+    padding: 14px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+.btn-primary { background: #2563eb; color: #fff; }
+.btn-primary:hover { background: #1d4ed8; }
+.btn-primary:disabled { background: #93a8f0; cursor: wait; }
+
+.alert {
+    padding: 12px 14px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    font-size: .95rem;
+}
+.alert-error { background: #fdecec; color: #8a1f1f; border: 1px solid #f3b7b7; }
+
+/* --- CP-FRONT-02: layout principal (sidebar/header/widgets) --- */
+.app-body { background: #eef2f5; }
+
+.app-layout { display: flex; min-height: 100vh; }
+
+.sidebar {
+    width: 240px;
+    flex-shrink: 0;
+    background: #1c2b36;
+    color: #dbe4ea;
+    padding: 18px 14px;
+    overflow-y: auto;
+}
+.sidebar .brand { font-weight: 700; font-size: 1.05rem; margin-bottom: 18px; color: #fff; }
+.nav-list { list-style: none; margin: 0; padding: 0; }
+.nav-seccion {
+    margin: 16px 0 6px;
+    font-size: .72rem;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: #8fa3b0;
+}
+.nav-list a, .nav-pendiente {
+    display: block;
+    padding: 10px 12px;
+    border-radius: 8px;
+    color: inherit;
+    text-decoration: none;
+    font-size: .92rem;
+}
+.nav-list a:hover { background: #28404f; }
+.nav-list a[aria-current="page"] { background: #2563eb; color: #fff; font-weight: 600; }
+.nav-pendiente { color: #7d93a1; cursor: default; }
+
+.app-main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+
+.app-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    background: #fff;
+    padding: 14px 22px;
+    border-bottom: 1px solid #d7e0e7;
+}
+.app-header h1 { margin: 0; font-size: 1.25rem; }
+.header-right { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.field-inline { display: flex; align-items: center; gap: 8px; margin: 0; }
+.field-inline label { margin: 0; }
+.field-inline select {
+    padding: 10px 12px;
+    font-size: .95rem;
+    border: 1px solid #b9c6d0;
+    border-radius: 8px;
+    background: #fff;
+    min-width: 180px;
+}
+.user-chip {
+    background: #e7eef5;
+    color: #24425a;
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: .88rem;
+    font-weight: 600;
+}
+
+.app-content { padding: 22px; }
+
+.widgets {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+}
+.widget {
+    background: #fff;
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: 0 4px 14px rgba(28, 43, 54, .08);
+}
+.widget h2 { margin: 0 0 10px; font-size: .95rem; color: #5a6b78; font-weight: 600; }
+.widget .dato { margin: 0; font-size: 1.9rem; font-weight: 700; }
+.widget .detalle { margin: 8px 0 0; font-size: .85rem; color: #5a6b78; }
+
+@media (max-width: 900px) {
+    .app-layout { flex-direction: column; }
+    .sidebar { width: 100%; }
+    .nav-list { display: flex; flex-wrap: wrap; gap: 4px; }
+    .nav-seccion { width: 100%; margin: 10px 0 2px; }
+}
+
+/* --- CP-FRONT-03: paneles, tablas y formularios de gestion --- */
+.panel {
+    background: #fff;
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 18px;
+    box-shadow: 0 4px 14px rgba(28, 43, 54, .08);
+}
+.panel h2 { margin: 0 0 14px; font-size: 1.05rem; }
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px 16px;
+    align-items: end;
+    margin-bottom: 18px;
+}
+.form-grid .btn { width: auto; padding: 12px 20px; }
+
+.tabla { width: 100%; border-collapse: collapse; font-size: .9rem; }
+.tabla th, .tabla td { padding: 10px 12px; border-bottom: 1px solid #e2e9ee; text-align: left; }
+.tabla th { background: #f4f7f9; font-size: .8rem; text-transform: uppercase; letter-spacing: .05em; color: #5a6b78; }
+.tabla tr:hover td { background: #f7fafc; }
+
+.btn-mini {
+    width: auto;
+    display: inline-block;
+    padding: 8px 12px;
+    margin-right: 6px;
+    font-size: .82rem;
+    background: #e7eef5;
+    color: #24425a;
+}
+.btn-mini:hover { background: #d3e2ee; }
+
+[hidden] { display: none !important; }
+
+/* --- CP-FRONT-07: semaforizacion FEFO --- */
+.sem-rojo, .sem-amarillo, .sem-verde {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: .8rem;
+    font-weight: 600;
+}
+.sem-rojo { background: #fdecec; color: #8a1f1f; }
+.sem-amarillo { background: #fef6e0; color: #7a5b00; }
+.sem-verde { background: #e5f6ea; color: #17632f; }
+
+.items-editor { border: 1px solid #d7e0e7; border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; }
+.items-editor legend { font-size: .9rem; font-weight: 600; padding: 0 6px; }
+.items-lista { list-style: none; margin: 10px 0 0; padding: 0; font-size: .9rem; }
+.items-lista li { padding: 6px 0; border-bottom: 1px dashed #e2e9ee; }
+.panel-sub { background: #f7fafc; box-shadow: none; border: 1px solid #e2e9ee; }
+
+/* --- CP-FRONT-08/09/10: utilidades de detalle --- */
+.input-mini {
+    width: 90px;
+    padding: 8px;
+    border: 1px solid #b9c6d0;
+    border-radius: 8px;
+    font-size: .9rem;
+}
+.json-view {
+    background: #f4f7f9;
+    border: 1px solid #e2e9ee;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: .82rem;
+    overflow-x: auto;
+    max-height: 320px;
+}
+.pos-total { text-align: right; font-size: 1.3rem; font-weight: 700; margin: 12px 0 0; }
+
+/* --- CP-FRONT-11: accesibilidad WCAG y objetivos tactiles --- */
+.btn:focus-visible, .btn-mini:focus-visible, a:focus-visible, select:focus-visible,
+input:focus-visible, .nav-pendiente:focus-visible {
+    outline: 3px solid #2563eb;
+    outline-offset: 2px;
+}
+.btn-mini { min-height: 40px; }
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    background: #1c2b36;
+    color: #fff;
+    padding: 12px 18px;
+    z-index: 100;
+    border-radius: 0 0 8px 0;
+}
+.skip-link:focus { left: 0; }

@@ -183,6 +183,54 @@ $router->add('POST', '/api/v1/audit/events/{id}/reintentar', static fn(array $p)
 $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 
+// CP-FRONT-01: paginas web (Views PHP + assets estaticos). La API queda en /api/v1/*.
+if (!str_starts_with($path, '/api/')) {
+    if ($path !== '/' && !str_contains($path, '..') && is_file(__DIR__ . $path)) {
+        return false; // asset estatico: lo sirve php -S (router) o el docroot
+    }
+    $paginas = [
+        '/' => ['login', 'Iniciar sesión'],
+        '/login' => ['login', 'Iniciar sesión'],
+        '/dashboard' => ['dashboard', 'Dashboard'],
+        '/autenticacion-usuarios' => ['usuarios', 'Usuarios y Permisos'],
+        '/configuracion-sucursales' => ['configuracion', 'Configuración y Sucursales'],
+        '/catalogo-categorias' => ['categorias', 'Categorías'],
+        '/catalogo-productos' => ['productos', 'Productos'],
+        '/catalogo-precios-promociones' => ['precios', 'Precios y Promociones'],
+        '/gestion-proveedores' => ['proveedores', 'Proveedores'],
+        '/gestion-pacientes-prescriptores' => ['pacientes', 'Pacientes y Prescriptores'],
+        '/compras-ordenes' => ['ordenes', 'Órdenes de Compra'],
+        '/compras-recepciones' => ['recepciones', 'Recepciones'],
+        '/inventario-lotes-fefo' => ['lotes', 'Lotes FEFO'],
+        '/inventario-stock-movimientos' => ['stock', 'Stock y Movimientos'],
+        '/inventario-transferencias' => ['transferencias', 'Transferencias'],
+        '/inventario-alertas-incidentes' => ['alertas', 'Alertas e Incidentes'],
+        '/recetas-medicas' => ['recetas', 'Recetas Médicas'],
+        '/libro-controlados' => ['controlados', 'Libro de Controlados'],
+        '/ventas-pos' => ['pos', 'Punto de Venta'],
+        '/ventas-pagos-transacciones' => ['pagos', 'Ventas y Pagos'],
+        '/ventas-devoluciones' => ['devoluciones', 'Devoluciones'],
+        '/auditoria-operaciones-pii' => ['auditoria', 'Auditoría y PII'],
+    ];
+    if (!isset($paginas[$path])) {
+        http_response_code(404);
+        header('Content-Type: text/html; charset=utf-8');
+        echo '404 Not Found';
+        exit;
+    }
+    [$vista, $titulo] = $paginas[$path];
+    if ($vista === 'login') {
+        require __DIR__ . '/../app/Views/login.php';
+        exit;
+    }
+    $script = $vista;
+    $actual = $path;
+    $conSelector = $vista === 'dashboard';
+    $contenido = __DIR__ . '/../app/Views/' . $vista . '.php';
+    require __DIR__ . '/../app/Views/layouts/app.php';
+    exit;
+}
+
 try {
     $router->dispatch($method, $path);
 } catch (\App\Http\AppException $e) {

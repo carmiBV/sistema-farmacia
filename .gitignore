@@ -3,3 +3,7 @@
 opencode.json
 opencode.example.json
 data/
+
+# logs de servidor de desarrollo
+srv8000*.log
+proyecto/06_codigo/tests/results/srv8000*.log

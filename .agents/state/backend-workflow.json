@@ -47,7 +47,7 @@
     ],
     "current_checkpoint": "CP-BACK-11",
     "technical_status": "PASS",
-    "human_status": "PENDING",
+    "human_status": "APPROVED",
     "blocked": false,
     "can_continue": false,
     "blocked_by": null,
@@ -532,7 +532,12 @@
                 "Endpoints no estan en docs/openapi.yaml (pendiente recurrente fuera de CP)",
                 "RNF-046 a nivel de BD depende de V1.2.0__grants.sql (OPEN-API-07, sin aplicar en local): los triggers de V1.4.0 solo validan consistencia de signos/saldos, no bloquean UPDATE/DELETE"
             ],
-            "human_status": "PENDING"
+            "human_status": "APPROVED",
+            "human_validation": {
+                "date": "2026-10-07",
+                "by": "Cliente (mensaje 'continuar')",
+                "decision": "APROBADO CP-BACK-11 (suite verify_cp_back02..back10 en PASS + borrado logico/append-only verificado) y workflow 04 COMPLETO. Autoriza iniciar 05_frontend_workflow.md."
+            }
         }
     ]
 }

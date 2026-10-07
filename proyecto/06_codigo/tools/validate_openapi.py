@@ -40,6 +40,28 @@ def main() -> int:
     err_props = schemas["ErrorEnvelope"]["properties"]["error"]["required"]
     assert err_props == ["code", "message"], f"envelope de error inesperado: {err_props}"
 
+    # --- contrato completo (CP-INT-08: entregables finales) ---
+    import re
+
+    raw = SPEC.read_text(encoding="utf-8")
+    ops = sum(
+        1 for p in doc["paths"].values() for m in p if m in {"get", "post", "put", "delete"}
+    )
+    assert len(doc["paths"]) >= 80, f"paths incompletos: {len(doc['paths'])}"
+    assert ops >= 115, f"operaciones incompletas: {ops}"
+
+    # todo $ref resuelve contra components
+    refs = re.findall(r'\$ref:\s*"#/components/(\w+)/(\w+)"', raw)
+    faltan = sorted({f"{a}/{b}" for a, b in refs if b not in doc["components"].get(a, {})})
+    assert not faltan, f"$ref sin resolver: {faltan}"
+
+    # sin claves duplicadas en components (YAML las silencia)
+    for seccion in ("schemas", "responses", "parameters", "securitySchemes"):
+        claves = re.findall(rf"^  {seccion}:\n((?:    \w[\w]*:\n(?:      .*\n)*)+)", raw, re.M)
+        assert len(claves) <= 1, f"seccion components.{seccion} duplicada"
+
+    assert "bearerAuth" in doc["components"]["securitySchemes"], "falta securitySchemes bearerAuth"
+
     print(f"PASS: contrato válido -> {SPEC}")
     return 0
 

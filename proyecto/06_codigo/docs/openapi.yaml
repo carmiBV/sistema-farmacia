@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
-  title: API Farmacia — Catálogo de Categorías
-  version: 0.1.0-pilot
+  title: API Farmacia
+  version: 1.0.0-integracion
   description: |
     Contrato piloto del recurso `catalog_categories` (Workflow 03, CP-API-01).
 
@@ -11,7 +11,8 @@ info:
     - decisiones_backend.md: multicapa Controller → Validator → Service → Repository (PDO).
 
     Puntos abiertos (requieren validación humana, no se han inventado valores):
-    - **Autenticación/autorización:** pendiente de definir en el workflow de backend.
+    - **Autenticación/autorización:** RESUELTO en workflow 04 (JWT HS256 Bearer,
+      RBAC por permiso; `null`=pública, token=autenticado, `clave`=permiso).
     - **DELETE lógico:** RESUELTO (OPEN-API-01, aprobado 2026-10-04). La migración
       `V1.5.0__catalog_categories_estado.sql` añadió `estado ENUM('activo','inactivo')
       NOT NULL DEFAULT 'activo'` a `catalog_categories`.
@@ -185,6 +186,1378 @@ paths:
           $ref: "#/components/responses/NotFound"
         "500":
           $ref: "#/components/responses/DatabaseError"
+  /api/v1/health:
+    get:
+      tags: [health]
+      operationId: health
+      summary: Estado del servicio (público). 200 | 503 DATABASE_ERROR si la BD no responde.
+      security: []
+      responses:
+        "200": { description: Servicio operativo. }
+        "503": { $ref: "#/components/responses/DatabaseError" }
+  /api/v1/auth/login:
+    post:
+      tags: [auth]
+      operationId: login
+      summary: "Inicio de sesión (público). Body {usuario, password} -> 200 {token, token_type, expires_in, user{id,usuario,roles,permisos}} | 401 INVALID_CREDENTIALS | 403 ACCOUNT_DISABLED | 429 RATE_LIMITED (5 fallos/300s)"
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [usuario, password]
+              properties:
+                usuario: { type: string }
+                password: { type: string }
+      responses:
+        "200": { description: Sesión iniciada con JWT. }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+  /api/v1/auth/logout:
+    post:
+      tags: [auth]
+      operationId: logout
+      summary: "Cierra la sesión: revoca el token en token_blacklist -> 200 {revocado:true} | 401 si ya estaba revocado."
+      responses:
+        "200": { description: Token revocado. }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+  /api/v1/auth/me:
+    get:
+      tags: [auth]
+      operationId: me
+      summary: "Perfil del token actual -> 200 {id, usuario, roles, permisos}."
+      responses:
+        "200": { description: Perfil del usuario autenticado. }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+  /api/v1/auth/users:
+    get:
+      tags: [auth]
+      operationId: listUsers
+      summary: "Listado de usuarios (permiso auth.users.manage) -> 200 [{id, usuario, estado, roles}]."
+      responses:
+        "200": { description: Colección de usuarios. }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+    post:
+      tags: [auth]
+      operationId: createUser
+      summary: "Crea usuario (auth.users.manage). Body {usuario, password>=8, roles:[nombre]} -> 201 | 409 DUPLICATE_NAME."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [usuario, password, roles]
+              properties:
+                usuario: { type: string, minLength: 3, maxLength: 100 }
+                password: { type: string, minLength: 8 }
+                roles: { type: array, items: { type: string }, description: "Nombres de rol." }
+      responses:
+        "201": { description: Usuario creado. }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "409": { $ref: "#/components/responses/Conflict" }
+  /api/v1/auth/users/{id}/roles:
+    put:
+      tags: [auth]
+      operationId: assignUserRoles
+      summary: "Reemplaza los roles del usuario (auth.users.manage). Body {roles:[role_id]} -> 200 | 404."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [roles]
+              properties:
+                roles: { type: array, items: { type: integer }, description: "IDs de rol." }
+      responses:
+        "200": { description: Roles asignados. }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+  /api/v1/auth/roles:
+    get:
+      tags: [auth]
+      operationId: listRoles
+      summary: "Listado de roles con permisos (auth.users.manage)."
+      responses:
+        "200": { description: Colección de roles. }
+        "403": { $ref: "#/components/responses/Forbidden" }
+    post:
+      tags: [auth]
+      operationId: createRole
+      summary: "Crea rol (auth.users.manage). Body {nombre, descripcion?, permisos:[clave]} -> 201 | 409 DUPLICATE_NAME."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [nombre, permisos]
+              properties:
+                nombre: { type: string, maxLength: 100 }
+                descripcion: { type: string, maxLength: 255 }
+                permisos: { type: array, items: { type: string } }
+      responses:
+        "201": { description: Rol creado. }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "409": { $ref: "#/components/responses/Conflict" }
+  /api/v1/ops/stores:
+    get:
+      tags: [ops]
+      operationId: listStores
+      summary: "Sucursales (token). Filtros q/page/limit -> 200 [{id, codigo, nombre, estado}]."
+      responses:
+        "200": { description: Colección de sucursales. }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+    post:
+      tags: [ops]
+      operationId: createStore
+      summary: "Crea sucursal (ops.config.manage). Body {codigo 1-20 [A-Za-z0-9_-], nombre 1-150} -> 201 | 409 DUPLICATE_CODE."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [codigo, nombre]
+              properties:
+                codigo: { type: string, maxLength: 20 }
+                nombre: { type: string, maxLength: 150 }
+      responses:
+        "201": { description: Sucursal creada. }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "409": { $ref: "#/components/responses/Conflict" }
+  /api/v1/ops/stores/{id}:
+    get:
+      tags: [ops]
+      operationId: getStore
+      summary: "Sucursal por id (token) -> 200 | 404."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      responses:
+        "200": { description: Sucursal. }
+        "404": { $ref: "#/components/responses/NotFound" }
+    put:
+      tags: [ops]
+      operationId: updateStore
+      summary: "Actualiza sucursal (ops.config.manage) -> 200 | 409 DUPLICATE_CODE."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [codigo, nombre]
+              properties:
+                codigo: { type: string, maxLength: 20 }
+                nombre: { type: string, maxLength: 150 }
+      responses:
+        "200": { description: Sucursal actualizada. }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+    delete:
+      tags: [ops]
+      operationId: deleteStore
+      summary: "Borrado lógico de sucursal (ops.config.manage) -> 204; luego GET -> 404. Sin DELETE FROM."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      responses:
+        "204": { description: Sucursal inactivada. }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+  /api/v1/ops/registers:
+    get:
+      tags: [ops]
+      operationId: listRegisters
+      summary: "Cajas registradoras (token). Filtro store_id -> 200 [{id, store_id, codigo, estado}]."
+      parameters:
+        - name: store_id
+          in: query
+          schema: { type: integer }
+      responses:
+        "200": { description: Colección de cajas. }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+    post:
+      tags: [ops]
+      operationId: createRegister
+      summary: "Crea caja (ops.config.manage). Body {store_id, codigo} -> 201 | 409 DUPLICATE_CODE."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [store_id, codigo]
+              properties:
+                store_id: { type: integer }
+                codigo: { type: string, maxLength: 20 }
+      responses:
+        "201": { description: Caja creada. }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "409": { $ref: "#/components/responses/Conflict" }
+  /api/v1/ops/registers/{id}:
+    get:
+      tags: [ops]
+      operationId: getRegister
+      summary: "Caja por id (token) -> 200 | 404."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      responses:
+        "200": { description: Caja. }
+        "404": { $ref: "#/components/responses/NotFound" }
+    put:
+      tags: [ops]
+      operationId: updateRegister
+      summary: "Actualiza caja (ops.config.manage). Body {store_id, codigo} -> 200."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [store_id, codigo]
+              properties:
+                store_id: { type: integer }
+                codigo: { type: string, maxLength: 20 }
+      responses:
+        "200": { description: Caja actualizada. }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    delete:
+      tags: [ops]
+      operationId: deleteRegister
+      summary: "Borrado lógico de caja (ops.config.manage) -> 204."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      responses:
+        "204": { description: Caja inactivada. }
+        "404": { $ref: "#/components/responses/NotFound" }
+  /api/v1/ops/registers/{id}/shift:
+    get:
+      tags: [ops]
+      operationId: getShift
+      summary: "Turno actual de la caja (token) -> 200."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      responses:
+        "200": { description: Turno actual. }
+        "404": { $ref: "#/components/responses/NotFound" }
+  /api/v1/ops/registers/{id}/shift/open:
+    post:
+      tags: [ops]
+      operationId: openShift
+      summary: "Abre turno (ops.config.manage) -> 200 | 409 SHIFT_ALREADY_OPEN."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      responses:
+        "200": { description: Turno abierto. }
+        "409": { $ref: "#/components/responses/Conflict" }
+  /api/v1/ops/registers/{id}/shift/close:
+    post:
+      tags: [ops]
+      operationId: closeShift
+      summary: "Cierra turno (ops.config.manage) -> 200 | 409 SHIFT_NOT_OPEN."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      responses:
+        "200": { description: Turno cerrado. }
+        "409": { $ref: "#/components/responses/Conflict" }
+  /api/v1/ops/config:
+    get:
+      tags: [ops]
+      operationId: listConfig
+      summary: "Parámetros del sistema (token). Filtro store_id -> 200 [{config_key, config_value, value_type, store_id}]."
+      parameters:
+        - name: store_id
+          in: query
+          schema: { type: integer }
+      responses:
+        "200": { description: Colección de parámetros. }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+  /api/v1/ops/config/{key}:
+    get:
+      tags: [ops]
+      operationId: getConfig
+      summary: "Parámetro por clave (token) -> 200 | 404."
+      parameters: [{ $ref: "#/components/parameters/KeyPath" }]
+      responses:
+        "200": { description: Parámetro. }
+        "404": { $ref: "#/components/responses/NotFound" }
+    put:
+      tags: [ops]
+      operationId: upsertConfig
+      summary: "Upsert de parámetro (ops.config.manage). Body {config_value<=4000, value_type texto|numero|booleano|json, store_id?} -> 200; claves store.* exigen store_id."
+      parameters: [{ $ref: "#/components/parameters/KeyPath" }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [config_value, value_type]
+              properties:
+                config_value: { type: string, maxLength: 4000 }
+                value_type: { type: string, enum: [texto, numero, booleano, json] }
+                store_id: { type: integer }
+      responses:
+        "200": { description: Parámetro guardado. }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "409": { $ref: "#/components/responses/Conflict" }
+  /api/v1/catalog/products:
+    get:
+      tags: [catalog]
+      operationId: listProducts
+      summary: "Productos (token). Filtros q/category_id/page/limit -> 200."
+      responses:
+        "200": { description: Colección de productos. }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+    post:
+      tags: [catalog]
+      operationId: createProduct
+      summary: "Crea producto (catalog.manage). Body {sku [A-Za-z0-9._-], nombre, principio_activo, presentacion, concentracion, condicion_venta libre|receta|controlado} -> 201 | 409 DUPLICATE_SKU."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [sku, nombre, principio_activo, presentacion, concentracion, condicion_venta]
+              properties:
+                sku: { type: string, maxLength: 50 }
+                nombre: { type: string, maxLength: 255 }
+                principio_activo: { type: string, maxLength: 255 }
+                presentacion: { type: string, maxLength: 100 }
+                concentracion: { type: string, maxLength: 100 }
+                condicion_venta: { type: string, enum: [libre, receta, controlado] }
+      responses:
+        "201": { description: Producto creado. }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "409": { $ref: "#/components/responses/Conflict" }
+  /api/v1/catalog/products/{id}:
+    get:
+      tags: [catalog]
+      operationId: getProduct
+      summary: "Producto por id (token) -> 200 | 404."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      responses:
+        "200": { description: Producto. }
+        "404": { $ref: "#/components/responses/NotFound" }
+    put:
+      tags: [catalog]
+      operationId: updateProduct
+      summary: "Reemplazo completo del producto (catalog.manage) -> 200."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ProductBody" }
+      responses:
+        "200": { description: Producto actualizado. }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+    delete:
+      tags: [catalog]
+      operationId: deleteProduct
+      summary: "Borrado lógico (catalog.manage) -> 204; fila persiste con estado='inactivo'."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      responses:
+        "204": { description: Producto inactivado. }
+        "404": { $ref: "#/components/responses/NotFound" }
+  /api/v1/catalog/products/{id}/categories:
+    get:
+      tags: [catalog]
+      operationId: getProductCategories
+      summary: "Categorías del producto (token) -> 200 {product_id, categories:[{id, nombre}]}."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      responses:
+        "200": { description: Categorías vinculadas. }
+        "404": { $ref: "#/components/responses/NotFound" }
+    put:
+      tags: [catalog]
+      operationId: syncProductCategories
+      summary: "Sincroniza categorías por reemplazo completo (catalog.manage). Body {category_ids:[int]} -> 200."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [category_ids]
+              properties:
+                category_ids: { type: array, items: { type: integer } }
+      responses:
+        "200": { description: Categorías sincronizadas. }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "404": { $ref: "#/components/responses/NotFound" }
+  /api/v1/catalog/prices:
+    get:
+      tags: [catalog]
+      operationId: listPrices
+      summary: "Lista de precios (token). Filtros product_id/store_id -> 200 [{id, product_id, store_id, precio, vigente_desde, vigente_hasta}]. Append-only."
+      responses:
+        "200": { description: Colección de precios. }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+    post:
+      tags: [catalog]
+      operationId: createPrice
+      summary: "Crea precio (catalog.manage). Body {product_id, store_id?, precio>0, vigente_desde, vigente_hasta?} -> 201 | 409 DUPLICATE_PRICE."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PriceBody" }
+      responses:
+        "201": { description: Precio creado. }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "409": { $ref: "#/components/responses/Conflict" }
+  /api/v1/catalog/prices/{id}:
+    put:
+      tags: [catalog]
+      operationId: updatePrice
+      summary: "Ajusta precio / cierra vigencia (catalog.manage). Sin DELETE: append-only -> 200."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PriceBody" }
+      responses:
+        "200": { description: Precio actualizado. }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "404": { $ref: "#/components/responses/NotFound" }
+  /api/v1/catalog/promotions:
+    get:
+      tags: [catalog]
+      operationId: listPromotions
+      summary: "Promociones (token) -> 200 [{id, product_id, category_id, descuento_pct, desde, hasta}]. Append-only."
+      responses:
+        "200": { description: Colección de promociones. }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+    post:
+      tags: [catalog]
+      operationId: createPromotion
+      summary: "Crea promoción (catalog.manage). Body {product_id? | category_id? (uno obligatorio), descuento_pct (0,100], desde, hasta} -> 201."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PromotionBody" }
+      responses:
+        "201": { description: Promoción creada. }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "409": { $ref: "#/components/responses/Conflict" }
+  /api/v1/catalog/promotions/{id}:
+    put:
+      tags: [catalog]
+      operationId: updatePromotion
+      summary: "Ajusta promoción / cierra vigencia (catalog.manage) -> 200."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PromotionBody" }
+      responses:
+        "200": { description: Promoción actualizada. }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "404": { $ref: "#/components/responses/NotFound" }
+  /api/v1/catalog/suppliers:
+    get:
+      tags: [catalog]
+      operationId: listSuppliers
+      summary: "Proveedores (token). Filtro q -> 200."
+      responses:
+        "200": { description: Colección de proveedores. }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+    post:
+      tags: [catalog]
+      operationId: createSupplier
+      summary: "Crea proveedor (catalog.manage). Body {identificacion 1-30, nombre 1-200, contacto?} -> 201 | 409 DUPLICATE_IDENTIFICATION."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/SupplierBody" }
+      responses:
+        "201": { description: Proveedor creado. }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "409": { $ref: "#/components/responses/Conflict" }
+  /api/v1/catalog/suppliers/{id}:
+    get:
+      tags: [catalog]
+      operationId: getSupplier
+      summary: "Proveedor por id (token) -> 200 | 404."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      responses:
+        "200": { description: Proveedor. }
+        "404": { $ref: "#/components/responses/NotFound" }
+    put:
+      tags: [catalog]
+      operationId: updateSupplier
+      summary: "Actualiza proveedor (catalog.manage) -> 200."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/SupplierBody" }
+      responses:
+        "200": { description: Proveedor actualizado. }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    delete:
+      tags: [catalog]
+      operationId: deleteSupplier
+      summary: "Borrado lógico (catalog.manage) -> 204."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      responses:
+        "204": { description: Proveedor inactivado. }
+        "404": { $ref: "#/components/responses/NotFound" }
+  /api/v1/catalog/patients:
+    get:
+      tags: [catalog]
+      operationId: listPatients
+      summary: "Pacientes (token). Filtro q -> 200. Todo acceso genera fila en audit_pii_access (RF-091)."
+      responses:
+        "200": { description: Colección de pacientes. }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+    post:
+      tags: [catalog]
+      operationId: createPatient
+      summary: "Crea paciente (catalog.manage). Body {identificacion, nombre, fecha_nacimiento Y-m-d, contacto?} -> 201 | 409 DUPLICATE_IDENTIFICATION."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PatientBody" }
+      responses:
+        "201": { description: Paciente creado. }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "409": { $ref: "#/components/responses/Conflict" }
+  /api/v1/catalog/patients/{id}:
+    get:
+      tags: [catalog]
+      operationId: getPatient
+      summary: "Paciente por id (token) -> 200 | 404. Acceso registrado en audit_pii_access."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      responses:
+        "200": { description: Paciente. }
+        "404": { $ref: "#/components/responses/NotFound" }
+    put:
+      tags: [catalog]
+      operationId: updatePatient
+      summary: "Actualiza paciente (catalog.manage) -> 200."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PatientBody" }
+      responses:
+        "200": { description: Paciente actualizado. }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    delete:
+      tags: [catalog]
+      operationId: deletePatient
+      summary: "Borrado lógico con anonimización de PII (catalog.manage) -> 204."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      responses:
+        "204": { description: Paciente inactivado y anonimizado. }
+        "404": { $ref: "#/components/responses/NotFound" }
+  /api/v1/catalog/prescribers:
+    get:
+      tags: [catalog]
+      operationId: listPrescribers
+      summary: "Prescriptores (token). Filtro q -> 200."
+      responses:
+        "200": { description: Colección de prescriptores. }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+    post:
+      tags: [catalog]
+      operationId: createPrescriber
+      summary: "Crea prescriptor (catalog.manage). Body {identificacion, nombre, especialidad?} -> 201 | 409 DUPLICATE_IDENTIFICATION."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PrescriberBody" }
+      responses:
+        "201": { description: Prescriptor creado. }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "409": { $ref: "#/components/responses/Conflict" }
+  /api/v1/catalog/prescribers/{id}:
+    get:
+      tags: [catalog]
+      operationId: getPrescriber
+      summary: "Prescriptor por id (token) -> 200 | 404."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      responses:
+        "200": { description: Prescriptor. }
+        "404": { $ref: "#/components/responses/NotFound" }
+    put:
+      tags: [catalog]
+      operationId: updatePrescriber
+      summary: "Actualiza prescriptor (catalog.manage) -> 200."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PrescriberBody" }
+      responses:
+        "200": { description: Prescriptor actualizado. }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    delete:
+      tags: [catalog]
+      operationId: deletePrescriber
+      summary: "Borrado lógico (catalog.manage) -> 204."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      responses:
+        "204": { description: Prescriptor inactivado. }
+        "404": { $ref: "#/components/responses/NotFound" }
+  /api/v1/purchases/orders:
+    get:
+      tags: [purchases]
+      operationId: listOrders
+      summary: "Órdenes de compra (token). Filtros q/supplier_id/estado (borrador|emitida|recibida|cancelada) -> 200."
+      responses:
+        "200": { description: Colección de órdenes. }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+    post:
+      tags: [purchases]
+      operationId: createOrder
+      summary: "Crea orden en borrador (purchases.manage). Body {numero?, supplier_id, items:[{product_id, cantidad_pedida}]} -> 201 | 409 DUPLICATE_NUMERO."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [supplier_id, items]
+              properties:
+                numero: { type: string, maxLength: 50, description: "Opcional; autogenerado si se omite." }
+                supplier_id: { type: integer }
+                items:
+                  type: array
+                  items:
+                    type: object
+                    required: [product_id, cantidad_pedida]
+                    properties:
+                      product_id: { type: integer }
+                      cantidad_pedida: { type: integer, minimum: 1 }
+      responses:
+        "201": { description: Orden creada (borrador). }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "409": { $ref: "#/components/responses/Conflict" }
+  /api/v1/purchases/orders/{id}:
+    get:
+      tags: [purchases]
+      operationId: getOrder
+      summary: "Orden con items (token) -> 200 {..orden, items:[{product_id, cantidad_pedida, cantidad_recibida}]} | 404."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      responses:
+        "200": { description: Orden con items. }
+        "404": { $ref: "#/components/responses/NotFound" }
+    put:
+      tags: [purchases]
+      operationId: updateOrder
+      summary: "Reemplazo completo de items (purchases.manage), SOLO borrador sin recepciones -> 200 | 409 ORDER_NOT_DRAFT."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [supplier_id, items]
+              properties:
+                supplier_id: { type: integer }
+                items: { type: array, items: { type: object } }
+      responses:
+        "200": { description: Orden actualizada. }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "409": { $ref: "#/components/responses/Conflict" }
+    delete:
+      tags: [purchases]
+      operationId: cancelOrder
+      summary: "Cancelación lógica (purchases.manage), solo borrador -> 204 | 409 ORDER_NOT_DRAFT / ORDER_NOT_CANCELLABLE / ORDER_HAS_RECEPTIONS."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      responses:
+        "204": { description: Orden cancelada (fila visible). }
+        "409": { $ref: "#/components/responses/Conflict" }
+  /api/v1/purchases/orders/{id}/emitir:
+    post:
+      tags: [purchases]
+      operationId: issueOrder
+      summary: "Emite la orden (purchases.manage): borrador -> emitida -> 200 | 409 ORDER_NOT_DRAFT."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      responses:
+        "200": { description: Orden emitida. }
+        "409": { $ref: "#/components/responses/Conflict" }
+  /api/v1/purchases/orders/{id}/receptions:
+    post:
+      tags: [purchases]
+      operationId: createReception
+      summary: "Recepción contra orden EMITIDA (purchases.manage, RN-07). Body {idempotency_key?, items:[{product_id, numero_lote, fecha_vencimiento, cantidad}]} -> 201 (meta.idempotent_reused=false) | 200 reused=true | 409 ORDER_NOT_ISSUED / EXCEEDS_PENDING / DUPLICATE_LOT. Un producto por item. El stock NO se mueve hasta confirmar."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [items]
+              properties:
+                idempotency_key: { type: string, maxLength: 255 }
+                items:
+                  type: array
+                  items:
+                    type: object
+                    required: [product_id, numero_lote, fecha_vencimiento, cantidad]
+                    properties:
+                      product_id: { type: integer }
+                      numero_lote: { type: string, maxLength: 50 }
+                      fecha_vencimiento: { type: string, format: date }
+                      cantidad: { type: integer, minimum: 1 }
+      responses:
+        "201": { description: Recepción registrada. }
+        "200": { description: Recepción reutilizada por idempotency_key (RN-09). }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "409": { $ref: "#/components/responses/Conflict" }
+  /api/v1/purchases/receptions:
+    get:
+      tags: [purchases]
+      operationId: listReceptions
+      summary: "Recepciones (token). Filtro estado (recibida|confirmada|rechazada) -> 200."
+      responses:
+        "200": { description: Colección de recepciones. }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+  /api/v1/purchases/receptions/{id}:
+    get:
+      tags: [purchases]
+      operationId: getReception
+      summary: "Recepción con items (token) -> 200 | 404."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      responses:
+        "200": { description: Recepción con items. }
+        "404": { $ref: "#/components/responses/NotFound" }
+  /api/v1/purchases/receptions/{id}/confirmar:
+    post:
+      tags: [purchases]
+      operationId: confirmReception
+      summary: "Confirmación (purchases.manage, T-3, RF-031/032): crea inventory_lots en cuarentena 1:1 con reception_item_id NOT NULL, suma stock, kárdex entrada y outbox recepcion.confirmada. Body {store_id} -> 200 | 409 RECEPTION_NOT_PENDING."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [store_id]
+              properties: { store_id: { type: integer } }
+      responses:
+        "200": { description: Recepción confirmada; lote creado. }
+        "409": { $ref: "#/components/responses/Conflict" }
+  /api/v1/purchases/receptions/{id}/rechazar:
+    post:
+      tags: [purchases]
+      operationId: rejectReception
+      summary: "Rechaza la recepción (purchases.manage) -> 200 | 409 RECEPTION_NOT_PENDING."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      responses:
+        "200": { description: Recepción rechazada. }
+        "409": { $ref: "#/components/responses/Conflict" }
+  /api/v1/inventory/stocks:
+    get:
+      tags: [inventory]
+      operationId: listStocks
+      summary: "Stock por sucursal/lote (token). Filtros store_id/product_id/lot_id/estado -> 200 [{store_id, lot_id, product_nombre, fecha_vencimiento, stock_available, stock_reserved, stock_sold, lote_estado}]."
+      responses:
+        "200": { description: Colección de stocks. }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+  /api/v1/inventory/movements:
+    get:
+      tags: [inventory]
+      operationId: listMovements
+      summary: "Kárdex append-only (token). Filtros store_id/lot_id/product_id/tipo -> 200."
+      responses:
+        "200": { description: Colección de movimientos. }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+  /api/v1/inventory/batches:
+    get:
+      tags: [inventory]
+      operationId: listBatches
+      summary: "Lotes (token). Filtros product_id/lot_id/estado (cuarentena|liberado|retirado) -> 200."
+      responses:
+        "200": { description: Colección de lotes. }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+  /api/v1/inventory/batches/{id}/liberar:
+    post:
+      tags: [inventory]
+      operationId: releaseBatch
+      summary: "Libera lote de cuarentena (inventory.manage). Body {motivo} -> 200 | 409 LOT_NOT_QUARANTINE."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [motivo]
+              properties: { motivo: { type: string, maxLength: 500 } }
+      responses:
+        "200": { description: Lote liberado. }
+        "409": { $ref: "#/components/responses/Conflict" }
+  /api/v1/inventory/alerts:
+    get:
+      tags: [inventory]
+      operationId: listAlerts
+      summary: "Alertas (token). Filtros tipo (stock_minimo|vencimiento), estado (abierta|resuelta), product_id, store_id -> 200."
+      responses:
+        "200": { description: Colección de alertas. }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+  /api/v1/inventory/alerts/evaluar:
+    post:
+      tags: [inventory]
+      operationId: evaluateAlerts
+      summary: "Evalúa candidatas con umbrales system_config alerta.stock_minimo / alerta.dias_vencimiento (inventory.manage), con dedup por producto/tipo -> 200 {creadas}."
+      responses:
+        "200": { description: Evaluación ejecutada. }
+        "403": { $ref: "#/components/responses/Forbidden" }
+  /api/v1/inventory/alerts/{id}/resolver:
+    post:
+      tags: [inventory]
+      operationId: resolveAlert
+      summary: "Resuelve alerta (inventory.manage) -> 200 | 409 ALERT_NOT_OPEN."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      responses:
+        "200": { description: Alerta resuelta. }
+        "409": { $ref: "#/components/responses/Conflict" }
+  /api/v1/inventory/incidents:
+    get:
+      tags: [inventory]
+      operationId: listIncidents
+      summary: "Incidentes de consumo (token). Filtros estado/store_id/lot_id -> 200."
+      responses:
+        "200": { description: Colección de incidentes. }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+    post:
+      tags: [inventory]
+      operationId: createIncident
+      summary: "Reporta incidente (inventory.manage). Body {store_id, lot_id, consumo_declarado} -> 201."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [store_id, lot_id, consumo_declarado]
+              properties:
+                store_id: { type: integer }
+                lot_id: { type: integer }
+                consumo_declarado: { type: integer, minimum: 1 }
+      responses:
+        "201": { description: Incidente abierto. }
+        "400": { $ref: "#/components/responses/ValidationError" }
+  /api/v1/inventory/incidents/{id}/ajustar:
+    post:
+      tags: [inventory]
+      operationId: adjustIncident
+      summary: "Ajuste con DOBLE AUTORIZACIÓN (inventory.adjust, RF-046): el usuario actual debe ser distinto del que abrió el incidente -> 200 | 409 DOUBLE_AUTH_REQUIRED / INCIDENT_NOT_OPEN."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      responses:
+        "200": { description: Incidente ajustado (movimiento + asiento si es controlado). }
+        "409": { $ref: "#/components/responses/Conflict" }
+  /api/v1/inventory/incidents/{id}/descartar:
+    post:
+      tags: [inventory]
+      operationId: discardIncident
+      summary: "Descarta incidente (inventory.manage) -> 200 | 409 INCIDENT_NOT_OPEN."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      responses:
+        "200": { description: Incidente descartado. }
+        "409": { $ref: "#/components/responses/Conflict" }
+  /api/v1/inventory/transfers:
+    get:
+      tags: [inventory]
+      operationId: listTransfers
+      summary: "Transferencias (token) -> 200 [{id, store_origen_id, store_destino_id, estado, idempotency_key}]."
+      responses:
+        "200": { description: Colección de transferencias. }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+    post:
+      tags: [inventory]
+      operationId: createTransfer
+      summary: "Crea transferencia (inventory.manage). Body {store_origen_id, store_destino_id, items:[{lot_id, cantidad}], idempotency_key?} -> 201 | 200 reused | 400 TRANSFER_SAME_STORE | 409 STOCK_NOT_ENOUGH (RN-02)."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [store_origen_id, store_destino_id, items]
+              properties:
+                store_origen_id: { type: integer }
+                store_destino_id: { type: integer }
+                idempotency_key: { type: string, maxLength: 255 }
+                items:
+                  type: array
+                  items:
+                    type: object
+                    required: [lot_id, cantidad]
+                    properties:
+                      lot_id: { type: integer }
+                      cantidad: { type: integer, minimum: 1 }
+      responses:
+        "201": { description: Transferencia solicitada. }
+        "200": { description: Transferencia reutilizada por idempotency_key. }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "409": { $ref: "#/components/responses/Conflict" }
+  /api/v1/inventory/transfers/{id}:
+    get:
+      tags: [inventory]
+      operationId: getTransfer
+      summary: "Transferencia con items (token) -> 200 {transferencia, items:[{lot_id, cantidad_despachada, cantidad_recibida}]} | 404."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      responses:
+        "200": { description: Transferencia con items. }
+        "404": { $ref: "#/components/responses/NotFound" }
+  /api/v1/inventory/transfers/{id}/despachar:
+    post:
+      tags: [inventory]
+      operationId: dispatchTransfer
+      summary: "Despacho completo (inventory.manage): solicitada -> despachada, descuenta origen y kárdex transferencia_salida -> 200 | 409 LOT_NOT_RELEASED / LOT_EXPIRED / TRANSFER_NOT_PENDING / STOCK_NOT_ENOUGH."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      responses:
+        "200": { description: Transferencia despachada. }
+        "409": { $ref: "#/components/responses/Conflict" }
+  /api/v1/inventory/transfers/{id}/recibir:
+    post:
+      tags: [inventory]
+      operationId: receiveTransfer
+      summary: "Recepción en destino (inventory.manage, RN-08). Body {items:[{lot_id, cantidad_recibida}]} -> 200 (despachada -> recibida)."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [items]
+              properties:
+                items:
+                  type: array
+                  items:
+                    type: object
+                    required: [lot_id, cantidad_recibida]
+                    properties:
+                      lot_id: { type: integer }
+                      cantidad_recibida: { type: integer, minimum: 0 }
+      responses:
+        "200": { description: Transferencia recibida. }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "409": { $ref: "#/components/responses/Conflict" }
+  /api/v1/inventory/transfers/{id}/cerrar:
+    post:
+      tags: [inventory]
+      operationId: closeTransfer
+      summary: "Cierra transferencia (inventory.manage): recibida -> cerrada -> 200."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      responses:
+        "200": { description: Transferencia cerrada. }
+        "409": { $ref: "#/components/responses/Conflict" }
+  /api/v1/inventory/transfers/{id}/rechazar:
+    post:
+      tags: [inventory]
+      operationId: rejectTransfer
+      summary: "Rechaza transferencia (inventory.manage) -> 200 | 409."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      responses:
+        "200": { description: Transferencia rechazada. }
+        "409": { $ref: "#/components/responses/Conflict" }
+  /api/v1/inventory/reservations:
+    get:
+      tags: [inventory]
+      operationId: listReservations
+      summary: "Reservas de stock (token) -> 200. No descuentan inventory_stock (RF-044)."
+      responses:
+        "200": { description: Colección de reservas. }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+    post:
+      tags: [inventory]
+      operationId: createReservation
+      summary: "Crea reserva (inventory.manage). Body {store_id, product_id, qty, order_id?, ttl_minutos} -> 201."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [store_id, product_id, qty, ttl_minutos]
+              properties:
+                store_id: { type: integer }
+                product_id: { type: integer }
+                qty: { type: integer, minimum: 1 }
+                order_id: { type: integer }
+                ttl_minutos: { type: integer, minimum: 1 }
+      responses:
+        "201": { description: Reserva creada. }
+        "400": { $ref: "#/components/responses/ValidationError" }
+  /api/v1/inventory/reservations/{id}/confirmar:
+    post:
+      tags: [inventory]
+      operationId: confirmReservation
+      summary: "Confirma reserva (inventory.manage) -> 200 | 409 RESERVATION_NOT_PENDING."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      responses:
+        "200": { description: Reserva confirmada. }
+        "409": { $ref: "#/components/responses/Conflict" }
+  /api/v1/inventory/reservations/{id}/cancelar:
+    post:
+      tags: [inventory]
+      operationId: cancelReservation
+      summary: "Cancela reserva (inventory.manage) -> 200 | 409 RESERVATION_NOT_PENDING."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      responses:
+        "200": { description: Reserva cancelada. }
+        "409": { $ref: "#/components/responses/Conflict" }
+  /api/v1/rx/prescriptions:
+    get:
+      tags: [rx]
+      operationId: listPrescriptions
+      summary: "Recetas (token). Filtros patient_id/prescriber_id -> 200 [{id, prescriber_id, prescriber_nombre, patient_id, patient_nombre, fecha, numero_referencia}]."
+      responses:
+        "200": { description: Colección de recetas. }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+    post:
+      tags: [rx]
+      operationId: createPrescription
+      summary: "Registra receta (rx.manage). Body {prescriber_id, patient_id, fecha Y-m-d, numero_referencia?, items:[{product_id, cantidad_prescrita}]} -> 201 {prescripcion, items}."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [prescriber_id, patient_id, fecha, items]
+              properties:
+                prescriber_id: { type: integer }
+                patient_id: { type: integer }
+                fecha: { type: string, format: date }
+                numero_referencia: { type: string, maxLength: 100 }
+                items:
+                  type: array
+                  items:
+                    type: object
+                    required: [product_id, cantidad_prescrita]
+                    properties:
+                      product_id: { type: integer }
+                      cantidad_prescrita: { type: integer, minimum: 1, maximum: 100000 }
+      responses:
+        "201": { description: Receta registrada. }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+  /api/v1/rx/prescriptions/{id}:
+    get:
+      tags: [rx]
+      operationId: getPrescription
+      summary: "Receta con items (token) -> 200 {prescripcion, items:[{id, product_id, cantidad_prescrita, cantidad_dispensada, saldo}]} | 404."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      responses:
+        "200": { description: Receta con items. }
+        "404": { $ref: "#/components/responses/NotFound" }
+  /api/v1/rx/prescriptions/{id}/dispensar:
+    post:
+      tags: [rx]
+      operationId: dispensePrescription
+      summary: "Dispensación con CAS de saldo (rx.manage). Body {items:[{rx_item_id, cantidad}]} -> 200 | 409 RX_SALDO_INSUFICIENTE. No descuenta stock ni kárdex (Opción A vigente)."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [items]
+              properties:
+                items:
+                  type: array
+                  items:
+                    type: object
+                    required: [rx_item_id, cantidad]
+                    properties:
+                      rx_item_id: { type: integer }
+                      cantidad: { type: integer, minimum: 1 }
+      responses:
+        "200": { description: Dispensación registrada. }
+        "409": { $ref: "#/components/responses/Conflict" }
+  /api/v1/control/ledger:
+    get:
+      tags: [control]
+      operationId: listLedger
+      summary: "Libro Oficial de Controlados, append-only (token). Filtros store_id/product_id/tipo/ref_tipo/desde/hasta (RF-071) -> 200."
+      responses:
+        "200": { description: Colección de asientos. }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+  /api/v1/control/ledger/{id}:
+    get:
+      tags: [control]
+      operationId: getLedgerEntry
+      summary: "Asiento por id (token) -> 200 | 404. Sin operaciones de escritura: libro inmutable."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      responses:
+        "200": { description: Asiento. }
+        "404": { $ref: "#/components/responses/NotFound" }
+  /api/v1/control/balances:
+    get:
+      tags: [control]
+      operationId: listBalances
+      summary: "Saldos por sucursal/producto (token) -> 200 [{store_id, product_id, saldo, saldo_calculado, conciliado}]."
+      responses:
+        "200": { description: Colección de saldos. }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+  /api/v1/control/reconciliation:
+    get:
+      tags: [control]
+      operationId: reconciliation
+      summary: "Conciliación de saldos (token, RNF-024) -> 200 {total, conciliados, desbalanceados, diferencias}."
+      responses:
+        "200": { description: Resultado de la conciliación. }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+  /api/v1/control/adjustments:
+    post:
+      tags: [control]
+      operationId: createAdjustment
+      summary: "Ajuste con DOBLE AUTORIZACIÓN (control.manage, RF-046). Body {store_id, product_id, lot_id, cantidad, direccion baja|incremento, motivo, autorizador_id != proponente} -> 201 | 409 DOUBLE_AUTH_REQUIRED / STOCK_NOT_ENOUGH / PRODUCT_NOT_CONTROLLED."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [store_id, product_id, lot_id, cantidad, direccion, motivo, autorizador_id]
+              properties:
+                store_id: { type: integer }
+                product_id: { type: integer }
+                lot_id: { type: integer }
+                cantidad: { type: integer, minimum: 1 }
+                direccion: { type: string, enum: [baja, incremento] }
+                motivo: { type: string, maxLength: 500 }
+                autorizador_id: { type: integer }
+      responses:
+        "201": { description: Ajuste registrado (movimiento + asiento del libro). }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "409": { $ref: "#/components/responses/Conflict" }
+  /api/v1/sales/orders:
+    get:
+      tags: [sales]
+      operationId: listSales
+      summary: "Ventas POS (token). Filtros store_id/estado (pendiente|pagada|anulada|devuelta) -> 200."
+      responses:
+        "200": { description: Colección de ventas. }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+    post:
+      tags: [sales]
+      operationId: createSale
+      summary: "Venta en caja (sales.manage, RN-01/09): descuenta stock por lote y escribe kárdex salida. Body {store_id, register_id, paciente_id?, items:[{lot_id, cantidad, precio_unitario}], idempotency_key?} -> 201 | 200 reused | 409 STOCK_NOT_ENOUGH / LOT_NOT_RELEASED / LOT_EXPIRED / REGISTER_NOT_IN_STORE."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [store_id, register_id, items]
+              properties:
+                store_id: { type: integer }
+                register_id: { type: integer }
+                paciente_id: { type: integer }
+                idempotency_key: { type: string, maxLength: 255 }
+                items:
+                  type: array
+                  items:
+                    type: object
+                    required: [lot_id, cantidad]
+                    properties:
+                      lot_id: { type: integer }
+                      cantidad: { type: integer, minimum: 1 }
+                      precio_unitario: { type: number, minimum: 0 }
+      responses:
+        "201": { description: Venta registrada. }
+        "200": { description: Venta reutilizada por idempotency_key. }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "409": { $ref: "#/components/responses/Conflict" }
+  /api/v1/sales/orders/{id}:
+    get:
+      tags: [sales]
+      operationId: getSale
+      summary: "Comprobante de venta (token) -> 200 {orden, items, pagos} | 404."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      responses:
+        "200": { description: Venta con items y pagos (fuente del comprobante). }
+        "404": { $ref: "#/components/responses/NotFound" }
+  /api/v1/sales/orders/{id}/payments:
+    post:
+      tags: [sales]
+      operationId: createPayment
+      summary: "Pago (sales.manage, RF-050). Body {medio efectivo|tarjeta|otros, monto, idempotency_key?} -> 200 | 409 PAYMENT_EXCEEDS_DUE / ORDER_NOT_PENDING."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [medio, monto]
+              properties:
+                medio: { type: string, enum: [efectivo, tarjeta, otros] }
+                monto: { type: number, exclusiveMinimum: 0 }
+                idempotency_key: { type: string, maxLength: 255 }
+      responses:
+        "200": { description: Pago registrado; la suma puede transicionar la orden a pagada. }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "409": { $ref: "#/components/responses/Conflict" }
+  /api/v1/sales/orders/{id}/anular:
+    post:
+      tags: [sales]
+      operationId: voidSale
+      summary: "Anulación (sales.manage, RN-10): repone stock con movimientos compensatorios -> 200 | 409 ORDER_NOT_CANCELLABLE."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      responses:
+        "200": { description: Venta anulada; stock repuesto. }
+        "409": { $ref: "#/components/responses/Conflict" }
+  /api/v1/sales/returns:
+    get:
+      tags: [sales]
+      operationId: listReturns
+      summary: "Devoluciones (token). Filtro order_id/store_id -> 200."
+      responses:
+        "200": { description: Colección de devoluciones. }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+    post:
+      tags: [sales]
+      operationId: createReturn
+      summary: "Devolución (sales.manage, RF-060). Body {order_id, motivo, items:[{order_item_id, cantidad, condicion vendible|no_vendible}]} -> 201 | 409 RETURN_EXCEEDS_SOLD. vendible reingresa stock; no_vendible da de baja."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [order_id, motivo, items]
+              properties:
+                order_id: { type: integer }
+                motivo: { type: string, maxLength: 500 }
+                items:
+                  type: array
+                  items:
+                    type: object
+                    required: [order_item_id, cantidad, condicion]
+                    properties:
+                      order_item_id: { type: integer }
+                      cantidad: { type: integer, minimum: 1 }
+                      condicion: { type: string, enum: [vendible, no_vendible] }
+      responses:
+        "201": { description: Devolución registrada. }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "409": { $ref: "#/components/responses/Conflict" }
+  /api/v1/sales/returns/{id}:
+    get:
+      tags: [sales]
+      operationId: getReturn
+      summary: "Devolución con items (token) -> 200 | 404."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      responses:
+        "200": { description: Devolución con items. }
+        "404": { $ref: "#/components/responses/NotFound" }
+  /api/v1/audit/operations:
+    get:
+      tags: [audit]
+      operationId: listAuditOperations
+      summary: "Logs de operaciones sensibles (audit.read, RF-090). Filtros accion/entidad/desde/hasta -> 200. Valores redactados (RNF-050)."
+      responses:
+        "200": { description: Colección de operaciones. }
+        "403": { $ref: "#/components/responses/Forbidden" }
+  /api/v1/audit/operations/{id}:
+    get:
+      tags: [audit]
+      operationId: getAuditOperation
+      summary: "Operación auditada (audit.read) -> 200 | 404. Sin escritura: logs inmutables."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      responses:
+        "200": { description: Operación auditada. }
+        "404": { $ref: "#/components/responses/NotFound" }
+  /api/v1/audit/pii:
+    get:
+      tags: [audit]
+      operationId: listPiiAccess
+      summary: "Accesos a datos personales (audit.read, RF-091/RN-13). Filtro accion -> 200."
+      responses:
+        "200": { description: Colección de accesos PII. }
+        "403": { $ref: "#/components/responses/Forbidden" }
+  /api/v1/audit/pii/{id}:
+    get:
+      tags: [audit]
+      operationId: getPiiAccess
+      summary: "Acceso PII por id (audit.read) -> 200 | 404."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      responses:
+        "200": { description: Acceso PII. }
+        "404": { $ref: "#/components/responses/NotFound" }
+  /api/v1/audit/events:
+    get:
+      tags: [audit]
+      operationId: listEvents
+      summary: "Eventos salientes del outbox (audit.read, decisión 16). Filtro estado (pendiente|procesado|fallido) -> 200."
+      responses:
+        "200": { description: Colección de eventos. }
+        "403": { $ref: "#/components/responses/Forbidden" }
+  /api/v1/audit/events/{id}:
+    get:
+      tags: [audit]
+      operationId: getEvent
+      summary: "Evento con payload (audit.read) -> 200 | 404."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      responses:
+        "200": { description: Evento. }
+        "404": { $ref: "#/components/responses/NotFound" }
+  /api/v1/audit/events/{id}/procesar:
+    post:
+      tags: [audit]
+      operationId: processEvent
+      summary: "Marca evento como procesado (audit.manage) -> 200 | 409 EVENT_NOT_PENDING."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      responses:
+        "200": { description: Evento procesado. }
+        "409": { $ref: "#/components/responses/Conflict" }
+  /api/v1/audit/events/{id}/fallar:
+    post:
+      tags: [audit]
+      operationId: failEvent
+      summary: "Marca evento como fallido (audit.manage) -> 200 | 409 EVENT_NOT_PENDING."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      responses:
+        "200": { description: Evento fallido. }
+        "409": { $ref: "#/components/responses/Conflict" }
+  /api/v1/audit/events/{id}/reintentar:
+    post:
+      tags: [audit]
+      operationId: retryEvent
+      summary: "Reintenta evento fallido (audit.manage) -> 200 | 409 EVENT_NOT_FAILED."
+      parameters: [{ $ref: "#/components/parameters/IdPath" }]
+      responses:
+        "200": { description: Evento devuelto a pendiente. }
+        "409": { $ref: "#/components/responses/Conflict" }
 components:
   parameters:
     CategoryId:
@@ -193,6 +1566,18 @@ components:
       required: true
       description: Identificador numérico de la categoría.
       schema: { type: integer, minimum: 1 }
+    IdPath:
+      name: id
+      in: path
+      required: true
+      description: Identificador numérico del recurso.
+      schema: { type: integer, minimum: 1 }
+    KeyPath:
+      name: key
+      in: path
+      required: true
+      description: Clave del parámetro del sistema.
+      schema: { type: string, maxLength: 100 }
   schemas:
     Category:
       type: object
@@ -251,10 +1636,102 @@ components:
                 - VALIDATION_ERROR
                 - NOT_FOUND
                 - DUPLICATE_NAME
+                - DUPLICATE_IDENTIFICATION
+                - DUPLICATE_SKU
+                - DUPLICATE_CODE
+                - DUPLICATE_PRICE
+                - DUPLICATE_NUMERO
+                - DUPLICATE_LOT
                 - HIERARCHY_CYCLE
+                - INVALID_CREDENTIALS
+                - ACCOUNT_DISABLED
+                - RATE_LIMITED
+                - UNAUTHENTICATED
+                - FORBIDDEN
+                - PRODUCT_NOT_FOUND
+                - PRODUCT_NOT_CONTROLLED
+                - USER_NOT_FOUND
+                - PRESCRIPTION_NOT_FOUND
+                - RX_SALDO_INSUFICIENTE
+                - DOUBLE_AUTH_REQUIRED
+                - LOT_NOT_FOUND
+                - LOT_NOT_FOR_PRODUCT
+                - LOT_NOT_QUARANTINE
+                - LOT_NOT_RELEASED
+                - LOT_EXPIRED
+                - STOCK_NOT_ENOUGH
+                - TRANSFER_SAME_STORE
+                - TRANSFER_NOT_PENDING
+                - ITEM_NOT_IN_ORDER
+                - EXCEEDS_PENDING
+                - ORDER_NOT_ISSUED
+                - ORDER_NOT_PENDING
+                - ORDER_NOT_DRAFT
+                - ORDER_NOT_CANCELLABLE
+                - ORDER_HAS_RECEPTIONS
+                - RECEPTION_NOT_PENDING
+                - PAYMENT_EXCEEDS_DUE
+                - RETURN_EXCEEDS_SOLD
+                - INCIDENT_NOT_OPEN
+                - ALERT_NOT_OPEN
+                - RESERVATION_NOT_PENDING
+                - SHIFT_ALREADY_OPEN
+                - SHIFT_NOT_OPEN
+                - EVENT_NOT_FOUND
+                - EVENT_NOT_PENDING
+                - EVENT_NOT_FAILED
                 - DATABASE_ERROR
                 - INTERNAL_ERROR
-            message: { type: string }
+    ProductBody:
+      type: object
+      required: [sku, nombre, principio_activo, presentacion, concentracion, condicion_venta]
+      properties:
+        sku: { type: string, maxLength: 50 }
+        nombre: { type: string, maxLength: 255 }
+        principio_activo: { type: string, maxLength: 255 }
+        presentacion: { type: string, maxLength: 100 }
+        concentracion: { type: string, maxLength: 100 }
+        condicion_venta: { type: string, enum: [libre, receta, controlado] }
+    PriceBody:
+      type: object
+      required: [product_id, precio, vigente_desde]
+      properties:
+        product_id: { type: integer }
+        store_id: { type: integer, description: "Opcional; sin store_id es precio global." }
+        precio: { type: number, exclusiveMinimum: 0 }
+        vigente_desde: { type: string, format: date }
+        vigente_hasta: { type: string, format: date, description: "Opcional; cierra la vigencia." }
+    PromotionBody:
+      type: object
+      required: [descuento_pct, desde, hasta]
+      properties:
+        product_id: { type: integer, description: "Obligatorio si no hay category_id." }
+        category_id: { type: integer, description: "Obligatorio si no hay product_id." }
+        descuento_pct: { type: number, exclusiveMinimum: 0, maximum: 100 }
+        desde: { type: string, format: date }
+        hasta: { type: string, format: date }
+    SupplierBody:
+      type: object
+      required: [identificacion, nombre]
+      properties:
+        identificacion: { type: string, maxLength: 30 }
+        nombre: { type: string, maxLength: 200 }
+        contacto: { type: string, maxLength: 255 }
+    PatientBody:
+      type: object
+      required: [identificacion, nombre, fecha_nacimiento]
+      properties:
+        identificacion: { type: string, maxLength: 30 }
+        nombre: { type: string, maxLength: 200 }
+        fecha_nacimiento: { type: string, format: date }
+        contacto: { type: string, maxLength: 255 }
+    PrescriberBody:
+      type: object
+      required: [identificacion, nombre]
+      properties:
+        identificacion: { type: string, maxLength: 30 }
+        nombre: { type: string, maxLength: 200 }
+        especialidad: { type: string, maxLength: 150 }
   responses:
     ValidationError:
       description: Entrada inválida (400).
@@ -286,3 +1763,24 @@ components:
             error:
               code: DATABASE_ERROR
               message: "Error interno."
+    Unauthorized:
+      description: Sin token o token inválido/revocado (401 UNAUTHENTICATED).
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/ErrorEnvelope" }
+    Forbidden:
+      description: Token válido sin el permiso requerido (403 FORBIDDEN).
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/ErrorEnvelope" }
+    Conflict:
+      description: Conflicto de negocio (409/400 según operación; ver summary por código DUPLICATE_*, ORDER_*, LOT_*, STOCK_NOT_ENOUGH, etc.).
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/ErrorEnvelope" }
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT HS256 emitido por POST /api/v1/auth/login.

@@ -24,10 +24,460 @@
     "/libro-controlados",
     "/auditoria-operaciones-pii"
   ],
-  "current_checkpoint": "CP-FRONT-01",
-  "technical_status": "BLOCKED",
-  "human_status": "PENDING",
-  "blocked": true,
+  "current_checkpoint": "CP-FRONT-11",
+  "technical_status": "PASS",
+  "human_status": "APPROVED",
+  "blocked": false,
   "can_continue": false,
-  "blocked_by": "04_backend_workflow"
+  "blocked_by": null,
+  "next": "Workflow 05 COMPLETO y APROBADO (2026-10-07). Desarrollo continuo en 06_integration_workflow.md; ver integration-workflow.json para el estado de integracion.",
+  "checkpoint_results": [
+    {
+      "checkpoint": "CP-FRONT-01",
+      "date": "2026-10-07",
+      "result": "PASS",
+      "summary": "Modulo de Autenticacion (/login): pantalla servida por Views PHP (app/Views/login.php) con formulario accesible (labels asociados, autofocus, autocomplete, caja de error role=alert), manejo de sesion JWT en localStorage (sf_token/sf_user) via public/assets/js/login.js (Fetch API, vanilla), control de errores mapeado desde error.code de la API (INVALID_CREDENTIALS, ACCOUNT_DISABLED, RATE_LIMITED, VALIDATION_ERROR, error de red) y redireccion segun rol (redireccionesPorRol: admin -> /dashboard; default /dashboard). Despacho web en public/index.php: rutas no-/api/ sirven Views (/, /login, /dashboard) y assets estaticos (return false para php -S, con bloqueo de '..'); la API /api/v1/* queda intacta. Stack segun decisiones_frontend.md (PHP Views + HTML5 + CSS3 + vanilla JS, sin frameworks SPA).",
+      "evidence": [
+        "php -l OK: public/index.php, app/Views/login.php, app/Views/dashboard.php, tools/verify_cp_front01.php",
+        "tools/verify_cp_front01.php http://127.0.0.1:8000 => RESULTADO: PASS (10/10: /login 200 HTML con formulario/labels/caja de error, / -> login, /dashboard 200, ruta inexistente 404, login.js y app.css servidos, POST /auth/login malformado 400 y credenciales malas 401 — API intacta)",
+        "tests/login_flow.test.mjs (node, stub DOM/fetch/localStorage) => RESULTADO: PASS (16/16: POST /auth/login con credenciales, token+usuario en localStorage, redireccion por rol admin y default, mensajes 401/403/429, validacion local sin llamada a la API, error de red, sesion previa valida redirige / invalida se limpia)",
+        "Render Edge headless: tests/results/cp_front01_login.png (tarjeta de login con labels, foco visible y boton tactil grande)",
+        "Nota: el smoke interactivo via agente-browser MCP no pudo ejecutarse (daemon sin respuesta, timeout -32001); la logica del flujo se verifico con el harness de node y el render con Edge headless"
+      ],
+      "files": [
+        "proyecto/06_codigo/app/Views/login.php",
+        "proyecto/06_codigo/app/Views/dashboard.php",
+        "proyecto/06_codigo/public/assets/css/app.css",
+        "proyecto/06_codigo/public/assets/js/login.js",
+        "proyecto/06_codigo/public/index.php",
+        "proyecto/06_codigo/tools/verify_cp_front01.php",
+        "proyecto/06_codigo/tests/login_flow.test.mjs"
+      ],
+      "assumptions": [
+        "Sesion en localStorage (sf_token/sf_user) y header Authorization: Bearer; sin cookies httpOnly (requeririan cambio de backend). Riesgo XSS a mitigar en CP-FRONT-11 (CSP/escaping). A validar con el cliente.",
+        "Redireccion por rol: mapa redireccionesPorRol con admin -> /dashboard; roles sin mapeo van al default /dashboard. Ampliar cuando existan pantallas por rol (p. ej. cajero -> /pos, CP-FRONT-09).",
+        "GET /dashboard sirve un stub minimo como destino de la redireccion (ponytail:); el contenido real es CP-FRONT-02.",
+        "Rutas web: '/', '/login' y '/dashboard' en el Front Controller (match simple). Las demas pantallas se agregan por CP, sin router web generico (YAGNI).",
+        "Residuos: ninguno en BD; el login solo llama a la API existente."
+      ],
+      "pending": [
+        "CP-FRONT-02: layout principal (sidebar/header/selector de sucursal) y widgets del dashboard",
+        "Seguridad de sesion (httpOnly cookie vs localStorage, CSP) pendiente de decision junto con CP-FRONT-11 / security-reviewer"
+      ],
+      "human_status": "APPROVED",
+      "human_validation": {
+        "date": "2026-10-07",
+        "by": "Cliente (mensaje 'continuar')",
+        "decision": "APROBADO CP-FRONT-01 (login). Autoriza continuar con CP-FRONT-02."
+      }
+    },
+    {
+      "checkpoint": "CP-FRONT-02",
+      "date": "2026-10-07",
+      "result": "PASS",
+      "summary": "Layout Principal y Dashboard (/dashboard): estructura de navegacion responsive (sidebar con los 21 modulos del alcance agrupados, pagina actual con aria-current, pendientes como spans no navegables hasta su CP), header con usuario activo (sf_user) y selector de sucursal (GET /api/v1/ops/stores, solo estado 'activa', persistido en sf_store, reconsulta de widgets al cambiar), y 3 widgets con datos reales de la API: ventas diarias (GET /sales/orders?limit=100, suma y conteo de hoy excluyendo anuladas), alertas de stock minimo y vencimientos proximos (GET /inventory/alerts?tipo=stock_minimo|vencimiento&estado=abierta con product_nombre). Estados cargando/vacio/error por widget; guard de sesion (sin sf_token -> /login; 401 -> limpia sesion y redirige). CSS responsive (sidebar colapsa bajo 900px) en app.css, sin frameworks.",
+      "evidence": [
+        "php -l OK: app/Views/dashboard.php, tools/verify_cp_front02.php",
+        "tools/verify_cp_front02.php http://127.0.0.1:8000 => RESULTADO: PASS (11/11: layout sidebar/nav/header/usuario/sucursal/widgets/role=alert, dashboard.js servido, /login sigue operativo, 404, GET /ops/stores sin token 401)",
+        "tests/dashboard_flow.test.mjs (node, stub DOM/fetch/localStorage) => RESULTADO: PASS (16/16: sin token -> /login sin llamadas, header usuario+roles, selector solo sucursales activas, suma de ventas de hoy excluyendo anuladas y dias previos, meta.total de alertas con nombres de producto, estado vacio en vencimientos, sf_store persiste y reconsulta con store_id, 401 limpia sesion y redirige, estado de error por widget sin tumbar los demas)",
+        "Nota: el smoke interactivo via agente-browser MCP sigue sin responder (timeout -32001); la logica se verifico con el harness de node y la estructura con verify_cp_front02 (mismo patron aceptado en CP-FRONT-01)"
+      ],
+      "files": [
+        "proyecto/06_codigo/app/Views/dashboard.php",
+        "proyecto/06_codigo/public/assets/js/dashboard.js",
+        "proyecto/06_codigo/public/assets/css/app.css",
+        "proyecto/06_codigo/tools/verify_cp_front02.php",
+        "proyecto/06_codigo/tests/dashboard_flow.test.mjs"
+      ],
+      "assumptions": [
+        "Ventas diarias = suma de total de sales_orders de hoy (fecha local) excluyendo estado 'anulada'; la API no filtra por fecha, se agregan en cliente sobre las primeras 100 ordenes (limit=100). Upgrade path: filtro desde/hasta en el endpoint si el volumen lo exige.",
+        "Vencimientos proximos = alertas abiertas de tipo 'vencimiento' (umbrales ya calculados por el backend), no un calculo propio de fechas de lote.",
+        "El selector de sucursal usa estado='activa' (enum real de ops_stores, difiere de 'activo' de catalog_*) y se guarda en sf_store para los CP siguientes (POS, inventario).",
+        "Nav: solo /dashboard es enlace real; el resto del alcance se muestra como spans no navegables hasta que su CP cree la pantalla (sin enlaces muertos a 404).",
+        "Sin boton de logout en este CP (fuera de alcance de CP-FRONT-02); el manejo de cierre de sesion se decide junto con la seguridad de sesion (ver CP-FRONT-01)."
+      ],
+      "pending": [
+        "CP-FRONT-03: usuarios/roles RBAC y configuracion de sucursales, cajas y parametros",
+        "Seguridad de sesion (httpOnly cookie vs localStorage, CSP) pendiente de decision junto con CP-FRONT-11 / security-reviewer"
+      ],
+      "human_status": "APPROVED",
+      "human_validation": {
+        "date": "2026-10-07",
+        "by": "Cliente (mensaje 'continuar')",
+        "decision": "APROBADO CP-FRONT-02 (layout y dashboard). Autoriza continuar con CP-FRONT-03."
+      }
+    },
+    {
+      "checkpoint": "CP-FRONT-03",
+      "date": "2026-10-07",
+      "result": "PASS",
+      "summary": "Administracion de Usuarios y Configuracion (/autenticacion-usuarios, /configuracion-sucursales). Layout compartido extraido a app/Views/layouts/app.php (sidebar con enlaces reales a las pantallas implementadas, header con usuario activo, caja de errores role=alert y guard de sesion inline); dashboard.php pasa a fragmento del layout (regresion CP-FRONT-01/02 en verde). /autenticacion-usuarios: alta de usuario (usuario/password/roles multi-select), asignacion de roles por usuario (PUT con IDs; POST recibe roles por NOMBRE, contrato real de la API), alta de roles con permisos separados por coma y tablas de usuarios y roles. /configuracion-sucursales: CRUD de sucursales y cajas (POST/PUT/DELETE = borrado logico, botones Editar precargan el formulario y Desactivar solo sobre estado 'activa') y parametros del sistema con value_type (texto/numero/booleano/json) y store_id opcional para claves store.* (PUT upsert). Errores mapeados: 401 -> limpia sesion y va a /login, 403 -> mensaje con el permiso requerido (auth.users.manage / ops.config.manage), 400/409 -> mensaje de la API.",
+      "evidence": [
+        "php -l OK: public/index.php, app/Views/layouts/app.php, app/Views/usuarios.php, app/Views/configuracion.php, tools/verify_cp_front03.php",
+        "tools/verify_cp_front03.php http://127.0.0.1:8000 => RESULTADO: PASS (17/17: ambas pantallas con formularios/tablas/JS, layout compartido con sidebar y aria-current, navegacion enlazada, regresion /dashboard y /login, 404, API intacta 401)",
+        "tests/admin_flow.test.mjs (node, stub DOM/fetch) => RESULTADO: PASS (16/16: tablas renderizadas, POST /auth/users con roles por nombre, PUT roles por id, POST /auth/roles con permisos, 403 y 409, CRUD de sucursales con edicion precargada y DELETE logico, PUT /ops/config/{key} con config_value/value_type)",
+        "Regresiones en verde tras el refactor al layout compartido: verify_cp_front02 PASS, verify_cp_front01 PASS, tests/login_flow.test.mjs PASS, tests/dashboard_flow.test.mjs PASS",
+        "Nota: smoke interactivo via agente-browser MCP sigue sin responder (timeout -32001); logica verificada con harness de node y estructura con verify_cp_front03"
+      ],
+      "files": [
+        "proyecto/06_codigo/app/Views/layouts/app.php",
+        "proyecto/06_codigo/app/Views/usuarios.php",
+        "proyecto/06_codigo/app/Views/configuracion.php",
+        "proyecto/06_codigo/app/Views/dashboard.php",
+        "proyecto/06_codigo/public/assets/js/usuarios.js",
+        "proyecto/06_codigo/public/assets/js/configuracion.js",
+        "proyecto/06_codigo/public/assets/css/app.css",
+        "proyecto/06_codigo/public/index.php",
+        "proyecto/06_codigo/tools/verify_cp_front03.php",
+        "proyecto/06_codigo/tests/admin_flow.test.mjs"
+      ],
+      "assumptions": [
+        "Contratos consumidos tal cual la API: POST /auth/users recibe roles como NOMBRES y PUT /auth/users/{id}/roles como IDs; roles no borrables desde la UI (solo creacion), el borrado de roles no tiene endpoint.",
+        "DELETE de sucursales/cajas = borrado logico; la API no permite cambiar estado por PUT (validarSucursal solo codigo/nombre), por eso 'Desactivar' usa DELETE y solo se muestra sobre estado 'activa'.",
+        "Parámetros: PUT /ops/config/{key} es upsert (crea o actualiza); las claves store.* exigen store_id (regla CHECK de la BD) y el formulario lo expone opcional.",
+        "Cajas: la tabla ops_registers no tiene nombre (solo store_id + codigo); el formulario refleja el contrato real sin campo nombre.",
+        "El guard de sesion y el chip de usuario viven inline en el layout (las pantallas nuevas no repiten logica); dashboard.js conserva su propio guard por sus tests ya aprobados (duplicacion menor aceptada con ponytail:).",
+        "Permisos: la UI no oculta acciones por permiso, muestra el 403 de la API con el permiso requerido (el backend es la autoridad; ocultado por permiso se decide con security-reviewer en CP-FRONT-11)."
+      ],
+      "pending": [
+        "CP-FRONT-04: catalogo de categorias, productos y precios/promociones",
+        "Ocultado de acciones segun permisos efectivos y logout: pendientes junto con CP-FRONT-11 / security-reviewer"
+      ],
+      "human_status": "APPROVED",
+      "human_validation": {
+        "date": "2026-10-07",
+        "by": "Cliente (mensaje 'continuar')",
+        "decision": "APROBADO CP-FRONT-03 (usuarios/roles y configuracion). Autoriza continuar con CP-FRONT-04."
+      }
+    },
+    {
+      "checkpoint": "CP-FRONT-04",
+      "date": "2026-10-07",
+      "result": "PASS",
+      "summary": "Catalogos y Precios (3 pantallas sobre el layout compartido). /catalogo-categorias: listado, busqueda por nombre (q), alta/edicion con jerarquia (select de categoria padre; PUT envia parent_id null = raiz, entero = mover) y borrado logico (Desactivar -> DELETE). /catalogo-productos: alta/edicion con sku, principio activo, presentacion, concentracion, condicion de venta (libre/receta/controlado) y multi-select de categorias sincronizado por el subrecurso POST /products/{id}/categories {category_ids} (contrato real: category_ids, no categories); busqueda q y borrado logico. /catalogo-precios-promociones: precios con vigencias (product_id, precio, vigente_desde/hasta opcional, store_id opcional) y promociones con alcance obligatorio product_id O category_id mas descuento_pct y fechas; edicion via PUT (el contrato no tiene DELETE: cierre de vigencia por PUT). Contratos verificados contra los validadores/repositories reales (ProductoValidator, CatalogValidator: validarPrecio/validarPromocion).",
+      "evidence": [
+        "php -l OK: app/Views/categorias.php, app/Views/productos.php, app/Views/precios.php, app/Views/layouts/app.php, public/index.php, tools/verify_cp_front04.php",
+        "tools/verify_cp_front04.php http://127.0.0.1:8000 => RESULTADO: PASS (19/19: 3 pantallas con formularios/busqueda/tablas/JS, jerarquia de categorias, vigencias de precios, alcance de promociones, nav enlazada, layout intacto, regresiones /dashboard /autenticacion-usuarios /login, 404, API intacta 401)",
+        "tests/catalog_flow.test.mjs (node, stub DOM/fetch) => RESULTADO: PASS (19/19: render con resolucion de nombres padre/alcance, POST con parent_id, PUT parent_id null en raiz, DELETE logico, busqueda q, POST producto + sincronizacion de categorias por subrecurso, PUT producto, POST precio sin vigente_hasta/store_id cuando vacios, PUT precio, POST promo con alcance por producto)",
+        "Regresiones en verde: verify_cp_front01/02/03 PASS; tests/login_flow, dashboard_flow, admin_flow PASS",
+        "Nota: smoke interactivo via agente-browser MCP sigue sin responder (timeout -32001); logica verificada con harness de node y estructura con verify_cp_front04"
+      ],
+      "files": [
+        "proyecto/06_codigo/app/Views/categorias.php",
+        "proyecto/06_codigo/app/Views/productos.php",
+        "proyecto/06_codigo/app/Views/precios.php",
+        "proyecto/06_codigo/public/assets/js/categorias.js",
+        "proyecto/06_codigo/public/assets/js/productos.js",
+        "proyecto/06_codigo/public/assets/js/precios.js",
+        "proyecto/06_codigo/app/Views/layouts/app.php",
+        "proyecto/06_codigo/public/index.php",
+        "proyecto/06_codigo/tools/verify_cp_front04.php",
+        "proyecto/06_codigo/tests/catalog_flow.test.mjs"
+      ],
+      "assumptions": [
+        "PUT de categorias envia siempre nombre + parent_id (null = mover a raiz); la semantica 'ausente = conservar' del contrato no se usa desde la UI.",
+        "Categorias: el listado del backend filtra estado='activo', por eso Desactivar hace que la fila desaparezca (sin boton de reactivacion; el endpoint no expone alta de estado).",
+        "Productos: la sincronizacion de categorias es reemplazo completo por subrecurso; se ejecuta siempre tras crear/editar (el formulario de edicion las precarga via GET /products/{id}/categories).",
+        "Precios/promociones: el contrato no tiene DELETE; Editar + guardar con fecha hasta = cierre de vigencia. A diferencia de categorias/productos no hay boton Desactivar.",
+        "Promociones: el alcance se elige con un select de tipo (producto/categoria) + elemento; se envia solo la clave elegida (product_id O category_id).",
+        "Listados sin paginacion en UI (limit=100, el maximo de varios validadores); paginacion explicita pendiente si el catalogo crece (upgrade path: controles page/limit)."
+      ],
+      "pending": [
+        "CP-FRONT-05: proveedores, pacientes y prescriptores",
+        "Paginacion explicita en listados de catalogo cuando el volumen lo exija"
+      ],
+      "human_status": "APPROVED",
+      "human_validation": {
+        "date": "2026-10-07",
+        "by": "Cliente (mensaje 'continuar')",
+        "decision": "APROBADO CP-FRONT-04 (catalogo, productos, precios/promociones). Autoriza continuar con CP-FRONT-05."
+      }
+    },
+    {
+      "checkpoint": "CP-FRONT-05",
+      "date": "2026-10-07",
+      "result": "PASS",
+      "summary": "Proveedores, Pacientes y Prescriptores (2 pantallas sobre el layout compartido). /gestion-proveedores: alta/edicion (identificacion 1-30, nombre 1-200, contacto opcional), busqueda por nombre o identificacion (q), borrado logico (Desactivar -> DELETE) y mapeo de 409 DUPLICATE_IDENTIFICATION con el mensaje de la API. /gestion-pacientes-prescriptores: dos paneles con un motor CRUD local compartido (montarDirectorio) — pacientes (identificacion, nombre, fecha_nacimiento obligatoria, contacto opcional; la columna de estado muestra 'anonimizado' cuando anonimizado_at existe) y prescriptores (identificacion, nombre, especialidad opcional); ambos con busqueda q, edicion y borrado logico. Contratos verificados contra DirectorioValidator (validarProveedor/validarPaciente/validarPrescriptor) y los SELECT reales de los repositories.",
+      "evidence": [
+        "php -l OK: app/Views/proveedores.php, app/Views/pacientes.php, app/Views/layouts/app.php, public/index.php, tools/verify_cp_front05.php",
+        "tools/verify_cp_front05.php http://127.0.0.1:8000 => RESULTADO: PASS (15/15: ambas pantallas con formularios/busqueda/tablas/JS, panel de pacientes con fecha y prescriptores con especialidad, nav enlazada, layout intacto, regresiones /dashboard /catalogo-productos /login, 404, API intacta 401)",
+        "tests/directorio_flow.test.mjs (node, stub DOM/fetch) => RESULTADO: PASS (14/14: render de ambas tablas, POST sin contacto vacio, Editar precarga, PUT, DELETE logico, busqueda q, 409 DUPLICATE_IDENTIFICATION, POST paciente con fecha_nacimiento, POST prescriptor con especialidad, PUT paciente, DELETE en prescriptores)",
+        "Regresiones en verde: verify_cp_front01/02/03/04 PASS; tests/login_flow, dashboard_flow, admin_flow, catalog_flow PASS",
+        "Nota: smoke interactivo via agente-browser MCP sigue sin responder (timeout -32001); logica verificada con harness de node y estructura con verify_cp_front05"
+      ],
+      "files": [
+        "proyecto/06_codigo/app/Views/proveedores.php",
+        "proyecto/06_codigo/app/Views/pacientes.php",
+        "proyecto/06_codigo/public/assets/js/proveedores.js",
+        "proyecto/06_codigo/public/assets/js/pacientes.js",
+        "proyecto/06_codigo/app/Views/layouts/app.php",
+        "proyecto/06_codigo/public/index.php",
+        "proyecto/06_codigo/tools/verify_cp_front05.php",
+        "proyecto/06_codigo/tests/directorio_flow.test.mjs"
+      ],
+      "assumptions": [
+        "Listados con limit=100 y filtro q (nombre/identificacion LIKE); sin paginacion explicita en UI (mismo criterio que CP-FRONT-04).",
+        "Campos opcionales vacios se omiten del body (contacto/especialidad); el validador del backend exige nombre e identificacion y, en pacientes, fecha_nacimiento.",
+        "Pacientes: la anonimizacion la realiza la API en DELETE; la UI solo refleja el estado ('anonimizado'). No hay reactivacion desde la UI (el listado filtra estado='activo').",
+        "pacientes.js usa un motor CRUD local (montarDirectorio) compartido por ambos paneles en vez de duplicar el flujo; el patron no se extrajo a un archivo comun para no refactorizar pantallas ya aprobadas (pendiente junto con la decision de logout/permisos en CP-FRONT-11)."
+      ],
+      "pending": [
+        "CP-FRONT-06: compras (ordenes de compra y recepcion con registro de lotes)",
+        "Paginacion explicita y refactor del helper CRUD a archivo comun: pendientes de CP-FRONT-11"
+      ],
+      "human_status": "APPROVED",
+      "human_validation": {
+        "date": "2026-10-07",
+        "by": "Cliente (mensaje 'CONTINUAR')",
+        "decision": "APROBADO CP-FRONT-05 (proveedores, pacientes y prescriptores). Autoriza continuar con CP-FRONT-06."
+      }
+    },
+    {
+      "checkpoint": "CP-FRONT-06",
+      "date": "2026-10-07",
+      "result": "PASS",
+      "summary": "Compras y Recepcion de Mercancia (2 pantallas sobre el layout compartido). /compras-ordenes: creacion con numero opcional (autogenerado por el backend si se deja vacio), proveedor y editor de items dinamico (producto + cantidad_pedida, agregar/quitar); filtros por numero (q) y estado; acciones segun estado (borrador: Editar/Emitir/Cancelar-logico, emitida: solo Ver); detalle con items pedidos vs recibidos. Edicion via PUT solo en borrador (reemplazo completo de items, contrato PurchaseOrderUpdate). /compras-recepciones: seleccion de orden emitida con VERIFICACION CONTRA ORDEN (tabla pedidas/recibidas/pendientes y el editor solo ofrece productos con cantidad pendiente), registro de items con numero_lote de fabrica + fecha_vencimiento + cantidad, clave de idempotencia opcional (RN-09), alta via POST /purchases/orders/{id}/receptions y ciclo confirmar (con sucursal, crea lotes en cuarentena) / rechazar. Contratos verificados contra CompraValidator (validarOrden/validarRecepcion/validarConfirmacion) y las rutas reales del Front Controller.",
+      "evidence": [
+        "php -l OK: app/Views/ordenes.php, app/Views/recepciones.php, app/Views/layouts/app.php, public/index.php, tools/verify_cp_front06.php",
+        "tools/verify_cp_front06.php http://127.0.0.1:8000 => RESULTADO: PASS (18/18: editor de items, registro de lotes/vencimiento, verificacion contra orden, confirmar con sucursal y rechazar, nav enlazada, layout intacto, regresiones /dashboard /gestion-proveedores /login, 404, API intacta 401)",
+        "tests/compras_flow.test.mjs (node, stub DOM/fetch) => RESULTADO: PASS (17/17: acciones segun estado de la orden, validacion del editor de items, POST sin numero autogenerado, Emitir -> POST /emitir, Ver -> detalle, verificacion de pendientes (pedida-recibida) y select limitado a productos pendientes, validacion de lote/vencimiento, POST de recepcion con lote/vencimiento/idempotency_key, Confirmar con store_id)",
+        "Correccion durante el CP: un FAIL del harness por defecto del stub de <select> (no auto-selecciona la primera opcion como el DOM real); corregido el test, no la app",
+        "Regresiones en verde: verify_cp_front01..05 PASS; tests/login_flow, dashboard_flow, admin_flow, catalog_flow, directorio_flow PASS",
+        "Nota: smoke interactivo via agente-browser MCP sigue sin responder (timeout -32001); logica verificada con harness de node y estructura con verify_cp_front06"
+      ],
+      "files": [
+        "proyecto/06_codigo/app/Views/ordenes.php",
+        "proyecto/06_codigo/app/Views/recepciones.php",
+        "proyecto/06_codigo/public/assets/js/ordenes.js",
+        "proyecto/06_codigo/public/assets/js/recepciones.js",
+        "proyecto/06_codigo/app/Views/layouts/app.php",
+        "proyecto/06_codigo/public/index.php",
+        "proyecto/06_codigo/tools/verify_cp_front06.php",
+        "proyecto/06_codigo/tests/compras_flow.test.mjs"
+      ],
+      "assumptions": [
+        "La UI no permite editar/cancelar ordenes fuera de borrador (el backend responde 409 ORDER_NOT_DRAFT / ORDER_NOT_CANCELLABLE); las acciones se ocultan por estado.",
+        "La verificacion contra orden es asistida (muestra pendientes y limita el select de productos); el limite EXCEEDS_PENDING y el resto de reglas RN-07/RN-09 las impone el backend y sus errores se muestran tal cual.",
+        "El editor de items es reemplazo completo (PUT de borrador); para recepciones cada registro crea una recepcion nueva con sus items (sin edicion posterior: confirmar/rechazar).",
+        "Clave de idempotencia opcional en la UI; si se omite, el backend genera la recepcion sin reutilizacion (mismo criterio que la API).",
+        "Listados con limit=100 sin paginacion explicita (mismo criterio que CP anteriores)."
+      ],
+      "pending": [
+        "CP-FRONT-07: inventario y trazabilidad FEFO (lotes, stock/movimientos, transferencias, alertas e incidentes)",
+        "Paginacion explicita en listados: pendiente de CP-FRONT-11"
+      ],
+      "human_status": "APPROVED",
+      "human_validation": {
+        "date": "2026-10-07",
+        "by": "Cliente (mensaje 'CONTINUAR')",
+        "decision": "APROBADO CP-FRONT-06 (compras y recepcion). Autoriza continuar con CP-FRONT-07."
+      }
+    },
+    {
+      "checkpoint": "CP-FRONT-07",
+      "date": "2026-10-07",
+      "result": "PASS",
+      "summary": "Inventarios y Trazabilidad FEFO (4 pantallas sobre el layout compartido). /inventario-lotes-fefo: listado de lotes con semaforizacion FEFO visual (rojo=vencido, amarillo=vence en <=90 dias, verde=vigente; clases sem-*) y liberacion de lotes en cuarentena con motivo. /inventario-stock-movimientos: stock por sucursal/lote (disponible/reservado/vendido, estado del lote) y kardex de movimientos con filtros de sucursal y tipo (entrada/salida/devolucion/transferencias/ajustes/compensatorio). /inventario-transferencias: creacion con origen/destino, editor de items por lote, clave de idempotencia y ciclo completo solicitada->despachada->recibida->cerrada (o rechazada) con acciones habilitadas por estado; despachar es completo (sin body) y recibir envia cantidad_recibida = cantidad_despachada (el contrato guarda la cantidad pedida en cantidad_despachada; recepcion parcial solo via API). /inventario-alertas-incidentes: alertas con filtros tipo/estado, Evaluar ahora y Resolver; incidentes de consumo (store/lote/consumo declarado) con Ajustar (doble autorizacion: el backend exige usuario distinto al que abrio, RF-046) y Descartar. Contratos verificados contra InventarioValidator e InventarioRepository (columnas reales de stocks/movements/incidents/transfer_items).",
+      "evidence": [
+        "php -l OK: 4 vistas + layouts/app.php + public/index.php + tools/verify_cp_front07.php",
+        "tools/verify_cp_front07.php http://127.0.0.1:8000 => RESULTADO: PASS (23/23: 4 pantallas con formularios/tablas/JS, ciclo de transferencias, alertas con evaluacion, incidentes, nav enlazada, layout intacto, regresiones /dashboard /compras-recepciones /login, 404, API intacta 401)",
+        "tests/inventario_flow.test.mjs (node, stub DOM/fetch) => RESULTADO: PASS (21/21: semaforo FEFO rojo/amarillo/verde, Liberar solo en cuarentena con motivo, kardex con referencia, validacion del editor de items, origen==destino, POST con idempotency_key, detalle con cantidad_despachada, acciones por estado, recibir completo, Resolver/Evaluar, POST de incidente, Ajustar doble autorizacion)",
+        "Correccion durante el CP: transferencias.js leia i.cantidad pero el contrato real guarda la cantidad pedida en cantidad_despachada (inventory_transfer_items); corregido antes de cerrar el CP",
+        "Regresiones en verde: verify_cp_front01..06 PASS; tests/login_flow, dashboard_flow, admin_flow, catalog_flow, directorio_flow, compras_flow PASS",
+        "Nota: smoke interactivo via agente-browser MCP sigue sin responder (timeout -32001); logica verificada con harness de node y estructura con verify_cp_front07"
+      ],
+      "files": [
+        "proyecto/06_codigo/app/Views/lotes.php",
+        "proyecto/06_codigo/app/Views/stock.php",
+        "proyecto/06_codigo/app/Views/transferencias.php",
+        "proyecto/06_codigo/app/Views/alertas.php",
+        "proyecto/06_codigo/public/assets/js/lotes.js",
+        "proyecto/06_codigo/public/assets/js/stock.js",
+        "proyecto/06_codigo/public/assets/js/transferencias.js",
+        "proyecto/06_codigo/public/assets/js/alertas.js",
+        "proyecto/06_codigo/public/assets/css/app.css",
+        "proyecto/06_codigo/app/Views/layouts/app.php",
+        "proyecto/06_codigo/public/index.php",
+        "proyecto/06_codigo/tools/verify_cp_front07.php",
+        "proyecto/06_codigo/tests/inventario_flow.test.mjs"
+      ],
+      "assumptions": [
+        "Semaforo FEFO con umbral fijo de 90 dias (constante DIAS_ALERTA en lotes.js) sobre fecha_vencimiento; configurable si el cliente define otro umbral.",
+        "Despachar transferencia es completo (el endpoint no recibe body); Recibir envia cantidad_recibida igual a cantidad_despachada (parcial solo via API). A validar con el cliente si la UI necesita recepcion parcial.",
+        "La cantidad pedida de una transferencia se guarda en cantidad_despachada por el backend (semantica del contrato); el detalle la rotula 'cantidad solicitada'.",
+        "Ajustar incidente no envia body: el autorizador es el usuario con sesion activa y el backend exige que sea distinto al que abrio el incidente (doble autorizacion, RF-046).",
+        "Liberar lote envia un motivo fijo 'Liberación desde interfaz web'; el campo no se expone en el formulario (upgrade path: prompt/textarea si el cliente lo pide).",
+        "Reservas (RF-044) no se exponen en este CP: el alcance pedia lotes, stock/movimientos, transferencias y alertas/incidentes. Quedan disponibles por API."
+      ],
+      "pending": [
+        "CP-FRONT-08: recetas medicas y libro de controlados",
+        "Recepcion parcial de transferencias y motivo de liberacion editable: pendientes de validacion con el cliente"
+      ],
+      "human_status": "APPROVED",
+      "human_validation": {
+        "date": "2026-10-07",
+        "by": "Cliente (mensaje 'continuar')",
+        "decision": "APROBADO CP-FRONT-07 (inventario FEFO). Autoriza continuar con CP-FRONT-08."
+      }
+    },
+    {
+      "checkpoint": "CP-FRONT-08",
+      "date": "2026-10-07",
+      "result": "PASS",
+      "summary": "Recetas Medicas y Medicamentos Controlados (2 pantallas sobre el layout compartido). /recetas-medicas: registro de receta vinculado a prescriptor/paciente (solo activos) con fecha, numero de referencia opcional e items recetados (solo productos con condicion_venta receta|controlado); listado con filtro por paciente; detalle con dispensacion POR ITEM (inputs con rx_item_id y validacion local cantidad <= saldo antes del POST /rx/prescriptions/{id}/dispensar {items:[{rx_item_id, cantidad}]}, cuyo CAS y RX_SALDO_INSUFICIENTE los impone el backend). /libro-controlados: asientos del Libro Oficial (append-only) con filtros por periodo RF-071 (tipo, ref_tipo, desde, hasta), panel de saldos con conciliacion RNF-024 (GET /control/reconciliation -> total/conciliados/desbalanceados) y formulario de ajuste con DOBLE AUTORIZACION RF-046 (store, producto, lote, cantidad, direccion baja|incremento, motivo y autorizador distinto). Contratos verificados contra RecetaService::validarCreacion/validarDispensacion, CtrlValidator::validarAjuste y las columnas reales de ctrl_ledger_entries.",
+      "evidence": [
+        "php -l OK: app/Views/recetas.php, app/Views/controlados.php, layouts/app.php, public/index.php, tools/verify_cp_front08.php",
+        "tools/verify_cp_front08.php http://127.0.0.1:8000 => RESULTADO: PASS (17/17: registro vinculado prescriptor/paciente, editor de items, dispensacion por item, asientos con filtros de periodo, saldos con conciliacion, ajuste con doble autorizacion, nav enlazada, layout intacto, regresiones /dashboard /inventario-lotes-fefo /login, 404, API intacta 401)",
+        "tests/recetas_flow.test.mjs (node, stub DOM/fetch) => RESULTADO: PASS (15/15: prescriptor/paciente solo activos, items solo receta/controlado, validacion del editor, POST con prescriptor/paciente/fecha/items, detalle con rx_item_id por fila, dispensar con validacion local de saldo y POST correcto, asientos/saldos renderizados con producto y referencia, filtros RF-071, conciliacion RNF-024, ajuste RF-046)",
+        "Regresiones en verde: verify_cp_front01..07 PASS; tests/login_flow, dashboard_flow, admin_flow, catalog_flow, directorio_flow, compras_flow, inventario_flow PASS",
+        "Nota: smoke interactivo via agente-browser MCP sigue sin responder (timeout -32001); logica verificada con harness de node y estructura con verify_cp_front08"
+      ],
+      "files": [
+        "proyecto/06_codigo/app/Views/recetas.php",
+        "proyecto/06_codigo/app/Views/controlados.php",
+        "proyecto/06_codigo/public/assets/js/recetas.js",
+        "proyecto/06_codigo/public/assets/js/controlados.js",
+        "proyecto/06_codigo/app/Views/layouts/app.php",
+        "proyecto/06_codigo/public/index.php",
+        "proyecto/06_codigo/tools/verify_cp_front08.php",
+        "proyecto/06_codigo/tests/recetas_flow.test.mjs"
+      ],
+      "assumptions": [
+        "Dispensacion por item con validacion local cantidad <= saldo (UX); el backend mantiene el CAS y responde RX_SALDO_INSUFICIENTE ante carreras. La dispensacion no descuenta stock ni kardex (Opcion A del CP-BACK-07, vigente).",
+        "El selector de autorizador del ajuste se llena con GET /auth/users (requiere permiso auth.users.manage): sin ese permiso el formulario queda sin autorizadores y el ajuste no es posible desde la UI. A validar con el cliente/quimico (ver RF-054 pendiente).",
+        "El libro se consulta con limit=100 y filtros de periodo (RF-071); sin paginacion explicita (mismo criterio de CP anteriores).",
+        "La conciliacion solo ejecuta GET /control/reconciliation (lectura); no altera el libro (append-only)."
+      ],
+      "pending": [
+        "CP-FRONT-09: POS, pagos y devoluciones",
+        "RF-054 (verificacion del quimico) y selector de autorizador sin permiso auth.users.manage: pendientes con el cliente"
+      ],
+      "human_status": "APPROVED",
+      "human_validation": {
+        "date": "2026-10-07",
+        "by": "Cliente (mensaje 'continuar')",
+        "decision": "APROBADO CP-FRONT-08 (recetas y libro de controlados). Autoriza continuar con CP-FRONT-09."
+      }
+    },
+    {
+      "checkpoint": "CP-FRONT-09",
+      "date": "2026-10-07",
+      "result": "PASS",
+      "summary": "Punto de Venta POS, Pagos y Devoluciones (3 pantallas sobre el layout compartido). /ventas-pos: contexto de caja (sucursal persistida en sf_store, cajas filtradas por sucursal, paciente opcional), busqueda rapida por codigo de barras/SKU, SELECCION AUTOMATICA DE LOTE FEFO (liberado, no vencido, con stock, vencimiento mas proximo), precio unitario con preferencia de precio de sucursal sobre el global, carrito con cantidad editable y calculo de importes, cobro con MULTIPLES MEDIOS DE PAGO (validacion pagado >= total con vuelto) y emision de comprobante imprimible. /ventas-pagos-transacciones: listado con filtros de sucursal/estado, detalle con items y pagos registrados, registro de pagos acumulativos (pendiente -> pagada por suma) y anulacion con reposicion de stock (RN-10). /ventas-devoluciones: carga de venta con cantidad devuelta acumulada por item (N+1 sobre /sales/returns), validacion local cantidad <= pendiente, registro con motivo y condicion por item (vendible -> reingresa stock / no_vendible -> baja) y listado con detalle de devoluciones. Contratos verificados contra VentaValidator (validarOrden items con lot_id/cantidad/precio_unitario, validarPago medio efectivo|tarjeta|otros + monto, validarDevolucion items con order_item_id/cantidad/condicion) y las columnas reales de sales_order_items/sales_return_items.",
+      "evidence": [
+        "php -l OK: app/Views/pos.php, pagos.php, devoluciones.php, layouts/app.php, public/index.php, tools/verify_cp_front09.php",
+        "tools/verify_cp_front09.php http://127.0.0.1:8000 => RESULTADO: PASS (23/23: POS con busqueda/codigo, contexto de caja, carrito con importes, multiples medios, comprobante imprimible, pagos acumulativos y anulacion, devoluciones con motivo, nav enlazada, layout intacto, regresiones /dashboard /recetas-medicas /login, 404, API intacta 401)",
+        "tests/ventas_flow.test.mjs (node, stub DOM/fetch) => RESULTADO: PASS (19/19: solo sucursales activas y cajas de la sucursal, lote FEFO automatico, precio de sucursal sobre global, total calculado, pagos insuficientes, POST de venta con items/precio/idempotency_key, multiples pagos, comprobante con vuelto, carrito vaciado, detalle de venta, pago acumulativo, anular, devuelta acumulada, maximo por item, exceso de pendiente, POST de devolucion con condicion)",
+        "Correcciones durante el CP: (1) valores por defecto explicitos en los selects de caja y condicion (sin depender de la auto-seleccion del DOM); (2) un FAIL del harness por no setear el motivo antes de validar el exceso de pendiente; (3) limpieza de restos en pos.js/devoluciones.js",
+        "Regresiones en verde: verify_cp_front01..08 PASS; tests/login_flow, dashboard_flow, admin_flow, catalog_flow, directorio_flow, compras_flow, inventario_flow, recetas_flow PASS",
+        "Nota: smoke interactivo via agente-browser MCP sigue sin responder (timeout -32001); logica verificada con harness de node y estructura con verify_cp_front09"
+      ],
+      "files": [
+        "proyecto/06_codigo/app/Views/pos.php",
+        "proyecto/06_codigo/app/Views/pagos.php",
+        "proyecto/06_codigo/app/Views/devoluciones.php",
+        "proyecto/06_codigo/public/assets/js/pos.js",
+        "proyecto/06_codigo/public/assets/js/pagos.js",
+        "proyecto/06_codigo/public/assets/js/devoluciones.js",
+        "proyecto/06_codigo/app/Views/layouts/app.php",
+        "proyecto/06_codigo/public/index.php",
+        "proyecto/06_codigo/tools/verify_cp_front09.php",
+        "proyecto/06_codigo/tests/ventas_flow.test.mjs"
+      ],
+      "assumptions": [
+        "Lote FEFO automatico (vencimiento mas proximo, liberado, no vencido, con stock en la sucursal); sin seleccion manual de lote en la UI (override por API; upgrade path si el cajero necesita elegir lote).",
+        "Precio unitario resuelto en cliente desde /catalog/prices (preferencia de precio de sucursal sobre global, con vigencia de hoy); el backend recalcula el total. Productos sin precio vigente no se agregan al carrito.",
+        "idempotency_key de la venta generada en cliente (pos-<timestamp>-<aleatorio>); pagos sin idempotency_key (el backend los acepta opcionales).",
+        "La UI exige pagado >= total antes de cobrar (vuelto visible en comprobante); el backend permite pagos parciales desde la pantalla de pagos.",
+        "Devoluciones: cantidad devuelta por item calculada con N+1 sobre /sales/returns (pocas devoluciones en la practica); condicion por item con valor por defecto 'vendible'.",
+        "Comprobante: seccion imprimible (window.print) sin formato fiscal ni numeracion de factura (fuera de alcance)."
+      ],
+      "pending": [
+        "CP-FRONT-10: auditoria de operaciones y PII",
+        "Seleccion manual de lote en POS y formato fiscal del comprobante: pendientes de validacion con el cliente"
+      ],
+      "human_status": "APPROVED",
+      "human_validation": {
+        "date": "2026-10-07",
+        "by": "Cliente (mensaje 'continuar')",
+        "decision": "APROBADO CP-FRONT-09 (POS, pagos y devoluciones). Autoriza continuar con CP-FRONT-10."
+      }
+    },
+    {
+      "checkpoint": "CP-FRONT-10",
+      "date": "2026-10-07",
+      "result": "PASS",
+      "summary": "Auditoria y Seguridad PII (/auditoria-operaciones-pii, una pantalla con 3 paneles sobre el layout compartido). Operaciones sensibles RF-090: filtros de accion (creacion/modificacion/eliminacion/solicitud), entidad y periodo (desde/hasta) y detalle con valores_antes/valores_despues ya redactados por el backend (RNF-050, JSON en bloque pre). Accesos PII RF-091/RN-13: filtro de accion (consulta/creacion/modificacion/exportacion) con paciente y receta asociados. Eventos salientes (outbox, decision 16): filtro por estado, payload visible y ciclo procesar/fallar (estado pendiente) y reintentar (estado fallido) con los codigos 409 EVENT_NOT_PENDING/EVENT_NOT_FAILED y 404 EVENT_NOT_FOUND del backend. RBAC: lecturas con audit.read y ciclo con audit.manage; el 403 muestra el permiso requerido (RN-13). Contratos verificados contra AuditValidator (enums ACCIONES_OPERACION/ACCIONES_PII/ESTADOS_EVENTO) y las columnas reales de audit_operations/audit_pii_access/outbox_events.",
+      "evidence": [
+        "php -l OK: app/Views/auditoria.php, layouts/app.php, public/index.php, tools/verify_cp_front10.php",
+        "tools/verify_cp_front10.php http://127.0.0.1:8000 => RESULTADO: PASS (12/12: operaciones con filtros RF-090 y detalle redactado, accesos PII RF-091, outbox con ciclo y payload, nav enlazada, regresiones /dashboard /ventas-pos /login, 404, API intacta 401)",
+        "tests/auditoria_flow.test.mjs (node, stub DOM/fetch) => RESULTADO: PASS (9/9: 3 tablas renderizadas, filtros de operaciones y PII, valores redactados RNF-050, acciones segun estado del evento, Procesar/Reintentar, payload visible, 403 -> mensaje de permisos)",
+        "Regresiones en verde: verify_cp_front01..09 PASS; tests/login_flow, dashboard_flow, admin_flow, catalog_flow, directorio_flow, compras_flow, inventario_flow, recetas_flow, ventas_flow PASS",
+        "Nota: smoke interactivo via agente-browser MCP sigue sin responder (timeout -32001); logica verificada con harness de node y estructura con verify_cp_front10"
+      ],
+      "files": [
+        "proyecto/06_codigo/app/Views/auditoria.php",
+        "proyecto/06_codigo/public/assets/js/auditoria.js",
+        "proyecto/06_codigo/public/assets/css/app.css",
+        "proyecto/06_codigo/app/Views/layouts/app.php",
+        "proyecto/06_codigo/public/index.php",
+        "proyecto/06_codigo/tools/verify_cp_front10.php",
+        "proyecto/06_codigo/tests/auditoria_flow.test.mjs"
+      ],
+      "assumptions": [
+        "Los valores_antes/valores_despues se muestran tal cual el backend (ya redactados con [REDACTADO] para PII/credenciales, RNF-050); la UI no redacta adicionalmente.",
+        "La navegacion del layout queda COMPLETA: los 21 modulos del alcance son enlaces reales (sin pendientes).",
+        "Ciclo del outbox limitado a transiciones de estado via API (procesar/fallar/reintentar); el consumidor externo esta fuera de alcance (decision 16).",
+        "Listados con limit=100 y filtros; sin paginacion explicita (mismo criterio de CP anteriores)."
+      ],
+      "pending": [
+        "CP-FRONT-11: responsive/tactil, accesibilidad WCAG y suite de integracion frontend (ultimo CP del workflow 05)",
+        "Paginacion explicita en listados: pendiente de CP-FRONT-11"
+      ],
+      "human_status": "APPROVED",
+      "human_validation": {
+        "date": "2026-10-07",
+        "by": "Cliente (mensaje 'continuar')",
+        "decision": "APROBADO CP-FRONT-10 (auditoria y PII). Autoriza continuar con CP-FRONT-11."
+      }
+    },
+    {
+      "checkpoint": "CP-FRONT-11",
+      "date": "2026-10-07",
+      "result": "PASS",
+      "summary": "Optimizacion Responsive, Accesibilidad y UI/UX (ultimo CP del workflow 05). Mejoras WCAG 2.2 AA aplicadas: scope='col' en los 221 th de las 19 vistas de tablas (1.3.1), indicador de foco visible :focus-visible en botones/enlaces/inputs (2.4.7), objetivos tactiles >= 40px en botones mini (2.5.8), skip-link 'Saltar al contenido' + landmark main#contenido en el layout (2.4.1). Nuevo verificador tools/verify_cp_front11.php con auditoria estructural por DOM real (DOMDocument/XPath) sobre las 21 pantallas: lang (3.1.1), meta viewport, un solo h1, todo control de formulario con etiqueta asociada, botones con nombre accesible, imagenes con alt, th con scope, region role=alert y skip-link; mas comprobaciones de CSS responsive (@media, focus-visible, tacto). Suite de integracion frontend completa: 21/21 suites en PASS (11 verify_cp_front01..11 + 10 harnesses node). Capturas responsive Edge headless: login a 375px (movil) y 1024px (POS).",
+      "evidence": [
+        "tools/verify_cp_front11.php http://127.0.0.1:8000 => RESULTADO: PASS (24/24: 21 pantallas con WCAG estructural OK + CSS responsive/foco/tacto)",
+        "SUITE DE INTEGRACION COMPLETA => 21/21 PASS: verify_cp_front01..11 PASS; tests/login_flow, dashboard_flow, admin_flow, catalog_flow, directorio_flow, compras_flow, inventario_flow, recetas_flow, ventas_flow, auditoria_flow PASS",
+        "Capturas responsive: tests/results/cp_front11_login_375.png (movil) y cp_front11_login_1024.png (POS)",
+        "BUG corregido durante el CP: la sustitucion de <th> con Set-Content -Encoding UTF8 de PowerShell 5.1 agrego un BOM a 19 vistas y el BOM rompio declare(strict_types=1) (fatal 'must be the very first statement'); BOMs eliminados con UTF8Encoding(false) y suite completa re-ejecutada en verde. Leccion: escribir PHP sin BOM (usar Write tool o UTF8Encoding(false))",
+        "Nota: el smoke interactivo via agente-browser MCP no pudo ejecutarse (daemon sin responder, timeout -32001); las capturas responsive se tomaron con Edge headless sobre /login (las pantallas autenticadas redirigen sin token, ver supuestos)"
+      ],
+      "files": [
+        "proyecto/06_codigo/tools/verify_cp_front11.php",
+        "proyecto/06_codigo/public/assets/css/app.css",
+        "proyecto/06_codigo/app/Views/layouts/app.php",
+        "proyecto/06_codigo/app/Views/*.php (scope=col en 221 th de 19 vistas)",
+        "proyecto/06_codigo/tests/results/cp_front11_login_375.png",
+        "proyecto/06_codigo/tests/results/cp_front11_login_1024.png"
+      ],
+      "assumptions": [
+        "Auditoria WCAG ESTRUCTURAL (DOM estatico): valida 3.1.1, 1.3.1, 3.3.2, 4.1.2, 1.1.1, 2.4.1, 2.4.7, 2.5.8, 4.1.3 sobre las 21 pantallas; no sustituye una auditoria con lector de pantalla ni herramientas como axe sobre DOM dinamico.",
+        "Controles generados por JS (inputs de cantidad en carrito/detalle) se etiquetan por sus columnas de tabla; aria-label explicito queda pendiente de la auditoria de accesibilidad final.",
+        "Pruebas de usabilidad tactil/POS: capturas responsive (375/1024px) y objetivos tactiles >= 40px; la validacion sobre dispositivo fisico POS queda pendiente con el cliente.",
+        "Las capturas autenticadas del layout no fueron posibles con Edge headless (el guard de sesion redirige a /login sin token y agente-browser MCP sigue sin responder); el layout se verifico estructuralmente y por regresion de las 21 pantallas."
+      ],
+      "pending": [
+        "Auditoria de accesibilidad final (axe/lector de pantalla, aria-label en controles dinamicos) y prueba tactil en dispositivo POS fisico",
+        "Paginacion explicita en listados, logout en UI, sesion httpOnly/CSP: pendientes acumulados para decision con el cliente / security-reviewer",
+        "NO iniciar 06_integration_workflow.md hasta aprobacion humana explicita"
+      ],
+      "human_status": "APPROVED",
+      "human_validation": {
+        "date": "2026-10-07",
+        "by": "Cliente (mensaje 'continuar')",
+        "decision": "APROBADO CP-FRONT-11 (responsive, accesibilidad y suite de integracion) y workflow 05 COMPLETO. Autoriza iniciar 06_integration_workflow.md."
+      }
+    }
+  ]
 }
