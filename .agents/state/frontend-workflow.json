@@ -31,6 +31,16 @@
   "can_continue": false,
   "blocked_by": null,
   "next": "Workflow 05 COMPLETO y APROBADO (2026-10-07). Desarrollo continuo en 06_integration_workflow.md; ver integration-workflow.json para el estado de integracion.",
+  "last_regression": {
+    "date": "2026-10-07",
+    "trigger": "run-workflow 05_frontend_workflow.md (re-ejecucion del workflow completo; sin CP pendientes)",
+    "result": "PASS",
+    "checks": [
+      "verify_cp_front01..11 => PASS (11/11 verificadores estructurales y WCAG)",
+      "tests/login_flow, dashboard_flow, admin_flow, catalog_flow, directorio_flow, compras_flow, inventario_flow, recetas_flow, ventas_flow, auditoria_flow => PASS (10/10 harnesses)"
+    ],
+    "note": "Los 11 CPs del workflow 05 (CP-FRONT-01..11) siguen PASS/APPROVED tras el commit e67b542. Suite total 21/21."
+  },
   "checkpoint_results": [
     {
       "checkpoint": "CP-FRONT-01",
