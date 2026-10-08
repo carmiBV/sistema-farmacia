@@ -47,7 +47,7 @@
 
 | # | Pendiente | Responsable | Estado |
 |---|---|---|---|
-| 1 | ~~Commit del `git rm --cached` + rotación de credenciales~~ **HECHO:** commit `e67b542`; `JWT_SECRET` y `DEMO_USER_PASSWORD` regenerados (2026-10-08). **Resta:** los `.env` antiguos siguen en el historial de git — purgarlos exige reescribir historial + force-push al remoto `carmiBV/sistema-farmacia`, que las reglas prohíben | Cliente | Rotado; purga de historial bloqueada por política |
+| 1 | ~~Commit del `git rm --cached` + rotación de credenciales + purga del historial~~ **HECHO (2026-10-08):** commit `e67b542`; `JWT_SECRET` y `DEMO_USER_PASSWORD` regenerados; `.env` y `tools/.env` eliminados de TODO el historial (filter-branch) y **force-push autorizado por el cliente** al remoto `carmiBV/sistema-farmacia` (main en `397ef44`); solo quedan `.env.example` | Cliente / security-reviewer | **Completado** |
 | 2 | ~~Aplicar `V1.2.0__grants.sql`~~ **HECHO (2026-10-08):** usuarios `app_rw`/`app_ro`/`migrator`/`svc_clinico` creados y la app corre con `app_rw` (mínimo privilegio, flujos verificados). **Reconciliación F12 (pendiente de aprobación):** DELETE sobre `catalog_product_categories`, `token_blacklist`, `auth_user_roles`, `purchase_order_items` (patrones ya aprobados en implementación) | Cliente (F12) / devops | Aplicado con F12 pendiente |
 | 3 | ~~DROP de la tabla legacy `usuarios`~~ **HECHO de hecho (2026-10-08):** la tabla ya no existe; esquema en **42/42 exactas** | — | Completado |
 | 4 | ~~Decisiones RF-054 / RNF-030 / RF-100~~ **RESUELTO (2026-10-07):** sin verificación de químico ni MFA en esta fase; ventas sin estado `devuelta` | Cliente | Completado |
