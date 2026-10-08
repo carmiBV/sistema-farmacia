@@ -218,7 +218,7 @@
         },
         {
             "id": "OPEN-API-07",
-            "description": "V1.2.0__grants.sql no aplicado en la BD local (placeholders Flyway sin resolver) y despliegue local conecta como root con contraseña vacía. Antes de cualquier entorno que no sea desarrollo local hay que generar los grants con credenciales reales. RESUELTO (2026-10-08): grants aplicados localmente con credenciales reales (app_rw/app_ro/migrator/svc_clinico); la app corre con app_rw (minimo privilegio) y los flujos verificados pasan. RECONCILIACION F12 pendiente de aprobacion: DELETE sobre catalog_product_categories, token_blacklist, auth_user_roles y purchase_order_items (patrones aprobados en implementacion).",
+            "description": "V1.2.0__grants.sql no aplicado en la BD local (placeholders Flyway sin resolver) y despliegue local conecta como root con contraseña vacía. Antes de cualquier entorno que no sea desarrollo local hay que generar los grants con credenciales reales. RESUELTO (2026-10-08): grants aplicados localmente con credenciales reales (app_rw/app_ro/migrator/svc_clinico); la app corre con app_rw (minimo privilegio) y los flujos verificados pasan. RECONCILIACION F12 pendiente de aprobacion: DELETE sobre catalog_product_categories, token_blacklist, auth_user_roles y purchase_order_items (patrones aprobados en implementacion). RECONCILIACION F12 APROBADA por el cliente el 2026-10-08: los 4 GRANT de DELETE quedan incorporados en V1.2.0__grants.sql.",
             "impact": "Cerrado para entorno local; para produccion renderizar los placeholders Flyway con secretos del entorno y aprobar F12.",
             "owner": "devops-architect / Cliente",
             "status": "RESOLVED"

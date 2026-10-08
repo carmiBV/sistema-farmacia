@@ -164,3 +164,20 @@ GRANT CREATE, ALTER, DROP, INDEX, TRIGGER, REFERENCES
 -- ---------------------------------------------------------------------
 -- dba_admin · NO se crea aquí. Provisionar fuera del repositorio.
 -- ---------------------------------------------------------------------
+
+
+-- =====================================================================
+-- RECONCILIACION F12 - APROBADA por el cliente el 2026-10-08.
+-- DELETE autorizado sobre las 4 tablas del patron de desvinculacion/
+-- reemplazo aprobado en implementacion (verify_cp_back11, CP-INT-02):
+--   catalog_product_categories: reemplazo de asociaciones producto-categoria
+--   token_blacklist: purga de tokens expirados
+--   auth_user_roles: reemplazo de asignacion de roles
+--   purchase_order_items: reemplazo de items en ordenes en BORRADOR
+-- Prevalencia: la prohibicion dura de DELETE se mantiene sobre el resto de
+-- tablas; las append-only conservan SELECT+INSERT unicamente.
+-- =====================================================================
+GRANT SELECT, INSERT, UPDATE, DELETE ON `${db_name}`.catalog_product_categories TO 'app_rw'@'%';
+GRANT SELECT, INSERT, UPDATE, DELETE ON `${db_name}`.token_blacklist          TO 'app_rw'@'%';
+GRANT SELECT, INSERT, UPDATE, DELETE ON `${db_name}`.auth_user_roles          TO 'app_rw'@'%';
+GRANT SELECT, INSERT, UPDATE, DELETE ON `${db_name}`.purchase_order_items     TO 'app_rw'@'%';
