@@ -204,9 +204,10 @@
         },
         {
             "id": "OPEN-API-05",
-            "description": "Archivos .env trackeados en git (raíz y proyecto/06_codigo/tools/.env, commit 9da5b80). Ya agregado .env a .gitignore pero siguen cacheados.",
-            "impact": "Posible fuga de credenciales (RNF-034, política de secretos). Requiere git rm --cached y rotación si hubo credenciales reales.",
-            "owner": "Cliente / security-reviewer"
+            "description": "Archivos .env trackeados en git (raíz y proyecto/06_codigo/tools/.env, commit 9da5b80). Ya agregado .env a .gitignore pero siguen cacheados. RESUELTO (2026-10-08): git rm --cached ejecutado y commiteado (e67b542); JWT_SECRET y DEMO_USER_PASSWORD rotados. Los .env antiguos permanecen en el historial: purga requiere rewrite + force-push al remoto carmiBV/sistema-farmacia, prohibido por reglas.",
+            "impact": "Mitigado (rotacion + fuera del indice). Exposicion historica residual hasta que el cliente autorice la purga del historial.",
+            "owner": "Cliente / security-reviewer",
+            "status": "RESOLVED"
         },
         {
             "id": "OPEN-API-06",
@@ -217,10 +218,10 @@
         },
         {
             "id": "OPEN-API-07",
-            "description": "V1.2.0__grants.sql no aplicado en la BD local (placeholders Flyway sin resolver) y despliegue local conecta como root con contraseña vacía. Antes de cualquier entorno que no sea desarrollo local hay que generar los grants con credenciales reales.",
-            "impact": "Seguridad operativa (RNF-034); no bloquea CP piloto en local.",
+            "description": "V1.2.0__grants.sql no aplicado en la BD local (placeholders Flyway sin resolver) y despliegue local conecta como root con contraseña vacía. Antes de cualquier entorno que no sea desarrollo local hay que generar los grants con credenciales reales. RESUELTO (2026-10-08): grants aplicados localmente con credenciales reales (app_rw/app_ro/migrator/svc_clinico); la app corre con app_rw (minimo privilegio) y los flujos verificados pasan. RECONCILIACION F12 pendiente de aprobacion: DELETE sobre catalog_product_categories, token_blacklist, auth_user_roles y purchase_order_items (patrones aprobados en implementacion).",
+            "impact": "Cerrado para entorno local; para produccion renderizar los placeholders Flyway con secretos del entorno y aprobar F12.",
             "owner": "devops-architect / Cliente",
-            "status": "OPEN"
+            "status": "RESOLVED"
         }
     ],
     "skills_allowed": [

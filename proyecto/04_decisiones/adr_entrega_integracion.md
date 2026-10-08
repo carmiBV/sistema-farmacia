@@ -39,7 +39,7 @@
 6. **Política FEFO** aplicada por el POS (elección del lote); el backend valida stock/estado/vencimiento pero no fuerza el orden FEFO al recibir `lot_id`.
 7. **Paginación:** listados con `limit=100` sin controles de página en UI; paginación explícita pendiente.
 8. **Comprobante — DECIDIDO (2026-10-07):** ticket simple imprimible SIN valor fiscal (lo implementado); facturación electrónica queda fuera de alcance.
-9. **SLA — DECIDIDO (2026-10-07):** p95 < 500 ms por petición con 50 usuarios concurrentes por sucursal. Estado de verificación: la app rinde 15–50 ms/req (línea base local); bajo 50 vías el servidor de desarrollo `php -S` (monohilo) serializa y la cola empuja el p95 a 500–1000 ms — la verificación dura del SLA corresponde al despliegue con stack multi-worker (php-fpm/Apache), que es pendiente operativo (checklist §4).
+9. **SLA — DECIDIDO (2026-10-07):** p95 < 500 ms por petición con 50 usuarios concurrentes por sucursal. **VERIFICADO (2026-10-08)** en stack multi-worker (Apache 2.4.62 + mod_php 8.3, mpm_winnt): p95 135–157 ms con 50 concurrencias (`verify_int08` en modo duro, 10/10). Nota de despliegue: bajo Apache/FastCGI la cabecera `Authorization` debe re-inyectarse (`SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1` con FallbackResource), o los endpoints autenticados responden 401 con token válido.
 10. **Claim de auditoría:** `entidad` guarda la ruta y `entidad_id` solo se llena en rutas con `{id}` (creaciones quedan con `entidad_id` NULL).
 11. **Sesión de BD local** desarrollada como `root` sin contraseña (solo entorno dev).
 
@@ -47,11 +47,11 @@
 
 | # | Pendiente | Responsable | Estado |
 |---|---|---|---|
-| 1 | Commit del `git rm --cached` de `.env` y `tools/.env` + **rotación de credenciales** si hubo secretos reales (RNF-034, OPEN-API-05) | Cliente / security-reviewer | Indexado, **sin commit** |
-| 2 | Aplicar `V1.2.0__grants.sql` con credenciales reales fuera de dev (OPEN-API-07) | devops-architect / Cliente | Abierto |
-| 3 | Autorización para `DROP` de la tabla legacy `usuarios` (ajena al esquema oficial; operación destructiva) | Cliente | Abierto |
+| 1 | ~~Commit del `git rm --cached` + rotación de credenciales~~ **HECHO:** commit `e67b542`; `JWT_SECRET` y `DEMO_USER_PASSWORD` regenerados (2026-10-08). **Resta:** los `.env` antiguos siguen en el historial de git — purgarlos exige reescribir historial + force-push al remoto `carmiBV/sistema-farmacia`, que las reglas prohíben | Cliente | Rotado; purga de historial bloqueada por política |
+| 2 | ~~Aplicar `V1.2.0__grants.sql`~~ **HECHO (2026-10-08):** usuarios `app_rw`/`app_ro`/`migrator`/`svc_clinico` creados y la app corre con `app_rw` (mínimo privilegio, flujos verificados). **Reconciliación F12 (pendiente de aprobación):** DELETE sobre `catalog_product_categories`, `token_blacklist`, `auth_user_roles`, `purchase_order_items` (patrones ya aprobados en implementación) | Cliente (F12) / devops | Aplicado con F12 pendiente |
+| 3 | ~~DROP de la tabla legacy `usuarios`~~ **HECHO de hecho (2026-10-08):** la tabla ya no existe; esquema en **42/42 exactas** | — | Completado |
 | 4 | ~~Decisiones RF-054 / RNF-030 / RF-100~~ **RESUELTO (2026-10-07):** sin verificación de químico ni MFA en esta fase; ventas sin estado `devuelta` | Cliente | Completado |
-| 5 | **SLA DECIDIDO (2026-10-07):** p95 < 500 ms / 50 usuarios concurrentes · **Comprobante DECIDIDO:** ticket simple sin valor fiscal. Verificación de carga dura pendiente en stack multi-worker (php-fpm/Apache): el servidor de desarrollo `php -S` es monohilo y serializa (observado: app 15–50 ms/req secuencial; bajo 50 vías p95 502–1018 ms por cola) | Cliente / devops | SLA definido; verificación en despliegue real pendiente |
+| 5 | **SLA DECIDIDO (2026-10-07):** p95 < 500 ms / 50 usuarios concurrentes · **Comprobante DECIDIDO:** ticket simple sin valor fiscal. **VERIFICADO (2026-10-08)** en stack multi-worker (Apache 2.4.62 + mod_php 8.3, mpm_winnt): p95 135-157 ms con 50 concurrencias (verify_int08 modo duro 10/10). Nota de despliegue: con FallbackResource/rewrite re-inyectar Authorization (SetEnvIf) o los endpoints autenticados responden 401 | Cliente / devops | **Completado** |
 | 6 | Auditoría a11y final (axe / lector de pantalla, `aria-label` en controles dinámicos) y prueba táctil en POS físico | Cliente / QA | Abierto |
 | 7 | Unificación HTTP de errores del módulo de compras (400 vs 409) | Cliente | Abierto |
 | 8 | Endpoints fuera del contrato piloto: **RESUELTO** — `docs/openapi.yaml` ahora cubre las 117 operaciones | — | Completado |

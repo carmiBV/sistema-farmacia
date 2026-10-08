@@ -131,7 +131,7 @@ $umbralP95 = 1000.0; // ms en corrida local secuencial (linea base, no SLA produ
 foreach ($endpoints as $nombre => $url) {
     $m = medir($url, $token);
     check($m['ok'] === 20 && $m['p95'] < $umbralP95,
-        sprintf('rendimiento %s: 20/20 ok, avg %.1f ms, p95 %.1f ms (< %.0f ms)', $nombre, $m['avg'], $m['p95'], $umbralP95));
+        sprintf('rendimiento %s: %d/20 ok, avg %.1f ms, p95 %.1f ms (< %.0f ms)', $nombre, $m['ok'], $m['avg'], $m['p95'], $umbralP95));
 }
 
 // --- 3. SLA decidido por el cliente (2026-10-07): p95 < 500 ms con 50 usuarios concurrentes ---
