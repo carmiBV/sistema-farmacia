@@ -26,12 +26,12 @@ spl_autoload_register(static function (string $class) use ($root): void {
     if (!str_starts_with($class, $prefix)) {
         return;
     }
-    $file = $root . '/src/' . str_replace('\\', '/', substr($class, strlen($prefix))) . '.php';
+    $file = $root . '/app/' . str_replace('\\', '/', substr($class, strlen($prefix))) . '.php';
     if (is_file($file)) {
         require $file;
     }
 });
-\App\Support\Env::load($root . '/.env');
+\App\Core\Env::load($root . '/.env');
 
 $fail = 0;
 
@@ -61,7 +61,7 @@ $oficiales = [
 sort($oficiales);
 check(count($oficiales) === 42, 'el esquema oficial declara 42 tablas');
 
-$pdo = \App\Support\Database::pdo();
+$pdo = \App\Core\Database::pdo();
 $reales = array_map('strval', array_column($pdo->query('SHOW TABLES')->fetchAll(\PDO::FETCH_NUM), 0));
 sort($reales);
 $faltan = array_diff($oficiales, $reales);

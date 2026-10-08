@@ -25,13 +25,13 @@ spl_autoload_register(static function (string $class) use ($root): void {
     if (!str_starts_with($class, $prefix)) {
         return;
     }
-    $file = $root . '/src/' . str_replace('\\', '/', substr($class, strlen($prefix))) . '.php';
+    $file = $root . '/app/' . str_replace('\\', '/', substr($class, strlen($prefix))) . '.php';
     if (is_file($file)) {
         require $file;
     }
 });
 
-\App\Support\Env::load($root . '/.env');
+\App\Core\Env::load($root . '/.env');
 
 $fail = 0;
 
@@ -46,7 +46,7 @@ function check(bool $ok, string $label): void
 
 // --- 1. recolectar codigo de aplicacion ---
 $files = [];
-$it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root . '/src'));
+$it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root . '/app'));
 foreach ($it as $f) {
     if ($f->isFile() && strtolower($f->getExtension()) === 'php') {
         $files[] = $f->getPathname();
@@ -124,7 +124,7 @@ foreach ($badDdl as $x) {
 
 // --- 2. sondas directas a BD (solo lectura) ---
 try {
-    $pdo = \App\Support\Database::pdo();
+    $pdo = \App\Core\Database::pdo();
 
     $suaves = [
         'catalog_categories', 'auth_users', 'ops_stores', 'ops_registers',

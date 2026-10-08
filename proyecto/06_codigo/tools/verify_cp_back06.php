@@ -79,17 +79,17 @@ spl_autoload_register(static function (string $class) use ($root): void {
     if (!str_starts_with($class, 'App\\')) {
         return;
     }
-    $file = $root . '/src/' . str_replace('\\', '/', substr($class, 4)) . '.php';
+    $file = $root . '/app/' . str_replace('\\', '/', substr($class, 4)) . '.php';
     if (is_file($file)) {
         require $file;
     }
 });
-\App\Support\Env::load($root . '/.env');
+\App\Core\Env::load($root . '/.env');
 
 /** @return list<array<string,mixed>> */
 function dbRows(string $sql, array $params = []): array
 {
-    $stmt = \App\Support\Database::pdo()->prepare($sql);
+    $stmt = \App\Core\Database::pdo()->prepare($sql);
     $stmt->execute($params);
     return $stmt->fetchAll();
 }

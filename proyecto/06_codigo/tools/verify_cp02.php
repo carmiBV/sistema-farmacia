@@ -17,11 +17,11 @@ function check(bool $ok, string $label): void
 
 $files = [
     'public/index.php',
-    'src/Support/Env.php',
-    'src/Support/Database.php',
-    'src/Http/Router.php',
-    'src/Http/Response.php',
-    'src/Controllers/HealthController.php',
+    'app/Core/Env.php',
+    'app/Core/Database.php',
+    'app/Core/Router.php',
+    'app/Core/Response.php',
+    'app/Controllers/Api/HealthController.php',
 ];
 foreach ($files as $file) {
     check(is_file($root . '/' . $file), "estructura: {$file}");

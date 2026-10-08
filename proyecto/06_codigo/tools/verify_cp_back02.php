@@ -194,14 +194,14 @@ check($r['status'] === 429 && errorCode($r) === 'RATE_LIMITED', '6º intento fal
 $root = dirname(__DIR__);
 spl_autoload_register(static function (string $cls) use ($root): void {
     if (str_starts_with($cls, 'App\\')) {
-        $f = $root . '/src/' . str_replace('\\', '/', substr($cls, 4)) . '.php';
+        $f = $root . '/app/' . str_replace('\\', '/', substr($cls, 4)) . '.php';
         if (is_file($f)) {
             require $f;
         }
     }
 });
-\App\Support\Env::load($root . '/.env');
-$pdo = \App\Support\Database::pdo();
+\App\Core\Env::load($root . '/.env');
+$pdo = \App\Core\Database::pdo();
 $disUser = "dis_{$sufijo}";
 $alg = in_array('argon2id', password_algos(), true) ? PASSWORD_ARGON2ID : PASSWORD_BCRYPT;
 $pdo->prepare("INSERT INTO auth_users (usuario, password_hash, estado) VALUES (?, ?, 'inactivo')")

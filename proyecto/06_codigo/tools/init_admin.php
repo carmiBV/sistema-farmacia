@@ -16,13 +16,13 @@ spl_autoload_register(static function (string $class) use ($root): void {
     if (!str_starts_with($class, $prefix)) {
         return;
     }
-    $file = $root . '/src/' . str_replace('\\', '/', substr($class, strlen($prefix))) . '.php';
+    $file = $root . '/app/' . str_replace('\\', '/', substr($class, strlen($prefix))) . '.php';
     if (is_file($file)) {
         require $file;
     }
 });
 
-\App\Support\Env::load($root . '/.env');
+\App\Core\Env::load($root . '/.env');
 
 use App\Repositories\RoleRepository;
 use App\Repositories\UsuarioRepository;
@@ -117,7 +117,7 @@ if ($existe === null) {
         $usuarios->actualizarPasswordHash($existe->id, password_hash($pass, $algo));
         echo "Contrasena del usuario '{$user}' resincronizada desde entorno.\n";
     }
-    $stmt = \App\Support\Database::pdo()->prepare('SELECT role_id FROM auth_user_roles WHERE user_id = ?');
+    $stmt = \App\Core\Database::pdo()->prepare('SELECT role_id FROM auth_user_roles WHERE user_id = ?');
     $stmt->execute([$existe->id]);
     $ids = array_map('intval', array_column($stmt->fetchAll(), 'role_id'));
     if (!in_array($roleId, $ids, true)) {

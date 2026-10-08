@@ -77,16 +77,16 @@ spl_autoload_register(static function (string $class) use ($root): void {
     if (!str_starts_with($class, 'App\\')) {
         return;
     }
-    $file = $root . '/src/' . str_replace('\\', '/', substr($class, 4)) . '.php';
+    $file = $root . '/app/' . str_replace('\\', '/', substr($class, 4)) . '.php';
     if (is_file($file)) {
         require $file;
     }
 });
-\App\Support\Env::load($root . '/.env');
+\App\Core\Env::load($root . '/.env');
 
 function dbVal(string $sql, array $params = []): mixed
 {
-    $stmt = \App\Support\Database::pdo()->prepare($sql);
+    $stmt = \App\Core\Database::pdo()->prepare($sql);
     $stmt->execute($params);
     $rows = $stmt->fetchAll();
     return $rows === [] ? null : array_values($rows[0])[0] ?? null;
@@ -107,7 +107,7 @@ function dbCheck(callable $fn, string $label): void
 /** @return array<string,mixed>|null */
 function asientoDe(int $productId, string $tipo): ?array
 {
-    $stmt = \App\Support\Database::pdo()->prepare(
+    $stmt = \App\Core\Database::pdo()->prepare(
         'SELECT * FROM ctrl_ledger_entries WHERE product_id = ? AND tipo = ? ORDER BY id DESC LIMIT 1'
     );
     $stmt->execute([$productId, $tipo]);

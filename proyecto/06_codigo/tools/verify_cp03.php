@@ -65,14 +65,14 @@ if ($modo === 'error') {
     spl_autoload_register(static function (string $class) use ($root): void {
         $prefix = 'App\\';
         if (str_starts_with($class, $prefix)) {
-            $file = $root . '/src/' . str_replace('\\', '/', substr($class, strlen($prefix))) . '.php';
+            $file = $root . '/app/' . str_replace('\\', '/', substr($class, strlen($prefix))) . '.php';
             if (is_file($file)) {
                 require $file;
             }
         }
     });
-    \App\Support\Env::load($root . '/.env');
-    $pdo = \App\Support\Database::pdo();
+    \App\Core\Env::load($root . '/.env');
+    $pdo = \App\Core\Database::pdo();
 
     $rootRow = $pdo->query("SELECT id FROM catalog_categories WHERE nombre = 'Analgésicos' AND parent_id IS NULL LIMIT 1")->fetch();
     if ($rootRow === false) {

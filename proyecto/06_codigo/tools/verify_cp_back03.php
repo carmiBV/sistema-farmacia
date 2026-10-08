@@ -263,14 +263,14 @@ check($r['status'] === 404, 'DELETE repetido -> 404');
 $root = dirname(__DIR__);
 spl_autoload_register(static function (string $cls) use ($root): void {
     if (str_starts_with($cls, 'App\\')) {
-        $f = $root . '/src/' . str_replace('\\', '/', substr($cls, 4)) . '.php';
+        $f = $root . '/app/' . str_replace('\\', '/', substr($cls, 4)) . '.php';
         if (is_file($f)) {
             require $f;
         }
     }
 });
-\App\Support\Env::load($root . '/.env');
-\App\Support\Database::pdo()
+\App\Core\Env::load($root . '/.env');
+\App\Core\Database::pdo()
     ->prepare("UPDATE auth_users SET estado = 'inactivo' WHERE id = ? OR usuario LIKE 'ops\\_%'")
     ->execute([$fixId]);
 echo "FIXTURE inactivados: ops_* (incluye ops_{$sufijo})\n";

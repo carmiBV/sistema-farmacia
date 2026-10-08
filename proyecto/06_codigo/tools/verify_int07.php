@@ -26,12 +26,12 @@ spl_autoload_register(static function (string $class) use ($root): void {
     if (!str_starts_with($class, $prefix)) {
         return;
     }
-    $file = $root . '/src/' . str_replace('\\', '/', substr($class, strlen($prefix))) . '.php';
+    $file = $root . '/app/' . str_replace('\\', '/', substr($class, strlen($prefix))) . '.php';
     if (is_file($file)) {
         require $file;
     }
 });
-\App\Support\Env::load($root . '/.env');
+\App\Core\Env::load($root . '/.env');
 
 $adminUser = getenv('ADMIN_USER') ?: 'admin';
 $adminPass = getenv('ADMIN_PASSWORD');
@@ -80,7 +80,7 @@ function call(string $method, string $url, array|string|null $json = null, ?stri
 
 function dbVal(string $sql, array $params = []): mixed
 {
-    $stmt = \App\Support\Database::pdo()->prepare($sql);
+    $stmt = \App\Core\Database::pdo()->prepare($sql);
     $stmt->execute($params);
     return $stmt->fetchColumn();
 }

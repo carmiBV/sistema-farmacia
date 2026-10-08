@@ -28,13 +28,13 @@
         "/api/v1/audit/operations",
         "/api/v1/audit/pii"
     ],
-    "current_checkpoint": "COMPLETED",
-    "last_completed_checkpoint": "CP-API-08",
+    "current_checkpoint": "CORRECCION-ARQUITECTURA-MVC",
+    "last_completed_checkpoint": "CORRECCION-ARQUITECTURA-MVC",
     "technical_status": "PASSED",
-    "human_status": "APPROVED",
+    "human_status": "PENDING",
     "blocked": false,
     "can_continue": false,
-    "next": "Workflow 03 COMPLETO y APROBADO por el cliente (2026-10-05). Sin CP pendientes en este workflow. El desarrollo continuo en 04_backend_workflow.md (autorizado por el cliente); ver backend-workflow.json para el estado del backend.",
+    "next": "Correccion arquitectonica MVC completada (CORREGIR_ARQUITECTURA_API.md, 2026-10-08). HUMAN_STATUS: PENDING para validacion humana del refactor. Suite completa 46/46 PASS: endpoints y respuestas JSON identicos.",
     "checkpoint_results": [
         {
             "cp": "CP-API-01",
@@ -148,6 +148,31 @@
             "test": "php -l tools/verify_cp08.php => sin errores; php tools/verify_cp08.php => PASS (28/28, tras corregir 2 expectativas del test que no coincidían con la uq por rama); regresiones cp03/cp04/cp05/cp06/cp07 => PASS; validate_openapi.py => PASS. Servidor detenido.",
             "contract_change": "REGISTRADO (qué/por quién: agente en CP-API-08, requiere aprobación del humano junto con este CP): en la descripción de DELETE (docs/openapi.yaml) se precisa que la reserva de nombre por la uq (nombre, parent_id_key) es POR RAMA — mismo nombre en otra rama sí es permitido (201). Por qué: la implementación y la constraint existente (F14) siempre fueron por rama; la redacción anterior ('el nombre NO se reutiliza') era ambigua e incorrecta. Quién lo aprueba: cliente.",
             "traceability": "RF-020, RN-04, decisiones_api.md (las 5 operaciones del contrato), F14 (uq por rama), CA-02/CA-06 (suite de verificación), 03_api_pilot_workflow.md (CP-API-08)"
+        },
+        {
+            "cp": "CORRECCION-ARQUITECTURA-MVC",
+            "summary": "Correccion arquitectonica de la API (CORREGIR_ARQUITECTURA_API.md): refactor MVC sin alterar funcionalidad, endpoints ni estructuras JSON. public/index.php quedo como Front Controller exclusivo (47 lineas: bootstrap, autoloader PSR-4 App\\ -> app/, carga de config/rutas y despacho por Router) sin SQL/PDO, CRUD, validaciones ni autenticacion. Estructura obligatoria implementada: app/Core/{Router,Request,Response,Database} (+Auth, Jwt, Throttle, Audit, Env, AppException), app/Controllers/Api/ (22 controladores, CategoriaController incluido), app/Models/Categoria.php, app/Repositories/CategoriaRepository.php (unicas consultas SQL PDO), app/Services/CategoriaService.php, app/Validators/CategoriaValidator.php, routes/api.php (119 registros de ruta extraidos del index), config/app.php y config/database.php (credenciales solo via .env, RNF-034). PageController en app/Controllers/Web/ + routes/web.php para las 21 paginas HTML (mismas URLs y vistas). Database::pdo() ahora lee config/database.php (mismas opciones PDO). 96 clases movidas con git mv y namespaces renombrados (App\\Http y App\\Support -> App\\Core; App\\Controllers -> App\\Controllers\\Api); 19 tools con autoloader actualizado a app/.",
+            "artifacts": [
+                "proyecto/06_codigo/public/index.php",
+                "proyecto/06_codigo/routes/api.php",
+                "proyecto/06_codigo/routes/web.php",
+                "proyecto/06_codigo/config/app.php",
+                "proyecto/06_codigo/config/database.php",
+                "proyecto/06_codigo/app/Core/* (10 clases)",
+                "proyecto/06_codigo/app/Controllers/Api/* (22)",
+                "proyecto/06_codigo/app/Controllers/Web/PageController.php",
+                "proyecto/06_codigo/app/{Models,Repositories,Services,Validators}/*"
+            ],
+            "test": "php -l en todo app/, tools/, routes/, config/, public/ => 0 errores; humo (health/login/me/users/categories/sales/paginas/404 web/404 api JSON) => identico al pre-refactor; SUITE COMPLETA 46/46 PASS (verify_cp02..08 + verify_cp_back02..11 + verify_int01..07 + verify_cp_front01..11 + verify_int08 + 10 harnesses node); verify_cp02 y verify_cp_back11 ajustados a la estructura nueva (esperaban src/).",
+            "correcciones_durante_el_cp": [
+                "Transformacion de namespaces con lookahead mal escapado genero App\\Controllers\\Api\\Api en 22 controladores; corregido y verificado.",
+                "verify_cp02 (lista de archivos de estructura) y verify_cp_back11 (escaneo de SQL en src/) actualizados a la estructura MVC (app/)."
+            ],
+            "notas": [
+                "Tabla del dominio: catalog_categories (el doc menciona 'cat_categoria' como ejemplo; no se modifico el esquema de BD, tal como exige el documento).",
+                "routes/web.php registra las paginas HTML (GET); previamente el despacho web aceptaba cualquier metodo. Delta menor documentado; los endpoints de API responden identico."
+            ],
+            "traceability": "CORREGIR_ARQUITECTURA_API.md (matriz de responsabilidades, estructura obligatoria, pasos 1-8), decisiones_backend.md (multicapa Controller->Service->Repository), RNF-034 (secretos en .env)"
         }
     ],
     "open_items": [
