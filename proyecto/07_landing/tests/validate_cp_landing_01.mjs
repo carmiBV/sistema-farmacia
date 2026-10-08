@@ -44,8 +44,13 @@ if (config) {
     check(config.market?.currency === 'Bs.', 'moneda visible: Bs.');
     check(typeof config.cta?.primary?.label === 'string' && config.cta.primary.label.length > 0,
         'CTA comercial configurable (label presente)');
-    check(config.cta?.whatsapp?.is_placeholder === true,
-        'WhatsApp: placeholder configurable (sin número real)');
+    check(typeof config.cta?.whatsapp?.is_placeholder === 'boolean',
+        'WhatsApp: bandera is_placeholder explícita (nunca un número sin marcar)');
+    check(config.cta?.whatsapp?.is_placeholder === true
+        || (config.cta?.whatsapp?.is_placeholder === false && /\d{6,}/.test(config.cta?.whatsapp?.phone_placeholder ?? '')),
+        config.cta?.whatsapp?.is_placeholder
+            ? 'WhatsApp: placeholder configurable (sin número real)'
+            : 'WhatsApp: número autorizado por el cliente configurado');
     check(/^\D*\d[\d\s]*$/.test(config.cta?.whatsapp?.phone_placeholder || '') || /\d/.test(config.cta?.whatsapp?.phone_placeholder || ''),
         'WhatsApp: placeholder con formato de número');
     check(config.catalog?.categories_count === 7

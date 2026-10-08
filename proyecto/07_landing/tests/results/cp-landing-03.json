@@ -101,7 +101,11 @@
       "status": "PASS"
     },
     {
-      "label": "CTA WhatsApp configurable: con número autorizado genera wa.me",
+      "label": "CTA WhatsApp configurado por el cliente -> https://wa.me/59172248223",
+      "status": "PASS"
+    },
+    {
+      "label": "guard de placeholder presente en el código (números nunca inventados)",
       "status": "PASS"
     },
     {
@@ -109,6 +113,6 @@
       "status": "PASS"
     }
   ],
-  "total": 26,
+  "total": 27,
   "failed": 0
 }

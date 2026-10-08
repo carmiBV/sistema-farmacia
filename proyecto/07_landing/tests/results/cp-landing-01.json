@@ -45,7 +45,11 @@
       "status": "PASS"
     },
     {
-      "label": "WhatsApp: placeholder configurable (sin número real)",
+      "label": "WhatsApp: bandera is_placeholder explícita (nunca un número sin marcar)",
+      "status": "PASS"
+    },
+    {
+      "label": "WhatsApp: número autorizado por el cliente configurado",
       "status": "PASS"
     },
     {
@@ -97,6 +101,6 @@
       "status": "PASS"
     }
   ],
-  "total": 23,
+  "total": 24,
   "failed": 0
 }

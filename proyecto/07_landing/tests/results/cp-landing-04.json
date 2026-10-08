@@ -113,7 +113,7 @@
       "status": "PASS"
     },
     {
-      "label": "recursos núcleo cargan en < 500 ms (local): /=22ms /assets/css/main.css=4ms /assets/js/main.js=3ms /data/catalog.json=4ms /data/config.json=4ms",
+      "label": "recursos núcleo cargan en < 500 ms (local): /=15ms /assets/css/main.css=3ms /assets/js/main.js=3ms /data/catalog.json=4ms /data/config.json=4ms",
       "status": "PASS"
     },
     {
@@ -127,16 +127,16 @@
     "bytes_index.html": 5233,
     "bytes_assets/css/main.css": 5904,
     "bytes_assets/js/main.js": 7729,
-    "bytes_data/config.json": 1214,
+    "bytes_data/config.json": 1183,
     "bytes_data/catalog.json": 47439,
-    "bytes_total_core": 67519,
+    "bytes_total_core": 67488,
     "tiempos_carga": {
       "/": {
-        "avg_ms": 22,
+        "avg_ms": 15,
         "ok": 5
       },
       "/assets/css/main.css": {
-        "avg_ms": 4,
+        "avg_ms": 3,
         "ok": 5
       },
       "/assets/js/main.js": {

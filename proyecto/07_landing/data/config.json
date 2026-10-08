@@ -18,9 +18,9 @@
     "whatsapp": {
       "enabled": true,
       "label": "Contactar por WhatsApp",
-      "phone_placeholder": "+591 000 000 000",
-      "is_placeholder": true,
-      "note": "PLACEHOLDER configurable: reemplazar por el número autorizado del cliente antes de publicar. No usar números no autorizados."
+      "phone_placeholder": "+591 72248223",
+      "is_placeholder": false,
+      "note": "Número autorizado por el cliente (Bolivia, +591). Los botones generan https://wa.me/59172248223."
     }
   },
   "contact": {

@@ -14,7 +14,15 @@
   "blocked": false,
   "can_continue": false,
   "blocked_by": null,
-  "next": "LANDING COMERCIAL ENTREGADA Y APROBADA (2026-10-07). Workflow 07 COMPLETO. Antes de publicar: reemplazar el numero de WhatsApp placeholder en data/config.json.",
+  "next": "LANDING COMERCIAL ENTREGADA, APROBADA Y LISTA PARA PUBLICAR (2026-10-07): numero de WhatsApp autorizado por el cliente configurado (+591 72248223 -> https://wa.me/59172248223) en data/config.json; validadores 01/02/03/04 en verde tras el cambio.",
+  "post_approval": [
+    {
+      "date": "2026-10-07",
+      "change": "Configuracion del numero de WhatsApp real (data/config.json): phone_placeholder='+591 72248223', is_placeholder=false. Los CTA generan https://wa.me/59172248223.",
+      "validation": "validate_cp_landing_01 => 24/24, validate_cp_landing_02 => 14/14, validate_cp_landing_03 => 27/27 (ambos modos del CTA: placeholder -> #contacto y numero autorizado -> wa.me), validate_cp_landing_04 => 29/29",
+      "approved_by": "Cliente (numero entregado en sesion)"
+    }
+  ],
   "checkpoint_results": [
     {
       "checkpoint": "CP-LANDING-01",
@@ -111,7 +119,7 @@
         "El showroom renderiza en cliente desde data/catalog.json; el filtrado no recarga la pagina."
       ],
       "pending": [
-        "Reemplazar numero de WhatsApp placeholder por el autorizado (config.json) antes de publicar"
+        "RESUELTO (2026-10-07): numero de WhatsApp configurado (+591 72248223) con autorizacion del cliente"
       ],
       "human_status": "APPROVED",
       "human_validation": {

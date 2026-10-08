@@ -117,16 +117,15 @@ check(!/location\.reload|location\.href\s*=|window\.location\.assign/.test(js),
 check(/addEventListener\('click'/.test(js) && /renderCatalogo/.test(js),
     'el filtro re-renderiza la grilla en cliente');
 
-const waPlaceholder = api.enlaceWhatsApp
-    ? api.enlaceWhatsApp(config)
-    : null;
+const waReal = api.enlaceWhatsApp ? api.enlaceWhatsApp(config) : null;
+const configPlaceholder = { cta: { whatsapp: { is_placeholder: true, phone_placeholder: '+591 000 000 000' } } };
+const waPlaceholder = api.enlaceWhatsApp ? api.enlaceWhatsApp(configPlaceholder) : null;
 check(waPlaceholder === '#contacto',
     'CTA WhatsApp con placeholder -> sin enlace wa.me inventado (#contacto)');
-const waReal = api.enlaceWhatsApp
-    ? api.enlaceWhatsApp({ cta: { whatsapp: { is_placeholder: false, phone_placeholder: '+591 70000000' } } })
-    : null;
-check(waReal === 'https://wa.me/59170000000',
-    'CTA WhatsApp configurable: con número autorizado genera wa.me');
+check(waReal === 'https://wa.me/59172248223',
+    `CTA WhatsApp configurado por el cliente -> ${waReal}`);
+check(/is_placeholder/.test(js) && /wa\.me\//.test(js),
+    'guard de placeholder presente en el código (números nunca inventados)');
 
 check(/loading\s*=\s*['"]lazy['"]|\.loading\s*=\s*['"]lazy['"]/.test(js) || /loading="lazy"/.test(html),
     'imágenes con carga diferida (lazy)');
