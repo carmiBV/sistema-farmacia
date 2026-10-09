@@ -1,0 +1,88 @@
+{
+  "generated_at": "2026-10-09T03:41:44.743Z",
+  "provider": "Wikimedia Commons API",
+  "license_note": "Licencias verificables por archivo en image_source. Sin generacion por IA.",
+  "missing_images": [],
+  "sections": [
+    {
+      "id": "hero",
+      "uso": "hero",
+      "categoria": null,
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/50/Highland_Park_Pharmacy_interior_02A.jpg/960px-Highland_Park_Pharmacy_interior_02A.jpg",
+      "image_alt": "Lunch counter, Highland Park Pharmacy, Dallas, Texas. (Despite the name the pharmacy is only near, but not in Highland Park, Texas.)",
+      "image_license": "CC BY-SA 3.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Highland_Park_Pharmacy_interior_02A.jpg",
+      "image_provider": "Wikimedia Commons"
+    },
+    {
+      "id": "cat-medicamentos-receta",
+      "uso": "categoria",
+      "categoria": "medicamentos-receta",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1a/XINHUANG_Tablet.jpg/960px-XINHUANG_Tablet.jpg",
+      "image_alt": "a XINHUANG pian, Prescription drug. Each tablet weighs 0.32 g (1 tablet contains 6.8 mg indomethacin), Manufacturer Xiamen Traditional Chinese Medicine Factory ",
+      "image_license": "CC BY-SA 4.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:XINHUANG_Tablet.jpg",
+      "image_provider": "Wikimedia Commons"
+    },
+    {
+      "id": "cat-medicamentos-venta-libre",
+      "uso": "categoria",
+      "categoria": "medicamentos-venta-libre",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f2/Medicine_box_%28AM_614816-2%29.jpg/960px-Medicine_box_%28AM_614816-2%29.jpg",
+      "image_alt": "Medicine box and contents- glass bottles, tweezers, scissors, cottonwool box marked Whitall, Tatum and Co, and American company that mass-produced special-order",
+      "image_license": "CC BY 4.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Medicine_box_(AM_614816-2).jpg",
+      "image_provider": "Wikimedia Commons"
+    },
+    {
+      "id": "cat-dermocosmetica-cuidado-personal",
+      "uso": "categoria",
+      "categoria": "dermocosmetica-cuidado-personal",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/57/Hinds_Honey_and_Almond_Fragrance_Cream%2C_1948.jpg/960px-Hinds_Honey_and_Almond_Fragrance_Cream%2C_1948.jpg",
+      "image_alt": "Hinds Honey and Almond Fragrance Cream, 1948\nIdentifier: ladieshomejourna65janwyet (find matches)\nTitle: The Ladies' home journal\nYear: 1889 (1880s)\nAuthors:  W",
+      "image_license": "No restrictions",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Hinds_Honey_and_Almond_Fragrance_Cream,_1948.jpg",
+      "image_provider": "Wikimedia Commons"
+    },
+    {
+      "id": "cat-bebe-maternidad",
+      "uso": "categoria",
+      "categoria": "bebe-maternidad",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/8/8c/Baby_Bath_Products_on_Kroger_Shelves.JPG",
+      "image_alt": "Baby Bath Products on Kroger Shelves",
+      "image_license": "CC BY-SA 3.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Baby_Bath_Products_on_Kroger_Shelves.JPG",
+      "image_provider": "Wikimedia Commons"
+    },
+    {
+      "id": "cat-nutricion-suplementos",
+      "uso": "categoria",
+      "categoria": "nutricion-suplementos",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/66/B_vitamin_supplement_tablets.jpg/960px-B_vitamin_supplement_tablets.jpg",
+      "image_alt": "Sustained Release High Potency B \"50\" Dietary Supplement, B vitamin dietary supplement tablets branded \"Trader Darwin's\" (sold at Trader Joe's).  The tablets ea",
+      "image_license": "CC BY-SA 3.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:B_vitamin_supplement_tablets.jpg",
+      "image_provider": "Wikimedia Commons"
+    },
+    {
+      "id": "cat-primeros-auxilios",
+      "uso": "categoria",
+      "categoria": "primeros-auxilios-cuidado-heridas",
+      "image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a4/First_aid_kit_%28Regulation_3%29.png/960px-First_aid_kit_%28Regulation_3%29.png",
+      "image_alt": "What you can expect to find in a Regulation first Aid Kit",
+      "image_license": "CC BY-SA 4.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:First_aid_kit_(Regulation_3).png",
+      "image_provider": "Wikimedia Commons"
+    },
+    {
+      "id": "cat-equipos-medicion",
+      "uso": "categoria",
+      "categoria": "equipos-medicion-cuidado-hogar",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/e/e9/Digital_Blood_Pressure_Monitor.jpg",
+      "image_alt": "Digitales Blutdruckmessgerät / Digital Blood Pressure Monitor",
+      "image_license": "CC BY-SA 3.0",
+      "image_source": "https://commons.wikimedia.org/wiki/File:Digital_Blood_Pressure_Monitor.jpg",
+      "image_provider": "Wikimedia Commons"
+    }
+  ]
+}

@@ -60,6 +60,13 @@
         precio.textContent = fmtPrecio(p);
         cuerpo.appendChild(precio);
 
+        if (p.precio_anterior) {
+            var anterior = document.createElement('span');
+            anterior.className = 'price-anterior';
+            anterior.textContent = 'Bs. ' + Number(p.precio_anterior).toFixed(2);
+            cuerpo.appendChild(anterior);
+        }
+
         var lic = document.createElement('a');
         lic.className = 'product-license';
         lic.href = p.image_source || '#';
@@ -198,6 +205,17 @@
             console.error('[landing] catálogo no disponible:', error.message);
         }
     })();
+
+    // elevación del header al hacer scroll (DESIGN.md: .is-scrolled)
+    var header = document.getElementById('site-header');
+    if (header && typeof window.addEventListener === 'function') {
+        window.addEventListener('scroll', function () {
+            var y = window.pageYOffset
+                || (document.documentElement && document.documentElement.scrollTop)
+                || 0;
+            header.className = y > 8 ? 'site-header is-scrolled' : 'site-header';
+        }, { passive: true });
+    }
 
     // expuesto para pruebas (tests/validate_cp_landing_03.mjs)
     window.LANDING_TEST = { filtrarPorCategoria: filtrarPorCategoria, enlaceWhatsApp: enlaceWhatsApp };

@@ -39,6 +39,13 @@ if (catalogo) {
     check(productos.every((p) => /^Bs\.\s\d/.test(p.price_display ?? '')),
         'todos los precios se muestran en Bs.');
 
+    // CP-LANDING-06: promos demostrativas con precio_anterior tachado (DESIGN.md)
+    check(productos.every((p) => p.precio_anterior === undefined
+        || (typeof p.precio_anterior === 'number' && p.precio_anterior > p.price)),
+        'precio_anterior (promos): numérico y mayor que el precio actual');
+    check(productos.some((p) => p.precio_anterior !== undefined),
+        'el catálogo incluye promos demostrativas con precio_anterior');
+
     const ids = new Set(productos.map((p) => p.id));
     check(ids.size === 70, 'identificadores de producto únicos');
 

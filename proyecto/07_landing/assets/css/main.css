@@ -1,264 +1,593 @@
-/* CP-LANDING-01: estilos base de la landing (sin frameworks). */
+/* CP-LANDING-05: sistema de diseño "Farmacia San Francisco" (DESIGN.md).
+   Tokens + componentes. Sin frameworks. */
+
+/* Outfit — SIL OFL 1.1 — auto-hospedada (sin CSS ni scripts externos). */
+@font-face {
+    font-family: 'Outfit';
+    font-style: normal;
+    font-weight: 400 800;
+    font-display: swap;
+    src: url('../fonts/outfit-latin.woff2') format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2212, U+FEFF, U+FFFD;
+}
+@font-face {
+    font-family: 'Outfit';
+    font-style: normal;
+    font-weight: 400 800;
+    font-display: swap;
+    src: url('../fonts/outfit-latin-ext.woff2') format('woff2');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* ---- Tokens (DESIGN.md §2–§4) ---- */
+:root {
+    --color-bg: #f8fafc;
+    --color-surface: #ffffff;
+    --color-ink: #0f172a;
+    --color-ink-muted: #475569;
+    --color-line: #e2e8f0;
+    --color-accent: #0d9488;
+    --color-accent-hover: #0f766e;
+    --color-on-accent: #ffffff;
+    --color-warning: #b45309;
+
+    --font-sans: 'Outfit', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --space-12: 48px;
+    --space-16: 64px;
+    --space-24: 96px;
+
+    --shadow-elevated: 0 20px 40px -15px rgba(15, 23, 42, .08);
+}
+
+/* ---- Base ---- */
 * { box-sizing: border-box; }
+
+html {
+    scroll-behavior: smooth;
+}
 
 body {
     margin: 0;
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-    color: #1c2b36;
-    background: #ffffff;
-    line-height: 1.55;
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.65;
+    color: var(--color-ink);
+    background: var(--color-bg);
 }
 
+h1 {
+    font-size: clamp(2rem, 4.5vw, 3.25rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin: 0 0 var(--space-4);
+}
+
+h2 {
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    margin: 0 0 var(--space-4);
+}
+
+h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.3;
+    margin: 0 0 var(--space-2);
+}
+
+p { margin: 0 0 var(--space-4); }
+
+.hero-sub, .section-sub {
+    max-width: 65ch;
+    color: var(--color-ink-muted);
+}
+
+a { color: var(--color-accent); }
+
+:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+}
+
+/* Skip-link: accesible por teclado (PRODUCT.md, WCAG 2.2 AA) */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+    padding: 12px 20px;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    text-decoration: none;
+    z-index: 20;
+}
+.skip-link:focus {
+    left: var(--space-4);
+}
+
+/* ---- Botones (DESIGN.md §5) ---- */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 14px 28px;
+    border-radius: var(--radius-md);
+    border: 1px solid transparent;
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.2;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color .15s ease, color .15s ease, border-color .15s ease, transform .15s ease;
+}
+
+.btn:active { transform: scale(.98); }
+
+.btn-primary {
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+}
+.btn-primary:hover { background: var(--color-accent-hover); }
+
+.btn-secondary {
+    background: transparent;
+    color: var(--color-ink);
+    border-color: var(--color-ink);
+}
+.btn-secondary:hover {
+    background: var(--color-ink);
+    color: var(--color-on-accent);
+}
+
+/* On-accent: sobre bloque teal (CTA final / Envío WhatsApp) */
+.btn-on-accent,
+.cta-section .btn-primary,
+.btn-whatsapp {
+    background: transparent;
+    color: var(--color-on-accent);
+    border-color: var(--color-on-accent);
+}
+.btn-on-accent:hover,
+.cta-section .btn-primary:hover,
+.btn-whatsapp:hover {
+    background: var(--color-on-accent);
+    color: var(--color-accent);
+}
+
+/* ---- Chips / badges (DESIGN.md §5) ---- */
+.market-badge,
+.chip,
+.filter-chip,
+.product-category {
+    display: inline-flex;
+    align-items: center;
+    background: var(--color-surface);
+    color: var(--color-ink-muted);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-sm);
+    padding: 4px 12px;
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.5;
+}
+
+.filter-chip {
+    cursor: pointer;
+    transition: border-color .15s ease, color .15s ease, background-color .15s ease;
+}
+.filter-chip:hover {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+}
+.filter-chip-active,
+.filter-chip[aria-pressed="true"] {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: var(--color-on-accent);
+}
+
+/* ---- Header ---- */
 .site-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 16px;
-    padding: 16px 24px;
-    border-bottom: 1px solid #e2e9ee;
+    gap: var(--space-4);
+    padding: var(--space-4) var(--space-6);
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-line);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    transition: box-shadow .2s ease;
+}
+
+.site-header.is-scrolled {
+    box-shadow: var(--shadow-elevated);
 }
 
 .brand {
-    font-weight: 700;
+    font-weight: 800;
     font-size: 1.15rem;
-    color: #0b5394;
+    letter-spacing: -0.015em;
+    color: var(--color-ink);
     text-decoration: none;
 }
 
-.market-badge {
-    font-size: .85rem;
-    color: #5a6b78;
-    background: #f2f6f9;
-    padding: 6px 12px;
-    border-radius: 999px;
+.site-nav {
+    display: flex;
+    gap: var(--space-6);
 }
 
+.site-nav a {
+    color: var(--color-ink-muted);
+    text-decoration: none;
+    font-size: 0.875rem;
+}
+.site-nav a:hover { color: var(--color-accent); }
+
+.btn-cta-header { min-height: 44px; padding: 10px 20px; }
+
+/* ---- Hero 55/45 (DESIGN.md §6) ---- */
 .hero {
-    padding: 72px 24px;
-    max-width: 960px;
+    display: grid;
+    grid-template-columns: 55% 45%;
+    gap: var(--space-8);
+    align-items: center;
+    padding: var(--space-16) var(--space-6);
+    max-width: 1100px;
     margin: 0 auto;
-    text-align: center;
 }
 
-.hero h1 {
-    font-size: clamp(1.8rem, 4vw, 2.8rem);
-    margin: 0 0 12px;
-}
-
-.hero-sub {
-    color: #5a6b78;
-    font-size: 1.15rem;
+.hero-media {
     margin: 0;
 }
 
-.site-footer {
-    border-top: 1px solid #e2e9ee;
-    padding: 24px;
-    text-align: center;
-    color: #5a6b78;
-    font-size: .9rem;
+.hero-media img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
 }
 
-/* --- CP-LANDING-03: secciones comerciales --- */
-.site-nav {
-    display: flex;
-    gap: 18px;
-    margin-left: auto;
+.img-credit {
+    font-size: 0.875rem;
+    color: var(--color-ink-muted);
+    margin-top: var(--space-2);
 }
-.site-nav a {
-    color: #1c2b36;
+.img-credit a {
+    color: var(--color-ink-muted);
     text-decoration: none;
-    font-size: .95rem;
 }
-.site-nav a:hover { color: #0b5394; }
+.img-credit a:hover { color: var(--color-accent); }
 
-.btn {
-    display: inline-block;
-    padding: 12px 22px;
-    font-size: 1rem;
-    font-weight: 600;
-    border-radius: 10px;
-    text-decoration: none;
-    border: none;
-    cursor: pointer;
+.demo-note {
+    font-size: 0.875rem;
+    color: var(--color-warning);
+    font-style: italic;
 }
-.btn-primary { background: #0b5394; color: #fff; }
-.btn-primary:hover { background: #093f72; }
-.btn-secondary { background: #e7eef5; color: #24425a; }
-.btn-whatsapp { background: #16a34a; color: #fff; }
-.btn-whatsapp:hover { background: #12813b; }
-.btn-cta-header { padding: 10px 18px; font-size: .92rem; }
 
 .hero-actions {
     display: flex;
-    gap: 14px;
-    justify-content: center;
     flex-wrap: wrap;
-    margin: 28px 0 20px;
+    gap: var(--space-3);
+    margin: var(--space-6) 0;
 }
+
 .hero-pills {
     display: flex;
-    gap: 10px;
-    justify-content: center;
     flex-wrap: wrap;
+    gap: var(--space-2);
     list-style: none;
     padding: 0;
     margin: 0;
 }
 .hero-pills li {
-    background: #f2f6f9;
-    border: 1px solid #d7e0e7;
-    color: #24425a;
-    padding: 8px 16px;
-    border-radius: 999px;
-    font-size: .9rem;
-    font-weight: 600;
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-sm);
+    padding: 4px 12px;
+    font-size: 0.875rem;
+    color: var(--color-ink-muted);
 }
 
-.benefits {
-    padding: 56px 24px;
-    max-width: 1100px;
-    margin: 0 auto;
+/* ---- Secciones alternas (DESIGN.md §2) ---- */
+.categorias {
+    background: var(--color-surface);
+    padding: var(--space-16) var(--space-6);
 }
-.benefits h2, .showroom h2, .cta-section h2 {
+
+.categorias .section-sub,
+.catalogo .section-sub,
+.servicios-turnos .section-sub,
+.atencion .section-sub {
+    margin-left: auto;
+    margin-right: auto;
     text-align: center;
-    font-size: clamp(1.5rem, 3vw, 2.1rem);
-    margin: 0 0 8px;
 }
-.section-sub {
+
+.categorias h2,
+.catalogo h2,
+.servicios-turnos h2,
+.atencion h2 {
     text-align: center;
-    color: #5a6b78;
-    margin: 0 0 32px;
 }
-.benefits-grid {
+
+.catalogo {
+    background: var(--color-bg);
+    padding: var(--space-16) var(--space-6);
+}
+
+.servicios-turnos {
+    background: var(--color-bg);
+    border-top: 1px solid var(--color-line);
+    padding: var(--space-16) var(--space-6);
+}
+
+.atencion {
+    background: var(--color-surface);
+    padding: var(--space-16) var(--space-6);
+    text-align: center;
+}
+
+/* ---- Categorías en zig-zag 2 columnas (DESIGN.md §6) ---- */
+.cat-zigzag {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-    gap: 18px;
+    gap: var(--space-12);
+    max-width: 1100px;
+    margin: var(--space-8) auto 0;
 }
-.benefit-card {
-    background: #fff;
-    border: 1px solid #e2e9ee;
-    border-radius: 12px;
-    padding: 22px;
-}
-.benefit-card h3 { margin: 0 0 8px; font-size: 1.05rem; }
-.benefit-card p { margin: 0; color: #5a6b78; font-size: .93rem; }
 
-.showroom {
-    padding: 56px 24px;
-    max-width: 1180px;
-    margin: 0 auto;
+.cat-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-8);
+    align-items: center;
 }
+
+.cat-row:nth-child(even) .cat-media { order: 2; }
+
+.cat-media {
+    margin: 0;
+}
+
+.cat-media img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-lg);
+    background: var(--color-bg);
+}
+
+.cat-body .chip { margin-bottom: var(--space-3); }
+
+.cat-body p {
+    color: var(--color-ink-muted);
+    max-width: 65ch;
+    margin: 0;
+}
+
+/* ---- Cards (DESIGN.md §5) ---- */
+.turno-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--space-6);
+    max-width: 1100px;
+    margin: var(--space-8) auto 0;
+}
+
+.benefit-card,
+.product-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    transition: box-shadow .2s ease;
+}
+
+.benefit-card p {
+    color: var(--color-ink-muted);
+    max-width: 65ch;
+}
+
+@media (hover: hover) {
+    .benefit-card:hover,
+    .product-card:hover {
+        box-shadow: var(--shadow-elevated);
+    }
+}
+
+/* ---- Showroom / catálogo ---- */
 .filter-bar {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: var(--space-2);
+    max-width: 1100px;
+    margin: var(--space-6) auto;
     justify-content: center;
-    margin-bottom: 28px;
-}
-.filter-chip {
-    padding: 10px 18px;
-    border-radius: 999px;
-    border: 1px solid #b9c6d0;
-    background: #fff;
-    color: #24425a;
-    font-size: .9rem;
-    font-weight: 600;
-    cursor: pointer;
-}
-.filter-chip:hover { border-color: #0b5394; color: #0b5394; }
-.filter-chip-active, .filter-chip-active:hover {
-    background: #0b5394;
-    border-color: #0b5394;
-    color: #fff;
 }
 
 .product-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 18px;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: var(--space-6);
+    max-width: 1100px;
+    margin: 0 auto;
 }
+
 .product-card {
-    background: #fff;
-    border: 1px solid #e2e9ee;
-    border-radius: 12px;
-    overflow: hidden;
     display: flex;
     flex-direction: column;
+    padding: 0;
+    overflow: hidden;
 }
+
 .product-card img {
     width: 100%;
-    height: 170px;
+    aspect-ratio: 4 / 3;
     object-fit: cover;
-    background: #f2f6f9;
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-line);
 }
-.product-body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 6px; }
-.product-category {
-    font-size: .72rem;
-    text-transform: uppercase;
-    letter-spacing: .05em;
-    color: #0b5394;
-    font-weight: 700;
-}
-.product-body h3 { margin: 0; font-size: .98rem; line-height: 1.35; }
-.product-price { margin: 4px 0 0; font-size: 1.15rem; font-weight: 700; color: #12813b; }
-.product-license { font-size: .72rem; color: #8395a2; text-decoration: none; }
-.product-license:hover { text-decoration: underline; }
-.empty-state { text-align: center; color: #5a6b78; padding: 32px 0; }
 
+.product-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-6);
+    flex: 1;
+}
+
+.product-body h3 { margin: 0; }
+
+.product-price {
+    font-size: 1.125rem;
+    font-weight: 800;
+    line-height: 1.2;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-ink);
+    margin: 0;
+}
+
+/* Regla del Precio / Alerta: ámbar solo para precio_anterior o avisos de receta/disponibilidad */
+.price-anterior {
+    font-size: 0.875rem;
+    color: var(--color-warning);
+    text-decoration: line-through;
+    font-variant-numeric: tabular-nums;
+}
+
+.product-license {
+    font-size: 0.875rem;
+    color: var(--color-ink-muted);
+    margin-top: auto;
+}
+
+.empty-state {
+    color: var(--color-ink-muted);
+    text-align: center;
+    padding: var(--space-8);
+}
+
+/* ---- CTA final (bloque teal) ---- */
 .cta-section {
-    padding: 64px 24px;
-    background: #f2f6f9;
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+    padding: var(--space-16) var(--space-6);
     text-align: center;
 }
+
+.cta-section .section-sub {
+    color: var(--color-on-accent);
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .cta-actions {
     display: flex;
-    gap: 14px;
-    justify-content: center;
     flex-wrap: wrap;
-    margin-bottom: 24px;
+    gap: var(--space-3);
+    justify-content: center;
+    margin: var(--space-6) 0;
 }
+
 .contact-list {
     list-style: none;
     padding: 0;
-    margin: 0;
+    margin: var(--space-4) auto 0;
     display: flex;
-    gap: 22px;
-    justify-content: center;
     flex-wrap: wrap;
-    color: #5a6b78;
-    font-size: .95rem;
+    gap: var(--space-4);
+    justify-content: center;
+    font-size: 0.875rem;
+    color: var(--color-ink-muted);
 }
 
-.footer-links { display: flex; gap: 18px; justify-content: center; margin-top: 10px; flex-wrap: wrap; }
-.footer-links a { color: #5a6b78; text-decoration: none; font-size: .85rem; }
-.footer-links a:hover { text-decoration: underline; }
+/* ---- Footer ---- */
+.site-footer {
+    background: var(--color-bg);
+    border-top: 1px solid var(--color-line);
+    padding: var(--space-6);
+    text-align: center;
+    color: var(--color-ink-muted);
+    font-size: 0.875rem;
+}
 
+.footer-links {
+    display: flex;
+    gap: var(--space-4);
+    justify-content: center;
+}
+.footer-links a {
+    color: var(--color-ink-muted);
+    text-decoration: none;
+}
+.footer-links a:hover { color: var(--color-accent); }
+
+/* ---- CTA flotante ---- */
 .float-cta {
     position: fixed;
-    right: 18px;
-    bottom: 18px;
-    background: #16a34a;
-    color: #fff;
-    padding: 14px 20px;
-    border-radius: 999px;
-    font-weight: 700;
+    right: var(--space-6);
+    bottom: var(--space-6);
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+    border-radius: var(--radius-md);
+    padding: 14px 28px;
+    min-height: 48px;
+    display: inline-flex;
+    align-items: center;
+    font-weight: 600;
     text-decoration: none;
-    box-shadow: 0 8px 22px rgba(18, 129, 59, .35);
+    box-shadow: var(--shadow-elevated);
+    transition: background-color .15s ease;
 }
-.float-cta:hover { background: #12813b; }
+.float-cta:hover { background: var(--color-accent-hover); }
 
-a:focus-visible, button:focus-visible {
-    outline: 3px solid #0b5394;
-    outline-offset: 2px;
+/* ---- Responsive: 1 columna estricta < 768px (DESIGN.md) ---- */
+@media (max-width: 768px) {
+    .site-header {
+        flex-wrap: wrap;
+        padding: var(--space-3) var(--space-4);
+    }
+    .site-nav { gap: var(--space-4); }
+    .hero {
+        grid-template-columns: 1fr;
+        padding: var(--space-12) var(--space-4);
+    }
+    .categorias, .catalogo, .servicios-turnos, .atencion, .cta-section { padding: var(--space-12) var(--space-4); }
+    .cat-row { grid-template-columns: 1fr; }
+    .cat-row:nth-child(even) .cat-media { order: 0; }
+    .turno-grid, .product-grid { grid-template-columns: 1fr; }
+    .filter-chip { min-height: 44px; }
+    .btn { width: 100%; }
+    .hero-actions .btn, .cta-actions .btn { width: auto; flex: 1 1 220px; }
 }
 
-@media (max-width: 720px) {
-    .site-header { flex-wrap: wrap; }
-    .site-nav { order: 3; width: 100%; justify-content: center; margin-left: 0; }
-    .hero { padding: 48px 18px; }
-    .product-card img { height: 150px; }
+/* ---- Movimiento: reducido obligatorio (DESIGN.md §6) ---- */
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+        transition: none !important;
+        animation: none !important;
+    }
 }
-
-/* navegacion suave por anclas (CP-LANDING-03) */
-html { scroll-behavior: smooth; }

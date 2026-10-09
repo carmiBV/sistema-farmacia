@@ -1,15 +1,15 @@
 {
   "checkpoint": "CP-LANDING-03",
-  "date": "2026-10-07",
+  "date": "2026-10-09",
   "result": "PASSED",
-  "summary": "Secciones comerciales completas (header/nav, hero, beneficios, showroom con filtro por categoría sin recarga, CTA flotante WhatsApp placeholder, footer) 100% responsivas y sin alcance administrativo.",
+  "summary": "Secciones comerciales de Farmacia San Francisco (header/navbar, hero 55/45, categorías zig-zag, catálogo con filtro sin recarga, Farmacia de Turno, atención, CTA final y flotante WhatsApp) 100% responsivas y sin alcance administrativo.",
   "checks": [
     {
-      "label": "header/navbar con logo",
+      "label": "header/navbar con marca Farmacia San Francisco",
       "status": "PASS"
     },
     {
-      "label": "navbar con navegación suave por anclas (#beneficios/#catalogo/#contacto)",
+      "label": "navbar con navegación suave por anclas (#categorias/#catalogo/#turno/#contacto)",
       "status": "PASS"
     },
     {
@@ -25,7 +25,11 @@
       "status": "PASS"
     },
     {
-      "label": "hero con propuesta de valor (FEFO, POS, controlados)",
+      "label": "hero asimétrico 55/45 (DESIGN.md)",
+      "status": "PASS"
+    },
+    {
+      "label": "hero con chips de servicio (Venta libre / Cuidado personal / Turno 24h)",
       "status": "PASS"
     },
     {
@@ -33,15 +37,31 @@
       "status": "PASS"
     },
     {
-      "label": "sección de beneficios",
+      "label": "sección de categorías en zig-zag",
       "status": "PASS"
     },
     {
-      "label": "beneficios destacan valor técnico (pérdidas por vencimiento, normativa)",
+      "label": "7 categorías de salud en zig-zag",
       "status": "PASS"
     },
     {
-      "label": "showroom con filtro y grilla",
+      "label": "sección \"Cuidado y Salud\" (título requisito del DESIGN.md)",
+      "status": "PASS"
+    },
+    {
+      "label": "catálogo con filtro y grilla de productos destacados",
+      "status": "PASS"
+    },
+    {
+      "label": "precio_anterior tachado en el render (promos)",
+      "status": "PASS"
+    },
+    {
+      "label": "sección Farmacia de Turno (título requisito)",
+      "status": "PASS"
+    },
+    {
+      "label": "sección Atención con datos de contacto",
       "status": "PASS"
     },
     {
@@ -113,6 +133,6 @@
       "status": "PASS"
     }
   ],
-  "total": 27,
+  "total": 32,
   "failed": 0
 }

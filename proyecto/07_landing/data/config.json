@@ -1,8 +1,8 @@
 {
   "brand": {
-    "name": "Sistema Farmacia",
-    "tagline": "Gestión integral para farmacias en Bolivia",
-    "description": "Control de medicamentos por lote, vencimientos FEFO, catálogo y punto de venta."
+    "name": "Farmacia San Francisco",
+    "tagline": "Salud y confianza sin artificios",
+    "description": "Medicamentos, dermocosmética y cuidado personal en Bolivia. Atención farmacéutica responsable y envío por WhatsApp."
   },
   "market": {
     "country": "Bolivia",
@@ -12,12 +12,12 @@
   },
   "cta": {
     "primary": {
-      "label": "Solicitar Demo",
+      "label": "Contactar",
       "href": "#contacto"
     },
     "whatsapp": {
       "enabled": true,
-      "label": "Contactar por WhatsApp",
+      "label": "Envío WhatsApp",
       "phone_placeholder": "+591 72248223",
       "is_placeholder": false,
       "note": "Número autorizado por el cliente (Bolivia, +591). Los botones generan https://wa.me/59172248223."
@@ -30,7 +30,7 @@
     "hours": "Lunes a sábado 9:00 - 20:00"
   },
   "legal": {
-    "owner": "Sistema Farmacia",
+    "owner": "Farmacia San Francisco",
     "year": 2026,
     "links": [
       { "label": "Aviso de privacidad", "href": "#" },

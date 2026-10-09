@@ -1,6 +1,6 @@
 # Decisiones de la Landing Comercial
 
-**Estado:** PROPUESTO — pendiente de aprobación del cliente (los checkpoints se validan en `landing-workflow.json`).
+**Estado:** APROBADO — stack (HTML/CSS/JS vanilla) y rediseño según `DESIGN.md` (marca "Farmacia San Francisco") aprobados por el cliente; workflow 07 cerrado el 2026-10-09 (`landing-workflow.json`).
 
 ## 1. Alcance (REQUISITOS, precedencia máxima)
 
@@ -52,3 +52,15 @@ proyecto/07_landing/
 
 - No existen `.agents/guides/*landing*.md` ni `.agents/skills-landing-manifest.json`: se procede con REQUISITOS + WORKFLOW 07 como fuentes de verdad. Si estos documentos aparecen, su contenido se reconcilia en el checkpoint siguiente (precedencia: GUIDES/SKILLS nunca cambian stack ni alcance).
 - Esta landing no forma parte del alcance operativo de `decisiones_alcance.md` (sistema administrativo); es un entregable comercial aparte bajo el workflow 07.
+
+## 6. Rediseño visual (2026-10-08) — sistema de diseño DESIGN.md
+
+**Origen:** instrucción del cliente 2026-10-08 (aplicar `DESIGN.md` y reestructurar contenido). Registro completo: `00_contexto/registro_cambios.md` (CAM-007).
+
+- **Fuente de verdad del diseño:** `DESIGN.md` (Farmacia San Francisco — Landing & Sistema de Diseño). Reglas vinculantes: Acento Único (`#0d9488`), Precio/Alerta (ámbar `#b45309` solo para `precio_anterior` o avisos de receta/disponibilidad), Peso sobre el Tamaño (400/600/800), Plano por Defecto (sombra solo en scroll/hover/focus).
+- **Contenido requisito (no ilustrativo):** hero 55/45, categorías de salud en zig-zag de 2 columnas, grid de productos con precio y `precio_anterior`, sección **Farmacia de Turno**, sección **Atención**, bloque CTA final on-accent. Se aplican en CP-LANDING-06.
+- **Tipografía Outfit:** auto-hospedada en `assets/fonts/` (SIL OFL 1.1, variable 400–800) para conservar "sin CSS/scripts externos" (validador CP-01). Sin CDN, sin `<link>` externo.
+- **Stack:** sin cambios (HTML + CSS + JS vanilla, sin build).
+- **Alcance:** sin cambios (prohibido login/registro/dashboard/carrito/checkout/pagos; 7×10=70 productos demostrativos en Bs.; imágenes Commons con licencia; WhatsApp `+591 72248223`).
+- **Checkpoints reabiertos:** CP-LANDING-05 (tokens y componentes), CP-LANDING-06 (reestructura de contenido + datos + imágenes), CP-LANDING-07 (auditoría y cierre). Un checkpoint por interacción.
+- **Puntos resueltos (2026-10-08, cliente):** marca = **"Farmacia San Francisco"**; el contenido SaaS (beneficios FEFO/POS) se sustituye por las secciones requisito (CAM-008). Pendientes: datos demostrativos (textos, precios, email de contacto) a sustituir por los reales del cliente.

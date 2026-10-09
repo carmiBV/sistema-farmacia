@@ -22,26 +22,35 @@ const css = readFileSync(path.join(root, 'assets/css/main.css'), 'utf8');
 const js = readFileSync(path.join(root, 'assets/js/main.js'), 'utf8');
 const config = JSON.parse(readFileSync(path.join(root, 'data/config.json'), 'utf8'));
 
-// --- 1. secciones comerciales ---
-check(/class="site-header"/.test(html) && /class="brand"/.test(html), 'header/navbar con logo');
-check(/<nav[^>]*class="site-nav"/.test(html) && /href="#beneficios"/.test(html)
-    && /href="#catalogo"/.test(html) && /href="#contacto"/.test(html),
-    'navbar con navegación suave por anclas (#beneficios/#catalogo/#contacto)');
+// --- 1. secciones comerciales (reestructuradas en CP-LANDING-06) ---
+check(/class="site-header"/.test(html) && /class="brand"/.test(html)
+    && /Farmacia San Francisco/.test(html), 'header/navbar con marca Farmacia San Francisco');
+check(/<nav[^>]*class="site-nav"/.test(html) && /href="#categorias"/.test(html)
+    && /href="#catalogo"/.test(html) && /href="#turno"/.test(html) && /href="#contacto"/.test(html),
+    'navbar con navegación suave por anclas (#categorias/#catalogo/#turno/#contacto)');
 check(/scroll-behavior:\s*smooth/.test(css), 'navegación suave habilitada (scroll-behavior: smooth)');
 check(/id="cta-header"/.test(html), 'botón CTA en el header');
 
 check(/id="hero-title"/.test(html), 'hero section presente');
-const hero = html.slice(html.indexOf('id="inicio"'), html.indexOf('id="beneficios"'));
-check(/FEFO/i.test(hero) && /POS/i.test(hero) && /[Cc]ontrolados/.test(hero),
-    'hero con propuesta de valor (FEFO, POS, controlados)');
+const hero = html.slice(html.indexOf('id="inicio"'), html.indexOf('id="categorias"'));
+check(/grid-template-columns:\s*55% 45%/.test(css), 'hero asimétrico 55/45 (DESIGN.md)');
+check(/Venta libre/.test(hero) && /Cuidado personal/.test(hero) && /Turno 24h/.test(hero),
+    'hero con chips de servicio (Venta libre / Cuidado personal / Turno 24h)');
 check(/Bolivia/.test(hero), 'hero orientado a Bolivia');
 
-check(/id="beneficios"/.test(html) && /benefit-card/.test(html), 'sección de beneficios');
-const benef = html.slice(html.indexOf('id="beneficios"'), html.indexOf('id="catalogo"'));
-check(/vencimiento/i.test(benef) && /(normativa|cumplimiento)/i.test(benef),
-    'beneficios destacan valor técnico (pérdidas por vencimiento, normativa)');
+check(/id="categorias"/.test(html) && /cat-zigzag/.test(html), 'sección de categorías en zig-zag');
+const cats = html.slice(html.indexOf('id="categorias"'), html.indexOf('id="catalogo"'));
+check((cats.match(/class="cat-row"/g) || []).length === 7, '7 categorías de salud en zig-zag');
+check(/Cuidado y Salud/.test(cats), 'sección "Cuidado y Salud" (título requisito del DESIGN.md)');
 
-check(/id="filter-bar"/.test(html) && /id="product-grid"/.test(html), 'showroom con filtro y grilla');
+check(/id="catalogo"/.test(html) && /id="filter-bar"/.test(html) && /id="product-grid"/.test(html),
+    'catálogo con filtro y grilla de productos destacados');
+check(/price-anterior/.test(js), 'precio_anterior tachado en el render (promos)');
+
+check(/id="turno"/.test(html) && /Farmacia de Turno/.test(html) && /benefit-card/.test(html),
+    'sección Farmacia de Turno (título requisito)');
+check(/id="contacto"/.test(html) && /class="atencion"/.test(html) && /id="contact-list"/.test(html),
+    'sección Atención con datos de contacto');
 check(/id="cta-whatsapp-float"/.test(html), 'CTA flotante presente');
 check(/id="contacto"/.test(html) && /cta-whatsapp/.test(html), 'sección CTA con WhatsApp');
 check(/id="footer-legal"/.test(html) && /id="footer-links"/.test(html) && /id="contact-email"/.test(html),
@@ -136,7 +145,7 @@ const resultado = {
     checkpoint: 'CP-LANDING-03',
     date: new Date().toISOString().slice(0, 10),
     result: fails === 0 ? 'PASSED' : 'FAILED',
-    summary: 'Secciones comerciales completas (header/nav, hero, beneficios, showroom con filtro por categoría sin recarga, CTA flotante WhatsApp placeholder, footer) 100% responsivas y sin alcance administrativo.',
+    summary: 'Secciones comerciales de Farmacia San Francisco (header/navbar, hero 55/45, categorías zig-zag, catálogo con filtro sin recarga, Farmacia de Turno, atención, CTA final y flotante WhatsApp) 100% responsivas y sin alcance administrativo.',
     checks,
     total: checks.length,
     failed: fails,

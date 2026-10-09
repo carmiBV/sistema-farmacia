@@ -1,6 +1,6 @@
 {
   "checkpoint": "CP-LANDING-02",
-  "date": "2026-10-07",
+  "date": "2026-10-09",
   "result": "PASSED",
   "summary": "Catálogo demostrativo data/catalog.json: 7 categorías x 10 productos = 70, precios en Bs., imágenes de Wikimedia Commons con licencia y fuente verificable por archivo, URLs operativas.",
   "checks": [
@@ -33,6 +33,14 @@
       "status": "PASS"
     },
     {
+      "label": "precio_anterior (promos): numérico y mayor que el precio actual",
+      "status": "PASS"
+    },
+    {
+      "label": "el catálogo incluye promos demostrativas con precio_anterior",
+      "status": "PASS"
+    },
+    {
       "label": "identificadores de producto únicos",
       "status": "PASS"
     },
@@ -61,7 +69,7 @@
       "status": "PASS"
     }
   ],
-  "total": 14,
+  "total": 16,
   "failed": 0,
   "image_urls": [
     {

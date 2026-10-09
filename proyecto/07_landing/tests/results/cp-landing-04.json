@@ -1,6 +1,6 @@
 {
   "checkpoint": "CP-LANDING-04",
-  "date": "2026-10-07",
+  "date": "2026-10-09",
   "result": "PASSED",
   "summary": "Auditoría de políticas (sin alcance administrativo), política de imágenes (70/70 URLs https funcionales con alt/licencia/fuente, sin IA), accesibilidad estructural y rendimiento de la landing.",
   "checks": [
@@ -105,7 +105,7 @@
       "status": "PASS"
     },
     {
-      "label": "recursos núcleo < 1 MB (total 65.9 KB)",
+      "label": "recursos núcleo < 1 MB (total 82.5 KB)",
       "status": "PASS"
     },
     {
@@ -113,7 +113,7 @@
       "status": "PASS"
     },
     {
-      "label": "recursos núcleo cargan en < 500 ms (local): /=15ms /assets/css/main.css=3ms /assets/js/main.js=3ms /data/catalog.json=4ms /data/config.json=4ms",
+      "label": "recursos núcleo cargan en < 500 ms (local): /=9ms /assets/css/main.css=4ms /assets/js/main.js=4ms /data/catalog.json=4ms /data/config.json=3ms",
       "status": "PASS"
     },
     {
@@ -124,23 +124,23 @@
   "total": 29,
   "failed": 0,
   "metrics": {
-    "bytes_index.html": 5233,
-    "bytes_assets/css/main.css": 5904,
-    "bytes_assets/js/main.js": 7729,
-    "bytes_data/config.json": 1183,
-    "bytes_data/catalog.json": 47439,
-    "bytes_total_core": 67488,
+    "bytes_index.html": 13422,
+    "bytes_assets/css/main.css": 13440,
+    "bytes_assets/js/main.js": 8523,
+    "bytes_data/config.json": 1211,
+    "bytes_data/catalog.json": 47914,
+    "bytes_total_core": 84510,
     "tiempos_carga": {
       "/": {
-        "avg_ms": 15,
+        "avg_ms": 9,
         "ok": 5
       },
       "/assets/css/main.css": {
-        "avg_ms": 3,
+        "avg_ms": 4,
         "ok": 5
       },
       "/assets/js/main.js": {
-        "avg_ms": 3,
+        "avg_ms": 4,
         "ok": 5
       },
       "/data/catalog.json": {
@@ -148,7 +148,7 @@
         "ok": 5
       },
       "/data/config.json": {
-        "avg_ms": 4,
+        "avg_ms": 3,
         "ok": 5
       }
     }

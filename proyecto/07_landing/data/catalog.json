@@ -15,7 +15,8 @@
           "image_alt": "Box and capsule of Amoxicillin",
           "image_license": "CC BY 3.0",
           "image_source": "https://commons.wikimedia.org/wiki/File:Amoxicillin.JPG",
-          "image_provider": "Wikimedia Commons"
+          "image_provider": "Wikimedia Commons",
+          "precio_anterior": 54
         },
         {
           "id": "medicamentos-receta-2",
@@ -26,7 +27,8 @@
           "image_alt": "*Drug Name: Cozaar 100 MG Oral Tablet \nIngredient(s): Losartan\nDrug Label Imprint: 960\nColor(s): White\nShape: Tear Size (mm): 12.00\nScore: 1\nInactive Ingredient",
           "image_license": "Public domain",
           "image_source": "https://commons.wikimedia.org/wiki/File:000771lg_Cozaar_100_MG_Oral_Tablet.jpg",
-          "image_provider": "Wikimedia Commons"
+          "image_provider": "Wikimedia Commons",
+          "precio_anterior": 46
         },
         {
           "id": "medicamentos-receta-3",
@@ -131,7 +133,8 @@
           "image_alt": "Hydrocodone/Paracetamol 5-500 tablet (Mallinckrodt).",
           "image_license": "Public domain",
           "image_source": "https://commons.wikimedia.org/wiki/File:Hydrocodone-paracetamol-5-500.jpg",
-          "image_provider": "Wikimedia Commons"
+          "image_provider": "Wikimedia Commons",
+          "precio_anterior": 14.5
         },
         {
           "id": "medicamentos-venta-libre-2",
@@ -142,7 +145,8 @@
           "image_alt": "Coated 200 mg ibuprofen tablets, CareOne brand, distributed by American Sales Company of Lancaster, New York",
           "image_license": "CC BY-SA 3.0",
           "image_source": "https://commons.wikimedia.org/wiki/File:200mg_ibuprofen_tablets.jpg",
-          "image_provider": "Wikimedia Commons"
+          "image_provider": "Wikimedia Commons",
+          "precio_anterior": 18.5
         },
         {
           "id": "medicamentos-venta-libre-3",
@@ -247,7 +251,8 @@
           "image_alt": "This is a Japanese sunscreen from Australian Asian Market, there is SPF and PA value",
           "image_license": "CC BY-SA 4.0",
           "image_source": "https://commons.wikimedia.org/wiki/File:Japanese_sunscreen.jpg",
-          "image_provider": "Wikimedia Commons"
+          "image_provider": "Wikimedia Commons",
+          "precio_anterior": 107
         },
         {
           "id": "dermocosmetica-cuidado-personal-2",
@@ -258,7 +263,8 @@
           "image_alt": "Exhibit in the Gardiner Museum, Toronto, Ontario, Canada. This artwork is in the public domain because the artist died more than 70 years ago. Photography was p",
           "image_license": "CC0",
           "image_source": "https://commons.wikimedia.org/wiki/File:Face_Effigy_Jar,_view_1,_300_BC_-_300_AD,_Colima_or_Jalisco,_Mexico,_earthenware_with_red_and_cream_slips_-_Gardiner_Museum,_Toronto_-_DSC01293.JPG",
-          "image_provider": "Wikimedia Commons"
+          "image_provider": "Wikimedia Commons",
+          "precio_anterior": 90
         },
         {
           "id": "dermocosmetica-cuidado-personal-3",
@@ -363,7 +369,8 @@
           "image_alt": "\nGlaxo builds bonnie babies : a trial tin of Glaxo, together with a small Glaxo baby book, will be sent post free, on receipt of a post card to Glaxo, mentionin",
           "image_license": "CC BY 4.0",
           "image_source": "https://commons.wikimedia.org/wiki/File:Glaxo_builds_bonnie_babies_Wellcome_L0035137.jpg",
-          "image_provider": "Wikimedia Commons"
+          "image_provider": "Wikimedia Commons",
+          "precio_anterior": 174
         },
         {
           "id": "bebe-maternidad-2",
@@ -374,7 +381,8 @@
           "image_alt": "GAH, these photos are all out of order. This is the prize pack I won from a drawing I entered at BlogHer.",
           "image_license": "CC BY 2.0",
           "image_source": "https://commons.wikimedia.org/wiki/File:Swim_diaper_(1335216873).jpg",
-          "image_provider": "Wikimedia Commons"
+          "image_provider": "Wikimedia Commons",
+          "precio_anterior": 114
         },
         {
           "id": "bebe-maternidad-3",
@@ -479,7 +487,8 @@
           "image_alt": "Sustained Release High Potency B \"50\" Dietary Supplement, B vitamin dietary supplement tablets branded \"Trader Darwin's\" (sold at Trader Joe's).  The tablets ea",
           "image_license": "CC BY-SA 3.0",
           "image_source": "https://commons.wikimedia.org/wiki/File:B_vitamin_supplement_tablets.jpg",
-          "image_provider": "Wikimedia Commons"
+          "image_provider": "Wikimedia Commons",
+          "precio_anterior": 78
         },
         {
           "id": "nutricion-suplementos-2",
@@ -490,7 +499,8 @@
           "image_alt": "\"500-mg Vitamin C Tablets and Paprikas\" published in PMID 15971944\n\n\nAlbert Szent-Györgyi wrote that he won a Nobel Prize after he found a way to mass produce v",
           "image_license": "CC BY 4.0",
           "image_source": "https://commons.wikimedia.org/wiki/File:Vitamin_C_tablets_and_paprikas.png",
-          "image_provider": "Wikimedia Commons"
+          "image_provider": "Wikimedia Commons",
+          "precio_anterior": 50.5
         },
         {
           "id": "nutricion-suplementos-3",
@@ -595,7 +605,8 @@
           "image_alt": "US elaslastic bandage, used in Vietnam War Era",
           "image_license": "CC BY-SA 3.0",
           "image_source": "https://commons.wikimedia.org/wiki/File:US_Elastic_Bandage.JPG",
-          "image_provider": "Wikimedia Commons"
+          "image_provider": "Wikimedia Commons",
+          "precio_anterior": 14.5
         },
         {
           "id": "primeros-auxilios-2",
@@ -606,7 +617,8 @@
           "image_alt": "File:Adhesive dressing-20100202.jpg",
           "image_license": "Public domain",
           "image_source": "https://commons.wikimedia.org/wiki/File:Adhesive_dressing-20100202.jpg",
-          "image_provider": "Wikimedia Commons"
+          "image_provider": "Wikimedia Commons",
+          "precio_anterior": 18
         },
         {
           "id": "primeros-auxilios-3",
@@ -711,7 +723,8 @@
           "image_alt": "Picture of a wrist mounted pulse oxymeter. The sensor is attached to the finger which in turn is attached to the device via a cable.\nThe device shows the oxygen",
           "image_license": "CC0",
           "image_source": "https://commons.wikimedia.org/wiki/File:Wrist-oximeter.jpg",
-          "image_provider": "Wikimedia Commons"
+          "image_provider": "Wikimedia Commons",
+          "precio_anterior": 222
         },
         {
           "id": "equipos-medicion-hogar-2",
@@ -722,7 +735,8 @@
           "image_alt": "A sample of a wrist style blood pressure monitor",
           "image_license": "CC0",
           "image_source": "https://commons.wikimedia.org/wiki/File:Wrist-style-blood-pressure-monitor.png",
-          "image_provider": "Wikimedia Commons"
+          "image_provider": "Wikimedia Commons",
+          "precio_anterior": 354
         },
         {
           "id": "equipos-medicion-hogar-3",

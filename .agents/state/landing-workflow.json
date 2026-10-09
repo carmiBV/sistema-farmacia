@@ -8,19 +8,31 @@
     "imagenes externas con licencia verificable (sin IA)",
     "CTA configurable + WhatsApp placeholder"
   ],
-  "current_checkpoint": "CP-LANDING-04",
+  "current_checkpoint": "CP-LANDING-07",
   "technical_status": "PASSED",
   "human_status": "APPROVED",
   "blocked": false,
   "can_continue": false,
   "blocked_by": null,
-  "next": "LANDING COMERCIAL ENTREGADA, APROBADA Y LISTA PARA PUBLICAR (2026-10-07): numero de WhatsApp autorizado por el cliente configurado (+591 72248223 -> https://wa.me/59172248223) en data/config.json; validadores 01/02/03/04 en verde tras el cambio.",
+  "next": "WORKFLOW 07 CERRADO (2026-10-09): aprobacion final del cliente registrada en CP-LANDING-07. LA LANDING DE FARMACIA SAN FRANCISCO ESTA COMPLETADA, APROBADA Y LISTA PARA PUBLICAR (proyecto/07_landing). Pendientes NO bloqueantes para el cliente: sustituir datos demostrativos (textos de categorias/turno/atencion, precios y precio_anterior, email/direccion/horarios, imagenes aproximadas de Commons) por los reales; publicacion en el host elegido.",
   "post_approval": [
     {
       "date": "2026-10-07",
       "change": "Configuracion del numero de WhatsApp real (data/config.json): phone_placeholder='+591 72248223', is_placeholder=false. Los CTA generan https://wa.me/59172248223.",
       "validation": "validate_cp_landing_01 => 24/24, validate_cp_landing_02 => 14/14, validate_cp_landing_03 => 27/27 (ambos modos del CTA: placeholder -> #contacto y numero autorizado -> wa.me), validate_cp_landing_04 => 29/29",
       "approved_by": "Cliente (numero entregado en sesion)"
+    },
+    {
+      "date": "2026-10-08",
+      "change": "Instruccion del cliente: aplicar DESIGN.md (Farmacia San Francisco) a proyecto/07_landing/ y REESTRUCTURAR el contenido; las secciones descritas (Farmacia de Turno, precios con precio_anterior, atencion) son REQUISITO. Workflow 07 reabierto con CP-LANDING-05/06/07. Registro: 00_contexto/registro_cambios.md (CAM-007).",
+      "validation": "CP-LANDING-05: validate_cp_landing_05 => 39/39, regresion validate_cp_landing_01 => 24/24, 02 => 14/14, 03 => 27/27, 04 => 29/29",
+      "approved_by": "Cliente (sesion 2026-10-08) — pendiente confirmacion de marca y destino del contenido SaaS (ver CAM-007)"
+    },
+    {
+      "date": "2026-10-09",
+      "change": "Reconciliacion de PRODUCT.md (CAM-009): marca 'Farmacia San Francisco' y acento #0d9488 (DESIGN.md) priman sobre 'Sistema Farmacia' y #047857; accesibilidad WCAG 2.2 AA — skip-link y .filter-chip min-height 44px en movil. Capturas regeneradas.",
+      "validation": "Suite completa re-ejecutada en verde: 01 => 24/24, 02 => 16/16, 03 => 32/32, 04 => 29/29, 05 => 39/39, 06 => 35/35, 07 => 15/15",
+      "approved_by": "Cliente (mensaje 'continuar' que autoriza resolver el conflicto de specs; resolucion conforme a sus instrucciones explicitas previas)"
     }
   ],
   "checkpoint_results": [
@@ -155,6 +167,121 @@
         "date": "2026-10-07",
         "by": "Cliente",
         "decision": "APROBACION FINAL: la landing comercial publica esta validada y aprobada. PROYECTO COMPLETADO (workflow 07)."
+      }
+    },
+    {
+      "checkpoint": "CP-LANDING-05",
+      "date": "2026-10-08",
+      "result": "PASSED",
+      "summary": "Tokens y componentes del DESIGN.md aplicados a proyecto/07_landing: paleta de 9 colores (acento unico teal #0d9488, ambar #b45309 solo para precio/alerta), tipografia Outfit 400/600/800 AUTO-HOSPEDADA (assets/fonts/outfit-latin{,-ext}.woff2, SIL OFL 1.1, variable, 47 KB — sin CDN ni <link> externo, conservando 'sin CSS externo' del CP-01), jerarquias display/headline/title/body/label/price (tabular-nums), radios 6/10/16, escala de espaciado 4-96px, plano por defecto con sombra difusa solo en .is-scrolled y hover de cards (hover: hover), botones primario/secundario/on-accent (48px, scale(.98) en active), chips/badges, cards con borde 1px, :focus-visible 2px teal y prefers-reduced-motion. DESIGN.md completado (estaba truncado en 'Internal Padding'; padding 24px + seccion 6 Layout/Movimiento consolidada). Registro CAM-007 en registro_cambios.md y seccion 6 en decisiones_landing.md.",
+      "evidence": [
+        "node tests/validate_cp_landing_05.mjs => RESULTADO: PASSED (39/39)",
+        "Regresion: validate_cp_landing_01 => 24/24, 02 => 14/14 (70/70 imagenes HTTP 200), 03 => 27/27, 04 => 29/29 (recursos nucleo 70.7 KB, cargas locales < 10 ms)",
+        "Evidencia JSON: proyecto/07_landing/tests/results/cp-landing-05.json",
+        "Verificacion fisica: assets/fonts/outfit-latin.woff2 (32 KB) y outfit-latin-ext.woff2 (15 KB) presentes; main.css con tokens; DESIGN.md sin truncamiento"
+      ],
+      "files": [
+        "DESIGN.md",
+        "proyecto/07_landing/assets/css/main.css",
+        "proyecto/07_landing/assets/fonts/outfit-latin.woff2",
+        "proyecto/07_landing/assets/fonts/outfit-latin-ext.woff2",
+        "proyecto/07_landing/tests/validate_cp_landing_05.mjs",
+        "proyecto/07_landing/tests/results/cp-landing-05.json",
+        "proyecto/00_contexto/registro_cambios.md",
+        "proyecto/04_decisiones/decisiones_landing.md"
+      ],
+      "assumptions": [
+        "Outfit auto-hospedada en vez de Google Fonts CDN: el validador CP-01 exige 'sin CSS externo' y decisiones_landing.md exige cero dependencias externas; auto-hospedarla cumple ambos. Fuente variable: el mismo woff2 sirve 400/600/800 (2 archivos por subconjunto).",
+        "Internal Padding de DESIGN.md (truncado) reconstruido como 24px (--spacing-6) desde la escala del propio documento; seccion 6 solo consolida valores ya declarados (sin reglas nuevas).",
+        "Mientras no se reestructura el contenido (CP-06), la landing muestra el contenido SaaS anterior con la piel del nuevo sistema de diseno; la alternancia de fondos sigue DESIGN.md (cataloogo = #f8fafc, elevado = #ffffff)."
+      ],
+      "pending": [
+        "Confirmar marca visible (Farmacia San Francisco vs Sistema Farmacia) y destino del contenido SaaS (CAM-007) antes de CP-LANDING-06"
+      ],
+      "human_status": "APPROVED",
+      "human_validation": {
+        "date": "2026-10-08",
+        "by": "Cliente (mensaje 'Aprobado para avanzar con CP-LANDING-06')",
+        "decision": "APROBADO CP-LANDING-05 (tokens y componentes). Marca confirmada: 'Farmacia San Francisco'. Contenido: sustituir el SaaS por las secciones requisito."
+      }
+    },
+    {
+      "checkpoint": "CP-LANDING-06",
+      "date": "2026-10-08",
+      "result": "PASSED",
+      "summary": "Reestructura de contenido segun DESIGN.md con decisiones del cliente (marca 'Farmacia San Francisco'; contenido SaaS sustituido). index.html: hero 55/45 con foto real, seccion 'Cuidado y Salud' con 7 categorias en zig-zag (chips: Venta libre / Cuidado personal / Turno 24h en hero), catalogo 'Productos destacados' con precio_anterior tachado en promos, seccion 'Farmacia de Turno', seccion 'Atencion' y bloque CTA final con 'Envio WhatsApp'. config.json: marca y etiquetas de CTA (numero autorizado +591 72248223 conservado). catalog.json: campo precio_anterior en 14 productos (promos demostrativas). 8 imagenes de seccion (hero + 7 categorias) desde Wikimedia Commons con licencia y pagina de origen por archivo, con credito visible en pagina y sin IA (tests/source_landing_images.mjs + data/imagenes.json). CSS: hero 55/45, zig-zag con orden alternado, secciones alternas (.categorias/.atencion blancas; .catalogo/.servicios-turnos #f8fafc), .demo-note. JS: elevacion .is-scrolled del header y render de precio_anterior (stub-safe).",
+      "evidence": [
+        "node tests/validate_cp_landing_06.mjs => RESULTADO: PASSED (35/35)",
+        "node tests/validate_cp_landing_05.mjs => 39/39 (assert 'sin CSS externos' corregido a <link>/<script>)",
+        "Regresion: validate_cp_landing_01 => 24/24, 02 => 16/16 (70/70 imagenes HTTP 200 + asserts precio_anterior), 03 => 32/32 (asserts de contenido adaptados), 04 => 29/29 (70/70 imagenes HTTP 200, recursos nucleo 82.1 KB, cargas locales < 10 ms)",
+        "Evidencia JSON: proyecto/07_landing/tests/results/cp-landing-06.json y cp-landing-06-sources.json (URL, licencia y fuente por imagen de seccion)",
+        "Verificacion fisica: index.html, data/imagenes.json (8/8 imagenes con licencia), catalog.json con precio_anterior en 14 productos, config.json con marca Farmacia San Francisco"
+      ],
+      "files": [
+        "proyecto/07_landing/index.html",
+        "proyecto/07_landing/assets/css/main.css",
+        "proyecto/07_landing/assets/js/main.js",
+        "proyecto/07_landing/data/config.json",
+        "proyecto/07_landing/data/catalog.json",
+        "proyecto/07_landing/data/imagenes.json",
+        "proyecto/07_landing/tests/source_landing_images.mjs",
+        "proyecto/07_landing/tests/validate_cp_landing_02.mjs",
+        "proyecto/07_landing/tests/validate_cp_landing_03.mjs",
+        "proyecto/07_landing/tests/validate_cp_landing_05.mjs",
+        "proyecto/07_landing/tests/validate_cp_landing_06.mjs",
+        "proyecto/07_landing/tests/results/cp-landing-06.json",
+        "proyecto/07_landing/tests/results/cp-landing-06-sources.json",
+        "proyecto/00_contexto/registro_cambios.md",
+        "proyecto/04_decisiones/decisiones_landing.md"
+      ],
+      "assumptions": [
+        "CTA primario 'Contactar' y CTA WhatsApp 'Envio WhatsApp' (etiqueta del DESIGN.md): ambos configurables en data/config.json; el cliente puede renombrarlos sin tocar codigo.",
+        "Las 8 imagenes de seccion son semanticamente aproximadas (Commons, con licencia); si el cliente aporta fotografia propia, se re-mapea en data/imagenes.json + index.html.",
+        "Los validadores 02/03/05 fueron adaptados a la nueva estructura (los asserts reflejaban el contenido SaaS anterior); cambio registrado en CAM-008-f. 01 y 04 no se modificaron.",
+        "Contenido demostrativo marcado en pagina (.demo-note): textos de categorias/turno/atencion, precios y precio_anterior, email de contacto placeholder."
+      ],
+      "pending": [
+        "Sustituir datos demostrativos (textos, precios, email/direccion/horarios) cuando el cliente aporte los reales"
+      ],
+      "human_status": "APPROVED",
+      "human_validation": {
+        "date": "2026-10-09",
+        "by": "Cliente (mensaje 'aprobar y continuar')",
+        "decision": "APROBADO CP-LANDING-06 (reestructura de contenido). Autoriza ejecutar CP-LANDING-07."
+      }
+    },
+    {
+      "checkpoint": "CP-LANDING-07",
+      "date": "2026-10-08",
+      "result": "PASSED",
+      "summary": "Auditoria final y cierre del workflow 07. Suite completa re-ejecutada en verde: CP-01 24/24 (estructura/config/shell), CP-02 16/16 (catalogo 7x10, precios Bs., precio_anterior, 70/70 imagenes HTTP 200), CP-03 32/32 (secciones de Farmacia San Francisco, filtro sin recarga, guard de WhatsApp), CP-04 29/29 (politicas sin alcance administrativo, 70/70 imagenes con alt/licencia/fuente, a11y estructural, recursos nucleo 82.1 KB y cargas locales < 10 ms), CP-05 39/39 (tokens del DESIGN.md), CP-06 35/35 (reestructura + imagenes de seccion) y CP-07 15/15 (cierre). Capturas renderizadas del diseno actual con Edge headless (1280x2600 y 375x2600): tests/results/cp-landing-07-desktop.png y cp-landing-07-mobile.png, copiadas tambien a los nombres cp-landing-03-* que referencia el validador 04 para que la evidencia visual corresponda siempre al diseno vigente.",
+      "evidence": [
+        "node tests/validate_cp_landing_07.mjs => RESULTADO: PASSED (15/15)",
+        "Suite: 01 => 24/24, 02 => 16/16, 03 => 32/32, 04 => 29/29, 05 => 39/39, 06 => 35/35 (evidencia JSON por checkpoint en tests/results/)",
+        "Capturas: cp-landing-07-desktop.png (1280x2600, 1.8 MB) y cp-landing-07-mobile.png (375x2600, 794 KB) — render verificado visualmente (Outfit, acento unico teal, hero 55/45, zig-zag con chips y creditos)",
+        "Regresion final en CP-07: sin alcance administrativo, sin formularios, tokens del DESIGN.md vigentes, sin CSS/scripts externos"
+      ],
+      "files": [
+        "proyecto/07_landing/tests/validate_cp_landing_07.mjs",
+        "proyecto/07_landing/tests/results/cp-landing-07.json",
+        "proyecto/07_landing/tests/results/cp-landing-07-desktop.png",
+        "proyecto/07_landing/tests/results/cp-landing-07-mobile.png",
+        "proyecto/07_landing/tests/results/cp-landing-03-desktop.png",
+        "proyecto/07_landing/tests/results/cp-landing-03-mobile.png"
+      ],
+      "assumptions": [
+        "Las capturas cp-landing-03-*.png se sobrescribieron con las del diseno actual: el validador 04 las exige por nombre y evidencia obsoleta del diseno anterior induciria a error. La practica queda registrada aqui.",
+        "Las capturas son de viewport alto (2600px), mismo criterio usado en CP-03; el scroll/is-scrolled y el render completo del catalogo se validan por stub en los validadores 01-06.",
+        "Validador 07 corregido durante el checkpoint (statSync().size, no .length) sin impacto fuera del propio validador."
+      ],
+      "pending": [
+        "Sustituir datos demostrativos (textos, precios, email/direccion/horarios, imagenes aproximadas) cuando el cliente aporte los reales"
+      ],
+      "human_status": "APPROVED",
+      "human_validation": {
+        "date": "2026-10-09",
+        "by": "Cliente (mensaje 'continuar')",
+        "decision": "APROBACION FINAL: CP-LANDING-07 y cierre del workflow 07. Landing de Farmacia San Francisco completada y aprobada."
       }
     }
   ]

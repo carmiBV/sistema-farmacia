@@ -1,0 +1,70 @@
+{
+  "checkpoint": "CP-LANDING-07",
+  "date": "2026-10-09",
+  "result": "PASSED",
+  "summary": "Cierre del workflow 07: suite 01-06 en verde, capturas renderizadas desktop/móvil del diseño actual (Farmacia San Francisco) y regresión final de políticas y sistema de diseño.",
+  "checks": [
+    {
+      "label": "CP-LANDING-01: PASSED (24/24)",
+      "status": "PASS"
+    },
+    {
+      "label": "CP-LANDING-02: PASSED (16/16)",
+      "status": "PASS"
+    },
+    {
+      "label": "CP-LANDING-03: PASSED (32/32)",
+      "status": "PASS"
+    },
+    {
+      "label": "CP-LANDING-04: PASSED (29/29)",
+      "status": "PASS"
+    },
+    {
+      "label": "CP-LANDING-05: PASSED (39/39)",
+      "status": "PASS"
+    },
+    {
+      "label": "CP-LANDING-06: PASSED (35/35)",
+      "status": "PASS"
+    },
+    {
+      "label": "capturas CP-07 desktop/móvil presentes",
+      "status": "PASS"
+    },
+    {
+      "label": "captura desktop 1280px (1280x2600)",
+      "status": "PASS"
+    },
+    {
+      "label": "captura móvil 375px (375x2600)",
+      "status": "PASS"
+    },
+    {
+      "label": "capturas con contenido renderizado (>100 KB / >50 KB)",
+      "status": "PASS"
+    },
+    {
+      "label": "las capturas referenciadas por CP-04 son las del diseño actual",
+      "status": "PASS"
+    },
+    {
+      "label": "sin alcance administrativo (regresión final)",
+      "status": "PASS"
+    },
+    {
+      "label": "sin formularios (regresión final)",
+      "status": "PASS"
+    },
+    {
+      "label": "tokens del DESIGN.md vigentes (acento único + Outfit)",
+      "status": "PASS"
+    },
+    {
+      "label": "sin CSS/scripts externos (regresión final)",
+      "status": "PASS"
+    }
+  ],
+  "total": 15,
+  "failed": 0
+}

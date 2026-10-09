@@ -1,0 +1,166 @@
+{
+  "checkpoint": "CP-LANDING-05",
+  "date": "2026-10-09",
+  "result": "PASSED",
+  "summary": "Tokens y componentes del DESIGN.md aplicados: paleta de un acento, Outfit auto-hospedada 400/600/800, jerarquías, radios/espaciado, plano por defecto con sombra en scroll/hover, botones/chips/cards, focus-visible y reduced-motion.",
+  "checks": [
+    {
+      "label": "token de color --color-bg = #f8fafc",
+      "status": "PASS"
+    },
+    {
+      "label": "token de color --color-surface = #ffffff",
+      "status": "PASS"
+    },
+    {
+      "label": "token de color --color-ink = #0f172a",
+      "status": "PASS"
+    },
+    {
+      "label": "token de color --color-ink-muted = #475569",
+      "status": "PASS"
+    },
+    {
+      "label": "token de color --color-line = #e2e8f0",
+      "status": "PASS"
+    },
+    {
+      "label": "token de color --color-accent = #0d9488",
+      "status": "PASS"
+    },
+    {
+      "label": "token de color --color-accent-hover = #0f766e",
+      "status": "PASS"
+    },
+    {
+      "label": "token de color --color-on-accent = #ffffff",
+      "status": "PASS"
+    },
+    {
+      "label": "token de color --color-warning = #b45309",
+      "status": "PASS"
+    },
+    {
+      "label": "sin puro negro (#000 prohibido por DESIGN.md)",
+      "status": "PASS"
+    },
+    {
+      "label": "Outfit declarada (@font-face)",
+      "status": "PASS"
+    },
+    {
+      "label": "Outfit latin auto-hospedada (archivo presente, sin CDN)",
+      "status": "PASS"
+    },
+    {
+      "label": "Outfit latin-ext auto-hospedada (archivo presente)",
+      "status": "PASS"
+    },
+    {
+      "label": "sin CSS/scripts externos (validador CP-01 conservado)",
+      "status": "PASS"
+    },
+    {
+      "label": "escala de peso 800/600 presente",
+      "status": "PASS"
+    },
+    {
+      "label": "display/H1: clamp(2rem, 4.5vw, 3.25rem)",
+      "status": "PASS"
+    },
+    {
+      "label": "headline/H2: clamp(1.5rem, 3vw, 2.25rem)",
+      "status": "PASS"
+    },
+    {
+      "label": "price: tabular-nums",
+      "status": "PASS"
+    },
+    {
+      "label": "body: max-width 65ch en párrafos",
+      "status": "PASS"
+    },
+    {
+      "label": "Inter vetado (DESIGN.md)",
+      "status": "PASS"
+    },
+    {
+      "label": "radios 6/10/16px",
+      "status": "PASS"
+    },
+    {
+      "label": "escala de espaciado (4→96px)",
+      "status": "PASS"
+    },
+    {
+      "label": "sombra difusa tintada (0 20px 40px -15px)",
+      "status": "PASS"
+    },
+    {
+      "label": "elevación en header al hacer scroll (.is-scrolled)",
+      "status": "PASS"
+    },
+    {
+      "label": "sombra de tarjeta solo en hover (hover: hover)",
+      "status": "PASS"
+    },
+    {
+      "label": "botón primario (accent → accent-hover)",
+      "status": "PASS"
+    },
+    {
+      "label": "botón secundario (borde ink, hover invertido)",
+      "status": "PASS"
+    },
+    {
+      "label": "botón on-accent (CTA final / WhatsApp)",
+      "status": "PASS"
+    },
+    {
+      "label": "botón :active scale(.98)",
+      "status": "PASS"
+    },
+    {
+      "label": "target táctil min-height 48px",
+      "status": "PASS"
+    },
+    {
+      "label": "chips/badges (radio 6px, borde line, texto muted)",
+      "status": "PASS"
+    },
+    {
+      "label": "cards (radio 16px, borde 1px en reposo)",
+      "status": "PASS"
+    },
+    {
+      "label": "precio_anterior tachado (ámbar solo para precio/alerta)",
+      "status": "PASS"
+    },
+    {
+      "label": "focus-visible 2px teal con outline-offset",
+      "status": "PASS"
+    },
+    {
+      "label": "prefers-reduced-motion obligatorio",
+      "status": "PASS"
+    },
+    {
+      "label": "movimiento CSS nativo (transform/opacity)",
+      "status": "PASS"
+    },
+    {
+      "label": "scroll-behavior: smooth (CP-03 conservado)",
+      "status": "PASS"
+    },
+    {
+      "label": "grillas auto-fit/auto-fill (CP-03 conservado)",
+      "status": "PASS"
+    },
+    {
+      "label": "fallback 1 columna < 768px (regla de layout)",
+      "status": "PASS"
+    }
+  ],
+  "total": 39,
+  "failed": 0
+}

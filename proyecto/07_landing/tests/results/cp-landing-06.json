@@ -1,0 +1,150 @@
+{
+  "checkpoint": "CP-LANDING-06",
+  "date": "2026-10-09",
+  "result": "PASSED",
+  "summary": "Reestructura de contenido según DESIGN.md: marca Farmacia San Francisco, hero 55/45, categorías zig-zag, catálogo con precio_anterior, Farmacia de Turno, atención y CTA final; imágenes de sección en Commons con licencia/fuente y sin IA.",
+  "checks": [
+    {
+      "label": "config: marca Farmacia San Francisco",
+      "status": "PASS"
+    },
+    {
+      "label": "HTML: marca visible en title y logo",
+      "status": "PASS"
+    },
+    {
+      "label": "hero 55/45 con fotografía (DESIGN.md §6)",
+      "status": "PASS"
+    },
+    {
+      "label": "categorías en zig-zag de 2 columnas (orden alternado)",
+      "status": "PASS"
+    },
+    {
+      "label": "7 categorías en zig-zag",
+      "status": "PASS"
+    },
+    {
+      "label": "categoría visible: Medicamentos con Receta",
+      "status": "PASS"
+    },
+    {
+      "label": "categoría visible: Medicamentos de Venta Libre (OTC)",
+      "status": "PASS"
+    },
+    {
+      "label": "categoría visible: Dermocosmética y Cuidado Personal",
+      "status": "PASS"
+    },
+    {
+      "label": "categoría visible: Bebé y Maternidad",
+      "status": "PASS"
+    },
+    {
+      "label": "categoría visible: Nutrición y Suplementos",
+      "status": "PASS"
+    },
+    {
+      "label": "categoría visible: Primeros Auxilios y Cuidado de Heridas",
+      "status": "PASS"
+    },
+    {
+      "label": "categoría visible: Equipos de Medición y Cuidado del Hogar",
+      "status": "PASS"
+    },
+    {
+      "label": "sección \"Farmacia de Turno\" (H2 requisito)",
+      "status": "PASS"
+    },
+    {
+      "label": "sección \"Atención\" con contacto",
+      "status": "PASS"
+    },
+    {
+      "label": "bloque CTA final con Envío WhatsApp",
+      "status": "PASS"
+    },
+    {
+      "label": "CTA WhatsApp etiquetado \"Envío WhatsApp\" (DESIGN.md)",
+      "status": "PASS"
+    },
+    {
+      "label": "precio_anterior renderizado tachado (promos demostrativas)",
+      "status": "PASS"
+    },
+    {
+      "label": "datos marcados como demostrativos (voz del sistema de diseño)",
+      "status": "PASS"
+    },
+    {
+      "label": "elevación del header en scroll (.is-scrolled)",
+      "status": "PASS"
+    },
+    {
+      "label": "data/imagenes.json presente (fuentes de imágenes)",
+      "status": "PASS"
+    },
+    {
+      "label": "8 imágenes de sección (hero + 7 categorías): hay 8",
+      "status": "PASS"
+    },
+    {
+      "label": "imágenes de sección: URLs https externas",
+      "status": "PASS"
+    },
+    {
+      "label": "imágenes de sección: alt declarado",
+      "status": "PASS"
+    },
+    {
+      "label": "imágenes de sección: licencia declarada",
+      "status": "PASS"
+    },
+    {
+      "label": "imágenes de sección: fuente verificable (página del archivo en Commons)",
+      "status": "PASS"
+    },
+    {
+      "label": "sin imágenes generadas por IA",
+      "status": "PASS"
+    },
+    {
+      "label": "HTML embebe 8 <img> de sección (hay 8)",
+      "status": "PASS"
+    },
+    {
+      "label": "cada <img> del HTML corresponde 1:1 con data/imagenes.json",
+      "status": "PASS"
+    },
+    {
+      "label": "cada <img> del HTML tiene alt no vacío",
+      "status": "PASS"
+    },
+    {
+      "label": "cada imagen lleva crédito con enlace a su fuente (licencia verificable)",
+      "status": "PASS"
+    },
+    {
+      "label": "las 8 URLs de sección responden HTTP 200",
+      "status": "PASS"
+    },
+    {
+      "label": "sin rutas ni enlaces administrativos",
+      "status": "PASS"
+    },
+    {
+      "label": "sin formularios",
+      "status": "PASS"
+    },
+    {
+      "label": "guard de placeholder de WhatsApp conservado",
+      "status": "PASS"
+    },
+    {
+      "label": "número autorizado por el cliente conservado (+591 72248223)",
+      "status": "PASS"
+    }
+  ],
+  "total": 35,
+  "failed": 0
+}

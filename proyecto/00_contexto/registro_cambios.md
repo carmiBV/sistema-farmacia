@@ -151,4 +151,68 @@ No se modificó: RF/RNF/RN, `00_contexto` (alcance/RN/restricciones), `01_requis
 
 ---
 
+## CAM-007 · 2026-10-08 · Rediseño de la landing comercial según DESIGN.md (Farmacia San Francisco)
+
+**Origen:** instrucción del cliente (sesión 2026-10-08): aplicar el sistema de diseño `DESIGN.md` a `proyecto/07_landing/` **y reestructurar su contenido**; las secciones descritas en DESIGN.md (Farmacia de Turno, precios con `precio_anterior`, atención) son **requisito**, no ilustrativas.
+**Ejecutado por:** agente (CP-LANDING-05 del workflow 07 reabierto).
+**Aprobado por:** cliente — sesión 2026-10-08 (dirección del rediseño) y aprobación final de cierre 2026-10-09.
+
+| ID | Archivo | Cambio | Motivo | Hallazgo | Estado |
+|---|---|---|---|---|---|
+| CAM-007-a | `DESIGN.md` | Se completa el texto truncado ("- **Internal Padding**" sin valor) con `24px` (`--spacing-6`) y se agrega §6 "Layout y Movimiento" que consolida valores ya declarados en el documento (sin reglas nuevas). | El documento fuente del diseño estaba cortado a media frase y no era implementable. Valor de padding derivado de la escala de espaciado del propio DESIGN.md. | — | Aplicado (reconstruido; confirmar con el cliente) |
+| CAM-007-b | `proyecto/07_landing/assets/css/main.css` | Reescritura completa con los tokens del DESIGN.md: paleta de 9 colores, radios 6/10/16, escala de espaciado, jerarquía tipográfica Outfit (400/600/800, price con `tabular-nums`), sombra difusa solo en scroll/hover, botones primario/secundario/on-accent, chips, cards planas con borde, `:focus-visible` 2px teal, `prefers-reduced-motion`. | Aplicar el sistema de diseño aprobado por el cliente (Regla del Acento Único: solo `#0d9488`; ámbar `#b45309` solo para `precio_anterior`/avisos). | — | Aplicado (CP-LANDING-05) |
+| CAM-007-c | `proyecto/07_landing/assets/fonts/outfit-latin{,-ext}.woff2` | Tipografía Outfit (SIL OFL 1.1) auto-hospedada, fuente variable 400–800, 47 KB total. | El DESIGN.md exige Outfit y `decisiones_landing.md` prohíbe dependencias externas (el validador CP-01 exige "sin CSS externo"): auto-hospedarla satisface ambos sin CDN ni `<link>` externo. Fallback `system-ui` conservado. | — | Aplicado (CP-LANDING-05) |
+| CAM-007-d | `proyecto/04_decisiones/decisiones_landing.md` | Nueva sección §6 "Rediseño visual (2026-10-08)": DESIGN.md como fuente de verdad del diseño, secciones de contenido declaradas requisito, ruta CP-LANDING-05…07, marca y validadores como puntos abiertos. | Registrar explícitamente qué cambia, por qué y quién lo aprueba (regla de trazabilidad). | — | Aplicado (CP-LANDING-05) |
+
+### Pendiente de aprobación del cliente
+- Marca visible: el DESIGN.md es de **"Farmacia San Francisco"** y la landing actual usa "Sistema Farmacia" con contenido tipo software. Propuesto en CP-LANDING-06: rebrandear a *Farmacia San Francisco* y sustituir el contenido SaaS por las secciones del DESIGN.md. **A confirmar.**
+- Contenido SaaS actual (beneficios FEFO/POS) fuera del DESIGN.md: se sustituye por las secciones requisito (categorías zig-zag, catálogo con precios, Farmacia de Turno, atención). **A confirmar.**
+- `precio_anterior` (campo nuevo en `catalog.json`) y textos de las secciones nuevas: datos demostrativos, a sustituir por los del cliente.
+
+### Programado para CP-LANDING-06 / 07 (no aplicado aún)
+- Reestructura de `index.html` (hero 55/45, categorías zig-zag, catálogo con precios, Farmacia de Turno, atención, CTA final).
+- Imágenes nuevas (hero, categorías, turno/atención) desde Wikimedia Commons con licencia y fuente registradas.
+- Adaptación de los validadores 01–04 a la nueva estructura (los asserts reflejan el contenido anterior) — se registra en su momento.
+
+---
+
+## CAM-008 · 2026-10-08 · CP-LANDING-06: reestructura de contenido — marca "Farmacia San Francisco"
+
+**Origen:** aprobación del cliente (sesión 2026-10-08) tras CAM-007: **marca "Farmacia San Francisco"** y **sustitución del contenido SaaS** (beneficios FEFO/POS) por las secciones requisito del DESIGN.md.
+**Ejecutado por:** agente (CP-LANDING-06).
+**Aprobado por:** cliente — decisiones de marca y contenido confirmadas en sesión 2026-10-08 _(firma/nombre pendiente de consignar)_.
+
+| ID | Archivo | Cambio | Motivo | Hallazgo | Estado |
+|---|---|---|---|---|---|
+| CAM-008-a | `proyecto/07_landing/index.html` | Reestructura completa: marca "Farmacia San Francisco"; hero 55/45 con foto real; sección "Cuidado y Salud" con 7 categorías en zig-zag; catálogo "Productos destacados"; sección **"Farmacia de Turno"**; sección **"Atención"**; bloque CTA final. Se elimina el contenido SaaS (hero/beneficios FEFO-POS). | Instrucción aprobada del cliente: las secciones del DESIGN.md son requisito. | — | Aplicado (CP-LANDING-06) |
+| CAM-008-b | `proyecto/07_landing/data/config.json` | Marca → "Farmacia San Francisco" (tagline "Salud y confianza sin artificios"); CTA primario → "Contactar"; CTA WhatsApp → "Envío WhatsApp" (etiqueta del DESIGN.md). El número autorizado +591 72248223 se conserva sin cambios. | Marca y etiquetas de CTA aprobadas; WhatsApp es dato del cliente, no se toca. | — | Aplicado (CP-LANDING-06) |
+| CAM-008-c | `proyecto/07_landing/data/catalog.json` | Campo nuevo `precio_anterior` (numérico, > precio actual) en 14 productos (2 por categoría) como promoción demostrativa. | Regla del Precio/Alerta del DESIGN.md: `precio_anterior` tachado en ámbar `#b45309`. | — | Aplicado (CP-LANDING-06; datos demostrativos) |
+| CAM-008-d | `proyecto/07_landing/data/imagenes.json`, `tests/source_landing_images.mjs`, `tests/results/cp-landing-06-sources.json` | 8 imágenes de sección (hero + 7 categorías) desde Wikimedia Commons con licencia y página de origen por archivo; sin IA; crédito visible en la página. | Política de imágenes: externas, gratuitas, licencia verificable. | — | Aplicado (CP-LANDING-06) |
+| CAM-008-e | `proyecto/07_landing/assets/css/main.css`, `assets/js/main.js` | CSS: hero 55/45, zig-zag con orden alternado, secciones alternas (`.categorias`/`.atencion` blancas, `.catalogo`/`.servicios-turnos` `#f8fafc`), `.demo-note`, créditos de imagen. JS: elevación `.is-scrolled` del header y render de `precio_anterior` (compatible con stubs de prueba). | Implementación de las secciones requisito. | — | Aplicado (CP-LANDING-06) |
+| CAM-008-f | `proyecto/07_landing/tests/validate_cp_landing_02.mjs`, `03.mjs`, `05.mjs`, `06.mjs` | Adaptación de asserts: 02 agrega `precio_anterior`; 03 reemplaza asserts de contenido SaaS (FEFO/POS/beneficios) por los de las secciones requisito; 05 corrige el assert "sin CSS externo" para verificar solo `<link>`/`<script>` (equivalente a CP-01); 06 es nuevo (estructura requisito + política de imágenes de sección). 01 y 04 sin cambios. | Los asserts reflejaban el contenido anterior; el cambio de contenido está aprobado (este CAM). | — | Aplicado (CP-LANDING-06) |
+
+### Datos demostrativos pendientes de sustitución por el cliente
+- Textos de categorías, turno y atención; precios y `precio_anterior` del catálogo.
+- `contact.email` sigue siendo placeholder (`contacto@ejemplo.bo`); dirección y horarios son ilustrativos.
+- Imágenes de Commons son semánticamente aproximadas; el cliente puede aportar su propia fotografía y se re-mapea.
+
+---
+
+## CAM-009 · 2026-10-09 · Reconciliación de PRODUCT.md y accesibilidad WCAG 2.2 AA
+
+**Origen:** resolución del conflicto de specs detectado al cerrar el workflow 07: `PRODUCT.md` (acento `#047857`, marca "Sistema Farmacia") vs `DESIGN.md` + decisiones del cliente (acento `#0d9488`, marca "Farmacia San Francisco").
+**Ejecutado por:** agente (cambio post-aprobación sobre la landing entregada).
+**Aprobado por:** cliente (mensaje "continuar" que autoriza resolver el conflicto; sentido de la resolución conforme a sus instrucciones explícitas previas) _(firma/nombre pendiente de consignar)_.
+
+| ID | Archivo | Cambio | Motivo | Hallazgo | Estado |
+|---|---|---|---|---|---|
+| CAM-009-a | `PRODUCT.md` | Nota de reconciliación al inicio: marca "Farmacia San Francisco" y acento `#0d9488` priman; el resto del documento se conserva como requisito de producto. | Conflicto de specs. Las instrucciones explícitas del cliente (2026-10-08) y el DESIGN.md aprobado en CP-05/06/07 prevalecen sobre el documento nunca aprobado. | Conflicto marca/acento | Aplicado (revertible: cambiar 1 token de color + validadores + capturas si el cliente prefiere `#047857`) |
+| CAM-009-b | `proyecto/07_landing/index.html` | Enlace de salto rápido (`skip-link` → `#contenido`) como primer elemento de `<body>`. | PRODUCT.md exige skip-link bajo WCAG 2.2 AA; faltaba en la implementación. | Brecha de accesibilidad | Aplicado (CP post-aprobación) |
+| CAM-009-c | `proyecto/07_landing/assets/css/main.css` | Estilo `.skip-link` (oculto hasta `:focus`) y `.filter-chip { min-height: 44px }` en `< 768px`. | PRODUCT.md: áreas táctiles ≥ 44px en móviles; los chips de filtro eran botones interactivos por debajo de ese mínimo. | Brecha de accesibilidad | Aplicado (CP post-aprobación) |
+
+### Requisitos de PRODUCT.md verificados ya cubiertos
+Contraste ≥ 4.5:1 (`#475569` sobre `#f8fafc` ≈ 7:1), targets de 48px en botones, HTML semántico + landmarks, `:focus-visible`, `prefers-reduced-motion`, lazy-loading con `alt` descriptivo, responsivo 360/768/1280 con grillas fluidas.
+
+---
+
 ## Plantilla para próximos cambios
